@@ -1,0 +1,181 @@
+/* ============================================================
+   AQI Buddy — Global Stylesheet
+   Aesthetic: Data-forward dashboard, dark-grounded, warm accents
+   Fonts: "DM Sans" (body) + "Space Mono" (data/numbers)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Space+Mono:wght@400;700&display=swap');
+
+/* ── CSS Variables ─────────────────────────────────────────── */
+:root {
+  /* Background layers */
+  --bg-base:        #0f1117;   /* near-black page bg */
+  --bg-surface:     #181c27;   /* cards, panels */
+  --bg-elevated:    #1f2535;   /* modals, dropdowns */
+  --bg-subtle:      #252b3b;   /* hover states, inputs */
+
+  /* Brand / accent */
+  --accent-primary:   #f5a623;   /* amber — pollution warning energy */
+  --accent-secondary: #e8764a;   /* burnt orange for gradients */
+  --accent-glow:      rgba(245, 166, 35, 0.18);
+
+  /* AQI Status colors (mirrors Indian CPCB scale) */
+  --aqi-good:       #56c768;   /* 0–50   Good */
+  --aqi-satisfactory: #a8d54f; /* 51–100 Satisfactory */
+  --aqi-moderate:   #f5d327;   /* 101–200 Moderate */
+  --aqi-poor:       #f5a623;   /* 201–300 Poor */
+  --aqi-very-poor:  #e8764a;   /* 301–400 Very Poor */
+  --aqi-severe:     #d94040;   /* 401+   Severe */
+
+  /* Text */
+  --text-primary:   #eef0f6;
+  --text-secondary: #9aa3b8;
+  --text-muted:     #5c6580;
+  --text-inverse:   #0f1117;
+
+  /* Borders */
+  --border-subtle:  rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-strong:  rgba(255, 255, 255, 0.18);
+
+  /* Typography */
+  --font-body:  'DM Sans', sans-serif;
+  --font-mono:  'Space Mono', monospace;
+
+  /* Spacing scale (8px base) */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Border radius */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  18px;
+  --radius-xl:  24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.45);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.55);
+  --shadow-glow: 0 0 24px var(--accent-glow);
+
+  /* Transitions */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   400ms ease;
+
+  /* Layout */
+  --sidebar-width: 240px;
+  --content-max:   1100px;
+  --topbar-height: 60px;
+}
+
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Typography ────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: clamp(1.75rem, 3vw, 2.25rem); }
+h2 { font-size: clamp(1.35rem, 2.5vw, 1.75rem); }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.05rem; }
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover { color: var(--accent-secondary); }
+
+/* Numbers / AQI values use monospace */
+.data-value,
+.aqi-number {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+
+/* ── Utility: Scrollbar ────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--bg-subtle); }
+
+/* ── Utility: Selection ────────────────────────────────────── */
+::selection {
+  background: var(--accent-glow);
+  color: var(--accent-primary);
+}
+
+/* ── Utility: Focus ring ───────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── AQI status utility classes ────────────────────────────── */
+/* Use these on any element to colour it by AQI level */
+.status-good        { color: var(--aqi-good); }
+.status-satisfactory{ color: var(--aqi-satisfactory); }
+.status-moderate    { color: var(--aqi-moderate); }
+.status-poor        { color: var(--aqi-poor); }
+.status-very-poor   { color: var(--aqi-very-poor); }
+.status-severe      { color: var(--aqi-severe); }
+
+.bg-status-good        { background-color: var(--aqi-good); }
+.bg-status-satisfactory{ background-color: var(--aqi-satisfactory); }
+.bg-status-moderate    { background-color: var(--aqi-moderate); }
+.bg-status-poor        { background-color: var(--aqi-poor); }
+.bg-status-very-poor   { background-color: var(--aqi-very-poor); }
+.bg-status-severe      { background-color: var(--aqi-severe); }
