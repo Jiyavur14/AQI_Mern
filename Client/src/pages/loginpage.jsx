@@ -1,7 +1,19 @@
 import { useState } from "react";
 import '../App.css';
+import RegisterPage from "./RegisterPage";
+import {Link} from 'react-router-dom';
 
 function LoginPage(){
+
+  const [email,setEmail] = useState('');
+  const [password,setPassword] = useState('');
+  const [showpassword,setShowpassword] = useState(false);  
+  const handleSubmit = (e)=>{
+    e.preventDefault();
+  console.log(email);
+  console.log(password);
+  }
+
    return (
     <div className="auth-page">
  
@@ -42,17 +54,22 @@ function LoginPage(){
             <p className="auth-subtitle">Sign in to your AQI Buddy account</p>
           </div>
  
-          {/* Replace with your controlled form */}
-          <div className="auth-form">
+          
+          <form className="auth-form" onSubmit={handleSubmit}>
  
             <div className="form-group">
               <label className="form-label" htmlFor="email">Email address</label>
               <input
                 id="email"
+                value={email}
                 type="email"
                 className="form-input"
+                onChange={(e)=>{
+                  setEmail(e.target.value)
+                }}
                 placeholder="you@example.com"
                 autoComplete="email"
+                required
               />
             </div>
  
@@ -60,25 +77,36 @@ function LoginPage(){
               <div className="form-label-row">
                 <label className="form-label" htmlFor="password">Password</label>
               </div>
+              <div className="password-box flex justify-between">
               <input
                 id="password"
-                type="password"
+                value={password}
+                type={showpassword ?"text":"password"}
                 className="form-input"
                 placeholder="••••••••"
+                onChange={(e)=>{
+                  setPassword(e.target.value)
+                }}
                 autoComplete="current-password"
+                required
               />
-              <a href="/forgot-password" className="form-link-small">Forgot password?</a>
+              <span>
+                <i class="fa-regular fa-eye" onClick={()=>setShowpassword((cv)=>!cv)} ></i>
+              </span>
+              
+              </div>
+              <Link to="/forgot-password" className="form-link-small">Forgot password?</Link>
             </div>
  
             <button type="submit" className="btn-primary btn-full">
               Sign in
             </button>
  
-          </div>
+          </form>
  
           <p className="auth-switch">
             Don't have an account?{' '}
-            <a href="/register" className="auth-switch-link">Create one</a>
+            <Link to="/register" className="auth-switch-link">Create one</Link>
           </p>
  
         </div>
