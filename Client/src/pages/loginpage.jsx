@@ -8,10 +8,15 @@ function LoginPage(){
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [showpassword,setShowpassword] = useState(false);  
+  const [isloading,setIsloading] = useState(false);
   const handleSubmit = (e)=>{
     e.preventDefault();
-  console.log(email);
-  console.log(password);
+    setIsloading(true);
+    setTimeout(()=>{
+      setIsloading(false)
+      alert("timeout")
+    },4000)
+    console.log("Submitted")
   }
 
    return (
@@ -98,8 +103,8 @@ function LoginPage(){
               <Link to="/forgot-password" className="form-link-small">Forgot password?</Link>
             </div>
  
-            <button type="submit" className="btn-primary btn-full">
-              Sign in
+            <button type="submit" className="btn-primary btn-full" disabled={isloading}>
+              {isloading ? "Logging in..." : "sign in"}
             </button>
  
           </form>
