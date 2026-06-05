@@ -144,6 +144,13 @@
 }
 .form-link-small:hover { color: var(--accent-primary); }
  
+.errormsg p,.errormsg{
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--accent-primary);
+}
+
 .form-input {
   width: 100%;
   padding: var(--space-3) var(--space-4);

@@ -3,15 +3,35 @@ import '../App.css';
 import RegisterPage from "./RegisterPage";
 import {Link} from 'react-router-dom';
 
-function LoginPage(){
+function LoginPage({fakeusers}){
 
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [showpassword,setShowpassword] = useState(false);  
   const [isloading,setIsloading] = useState(false);
+  const [errormessage,setErrormessage] = useState("");
+
   const handleSubmit = (e)=>{
     e.preventDefault();
     setIsloading(true);
+    
+    const email_existence = fakeusers.find((c)=>{
+        return c.email === email
+    })
+
+    if(email_existence)
+    {
+      let email_verification = fakeusers.find((c)=>{
+       return c.email === email && c.password === password
+      })
+
+    if(email_verification === undefined)
+      setErrormessage("Invalid Credentials");
+    
+    }
+    else
+      setErrormessage("you don't have account")
+
     setTimeout(()=>{
       setIsloading(false)
       alert("timeout")
@@ -71,6 +91,7 @@ function LoginPage(){
                 className="form-input"
                 onChange={(e)=>{
                   setEmail(e.target.value)
+                  setErrormessage("")
                 }}
                 placeholder="you@example.com"
                 autoComplete="email"
@@ -91,15 +112,22 @@ function LoginPage(){
                 placeholder="••••••••"
                 onChange={(e)=>{
                   setPassword(e.target.value)
+                  setErrormessage("")
                 }}
                 autoComplete="current-password"
                 required
               />
               <span>
-                <i class="fa-regular fa-eye" onClick={()=>setShowpassword((cv)=>!cv)} ></i>
+                <i className="fa-regular fa-eye" onClick={()=>setShowpassword((cv)=>!cv)} ></i>
               </span>
               
               </div>
+              { errormessage &&
+              <div className="errormsg">
+                <i className="fa-solid fa-exclamation block"></i>
+                <p>{errormessage}</p>
+              </div>
+              }
               <Link to="/forgot-password" className="form-link-small">Forgot password?</Link>
             </div>
  

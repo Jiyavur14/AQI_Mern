@@ -1,5 +1,6 @@
 import '../App.css';
- 
+import { useState } from 'react';
+
 /* List of major Indian cities for the home city dropdown */
 const INDIAN_CITIES = [
   'Ahmedabad', 'Bengaluru', 'Bhopal', 'Chennai', 'Coimbatore',
@@ -9,8 +10,20 @@ const INDIAN_CITIES = [
   'Pune', 'Rajkot', 'Surat', 'Thane', 'Varanasi',
   'Visakhapatnam',
 ];
- 
-function RegisterPage() {
+
+
+
+
+function RegisterPage({setUsers,users}) {
+
+  const handlechange = (e)=>{
+      const {name,value} = e.target;
+
+      setUsers((prev)=>({
+        ...prev,[name]:value
+      }))
+}
+
   return (
     <div className="auth-page">
  
@@ -56,6 +69,8 @@ function RegisterPage() {
               <label className="form-label" htmlFor="name">Full name</label>
               <input
                 id="name"
+                name="name"
+                onChange={handlechange}
                 type="text"
                 className="form-input"
                 placeholder="Arjun Sharma"
@@ -67,6 +82,8 @@ function RegisterPage() {
               <label className="form-label" htmlFor="email">Email address</label>
               <input
                 id="email"
+                name="email"
+                onChange={handlechange}
                 type="email"
                 className="form-input"
                 placeholder="you@example.com"
@@ -76,7 +93,7 @@ function RegisterPage() {
  
             <div className="form-group">
               <label className="form-label" htmlFor="city">Home city</label>
-              <select id="city" className="form-input form-select">
+              <select name="city" value={users.city} onChange={handlechange} id="city" className="form-input form-select">
                 <option value="" disabled selected>Select your city</option>
                 {INDIAN_CITIES.map((city) => (
                   <option key={city} value={city}>{city}</option>
@@ -89,6 +106,8 @@ function RegisterPage() {
               <input
                 id="password"
                 type="password"
+                name="password"
+                onChange={handlechange}
                 className="form-input"
                 placeholder="••••••••"
                 autoComplete="new-password"
@@ -100,6 +119,8 @@ function RegisterPage() {
               <input
                 id="confirmPassword"
                 type="password"
+                name="confirm_password"
+                onChange={handlechange}
                 className="form-input"
                 placeholder="••••••••"
                 autoComplete="new-password"
