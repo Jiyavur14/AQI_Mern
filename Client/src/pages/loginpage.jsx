@@ -1,9 +1,8 @@
 import { useState } from "react";
 import '../App.css';
-import RegisterPage from "./RegisterPage";
 import {Link} from 'react-router-dom';
 
-function LoginPage({fakeusers,showpassword,setShowpassword}){
+function LoginPage({formdata,showpassword,setShowpassword}){
 
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState(''); 
@@ -12,30 +11,31 @@ function LoginPage({fakeusers,showpassword,setShowpassword}){
 
   const handleSubmit = (e)=>{
     e.preventDefault();
-    setIsloading(true);
     
-    const email_existence = fakeusers.find((c)=>{
+    
+    const email_existence = formdata.find((c)=>{
         return c.email === email
     })
 
     if(email_existence)
     {
-      let email_verification = fakeusers.find((c)=>{
-       return c.email === email && c.password === password
-      })
-
-    if(email_verification === undefined)
-      setErrormessage("Invalid Credentials");
-    
+              if(email_existence.password !== password)
+                {setErrormessage("Invalid Credentials");
+                return;
+                }   
     }
-    else
-      setErrormessage("you don't have account")
+    else{
+      setErrormessage("you don't have account");
+      return;
+    }
 
+    setIsloading(true);
+    
     setTimeout(()=>{
       setIsloading(false)
-      alert("timeout")
-    },4000)
-    console.log("Submitted")
+    },3000)
+
+    console.log("Login formdata:", formdata);
   }
 
    return (

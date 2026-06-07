@@ -1,4 +1,5 @@
 import '../App.css';
+import { Link} from 'react-router-dom';
 import { useState } from 'react';
 
 /* List of major Indian cities for the home city dropdown */
@@ -37,18 +38,20 @@ function RegisterPage({setUsers,users,showpassword,setShowpassword,formdata,setF
       }
     
     setIsloading(true);
+    
     setTimeout(() => {
        setFormdata((prev)=>{
-      return [...prev,users]
-    });
+         return [...prev,users]
+       });
+     
     setUsers({name:"",email:"",city:"",password:"",confirm_password:""});
     setIsloading(false);
+     alert("you've successfully Registred");
     }, 3000);
-    alert("you've successfully Registred")
-    
+
+   
   }
 
-  
 
   return (
     <div className="auth-page">
@@ -176,7 +179,7 @@ function RegisterPage({setUsers,users,showpassword,setShowpassword,formdata,setF
  
           <p className="auth-switch">
             Already have an account?{' '}
-            <a href="/login" className="auth-switch-link">Sign in</a>
+            <Link to="/login" className="auth-switch-link">Sign in</Link>
           </p>
  
         </div>

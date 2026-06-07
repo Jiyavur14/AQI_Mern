@@ -4,10 +4,6 @@ import RegisterPage from "./pages/RegisterPage";
 import {Routes,Route} from "react-router-dom";
 import ForgotPasswordPage from "./pages/FPPage";
 
-const fakeusers= [{email:"jiyavur4@gmail.com",password:"1234"},
-    {email:"jiyavur5@gmail.com",password:"12345"},
-    {email:"jiyavur6@gmail.com",password:"12346"}
-]
 
 
 function App(){
@@ -25,7 +21,7 @@ function App(){
     return(<>
     
     <Routes>
-        <Route path="/login" element={<LoginPage fakeusers={fakeusers} showpassword={showpassword} setShowpassword={setShowpassword}/>}/>
+        <Route path="/login" element={<LoginPage formdata={formdata} showpassword={showpassword} setShowpassword={setShowpassword}/>}/>
         <Route path="/register" element={<RegisterPage formdata ={formdata} setFormdata={setFormdata} setUsers={setUsers} users={users} showpassword={showpassword} setShowpassword={setShowpassword}/>}/>
         <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
     </Routes>
