@@ -151,6 +151,16 @@
   color: var(--accent-primary);
 }
 
+.fg{
+  position: relative;
+}
+
+.fg span{
+  position: absolute;
+  right: 15px;
+  top: 45px;
+}
+
 .form-input {
   width: 100%;
   padding: var(--space-3) var(--space-4);

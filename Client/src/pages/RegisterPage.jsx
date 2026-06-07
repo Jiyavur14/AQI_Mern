@@ -11,18 +11,44 @@ const INDIAN_CITIES = [
   'Visakhapatnam',
 ];
 
+function RegisterPage({setUsers,users,showpassword,setShowpassword,formdata,setFormdata}) {
 
-
-
-function RegisterPage({setUsers,users}) {
+  const[errormsg,setErrormsg] = useState("");
+  const[loading,setIsloading] = useState(false);
 
   const handlechange = (e)=>{
+      setErrormsg("")
       const {name,value} = e.target;
 
       setUsers((prev)=>({
         ...prev,[name]:value
       }))
+
+
 }
+
+  const handleSubmit = (e)=>{
+
+    e.preventDefault();
+
+    if(users.password !== users.confirm_password)
+      {setErrormsg("Password Doesn't Match")
+        return;
+      }
+    
+    setIsloading(true);
+    setTimeout(() => {
+       setFormdata((prev)=>{
+      return [...prev,users]
+    });
+    setUsers({name:"",email:"",city:"",password:"",confirm_password:""});
+    setIsloading(false);
+    }, 3000);
+    alert("you've successfully Registred")
+    
+  }
+
+  
 
   return (
     <div className="auth-page">
@@ -63,18 +89,20 @@ function RegisterPage({setUsers,users}) {
             <p className="auth-subtitle">Start tracking your air quality today</p>
           </div>
  
-          <div className="auth-form">
+          <form className="auth-form" onSubmit={handleSubmit}>
  
             <div className="form-group">
               <label className="form-label" htmlFor="name">Full name</label>
               <input
                 id="name"
                 name="name"
+                value={users.name}
                 onChange={handlechange}
                 type="text"
                 className="form-input"
                 placeholder="Arjun Sharma"
                 autoComplete="name"
+                required
               />
             </div>
  
@@ -83,17 +111,19 @@ function RegisterPage({setUsers,users}) {
               <input
                 id="email"
                 name="email"
+                value={users.email}
                 onChange={handlechange}
                 type="email"
                 className="form-input"
                 placeholder="you@example.com"
                 autoComplete="email"
+                required
               />
             </div>
  
             <div className="form-group">
               <label className="form-label" htmlFor="city">Home city</label>
-              <select name="city" value={users.city} onChange={handlechange} id="city" className="form-input form-select">
+              <select name="city" value={users.city} onChange={handlechange} required id="city" className="form-input form-select">
                 <option value="" disabled selected>Select your city</option>
                 {INDIAN_CITIES.map((city) => (
                   <option key={city} value={city}>{city}</option>
@@ -107,31 +137,42 @@ function RegisterPage({setUsers,users}) {
                 id="password"
                 type="password"
                 name="password"
+                value={users.password}
                 onChange={handlechange}
                 className="form-input"
                 placeholder="••••••••"
                 autoComplete="new-password"
+                required
               />
             </div>
  
-            <div className="form-group">
+            <div className="form-group fg">
               <label className="form-label" htmlFor="confirmPassword">Confirm password</label>
               <input
                 id="confirmPassword"
-                type="password"
+                type={showpassword ?"text":"password"}
                 name="confirm_password"
+                value={users.confirm_password}
                 onChange={handlechange}
                 className="form-input"
                 placeholder="••••••••"
                 autoComplete="new-password"
+                required
               />
+              <span>
+                <i className="fa-regular fa-eye" onClick={()=>setShowpassword((cv)=>!cv)} ></i>
+              </span>
             </div>
+
+            {
+              errormsg && <div className="errormsg">{errormsg}</div>
+            }
  
-            <button type="submit" className="btn-primary btn-full">
-              Create account
+            <button type="submit" className="btn-primary btn-full" disabled={loading}>
+              {loading ? "Registering..." :"Create Account"}
             </button>
  
-          </div>
+          </form>
  
           <p className="auth-switch">
             Already have an account?{' '}

@@ -10,18 +10,23 @@ const fakeusers= [{email:"jiyavur4@gmail.com",password:"1234"},
 ]
 
 
-
-
 function App(){
 
     const [users,setUsers] = useState({name:"",email:"",city:"",password:"",confirm_password:""})
+    
     console.log(users);
+
+    const [showpassword,setShowpassword] = useState(false); 
+
+    const [formdata,setFormdata] = useState([]);
+
+    console.log(formdata);
 
     return(<>
     
     <Routes>
-        <Route path="/login" element={<LoginPage fakeusers={fakeusers}/>}/>
-        <Route path="/register" element={<RegisterPage setUsers={setUsers} users={users}/>}/>
+        <Route path="/login" element={<LoginPage fakeusers={fakeusers} showpassword={showpassword} setShowpassword={setShowpassword}/>}/>
+        <Route path="/register" element={<RegisterPage formdata ={formdata} setFormdata={setFormdata} setUsers={setUsers} users={users} showpassword={showpassword} setShowpassword={setShowpassword}/>}/>
         <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
     </Routes>
     

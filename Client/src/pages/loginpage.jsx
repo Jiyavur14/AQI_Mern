@@ -3,11 +3,10 @@ import '../App.css';
 import RegisterPage from "./RegisterPage";
 import {Link} from 'react-router-dom';
 
-function LoginPage({fakeusers}){
+function LoginPage({fakeusers,showpassword,setShowpassword}){
 
   const [email,setEmail] = useState('');
-  const [password,setPassword] = useState('');
-  const [showpassword,setShowpassword] = useState(false);  
+  const [password,setPassword] = useState(''); 
   const [isloading,setIsloading] = useState(false);
   const [errormessage,setErrormessage] = useState("");
 
