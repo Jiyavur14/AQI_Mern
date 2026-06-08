@@ -1,6 +1,7 @@
 import '../App.css';
-import { Link} from 'react-router-dom';
-import { useState } from 'react';
+import { Link,useNavigate} from 'react-router-dom';
+import { useState,useEffect,useRef } from 'react';
+
 
 /* List of major Indian cities for the home city dropdown */
 const INDIAN_CITIES = [
@@ -12,10 +13,14 @@ const INDIAN_CITIES = [
   'Visakhapatnam',
 ];
 
+
+
 function RegisterPage({setUsers,users,showpassword,setShowpassword,formdata,setFormdata}) {
 
   const[errormsg,setErrormsg] = useState("");
   const[loading,setIsloading] = useState(false);
+  const navigate = useNavigate();
+  const timeref = useRef(null);
 
   const handlechange = (e)=>{
       setErrormsg("")
@@ -39,19 +44,32 @@ function RegisterPage({setUsers,users,showpassword,setShowpassword,formdata,setF
     
     setIsloading(true);
     
-    setTimeout(() => {
+     const email_existence = formdata.find(c => c.email === users.email)
+
+    if(email_existence){
+      setErrormsg("User Already Exist");
+      setIsloading(false);
+       return;
+    }
+
+     timeref.current = setTimeout(() => {
        setFormdata((prev)=>{
          return [...prev,users]
        });
      
     setUsers({name:"",email:"",city:"",password:"",confirm_password:""});
     setIsloading(false);
+    console.log("Inside timeout:", users);
      alert("you've successfully Registred");
+     navigate("/login");
     }, 3000);
-
-   
   }
 
+ useEffect(()=>{
+  return () =>{
+    clearTimeout(timeref.current);
+  }
+ },[])
 
   return (
     <div className="auth-page">
@@ -127,7 +145,7 @@ function RegisterPage({setUsers,users,showpassword,setShowpassword,formdata,setF
             <div className="form-group">
               <label className="form-label" htmlFor="city">Home city</label>
               <select name="city" value={users.city} onChange={handlechange} required id="city" className="form-input form-select">
-                <option value="" disabled selected>Select your city</option>
+                <option value="" disabled>Select your city</option>
                 {INDIAN_CITIES.map((city) => (
                   <option key={city} value={city}>{city}</option>
                 ))}
