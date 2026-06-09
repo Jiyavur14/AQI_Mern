@@ -1,6 +1,21 @@
 import '../App.css';
+import { Navigate, useNavigate } from 'react-router-dom';
  
 function Dashboard() {
+
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("Currentuser"));
+  if(!user)
+    navigate("/login");
+
+  console.log(user.name);
+
+  const handlelogout = ()=>{
+   localStorage.removeItem("Currentuser");
+   navigate("/login");
+  }
+
   return (
     <div className="dashboard-layout">
  
@@ -42,7 +57,7 @@ function Dashboard() {
               <p className="sidebar-user-city">Chennai</p>
             </div>
           </div>
-          <button className="sidebar-logout">↩</button>
+          <button className="sidebar-logout" onClick={handlelogout}>↩</button>
         </div>
       </aside>
  

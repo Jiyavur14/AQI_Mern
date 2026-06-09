@@ -27,6 +27,7 @@ function LoginPage({showpassword,setShowpassword}){
     {
               if(email_existence.password === password)
               {
+                localStorage.setItem("Currentuser",JSON.stringify(email_existence));
                navigate("/dashboard"); 
               }else
                 {setErrormessage("Invalid Credentials");
