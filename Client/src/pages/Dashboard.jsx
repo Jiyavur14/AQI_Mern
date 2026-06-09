@@ -4,7 +4,7 @@ function Dashboard() {
   return (
     <div className="dashboard-layout">
  
-      {/* ── Sidebar ── */}
+      {/* ── Sidebar (desktop) ── */}
       <aside className="sidebar">
         <div className="sidebar-logo">
           <span className="sidebar-logo-icon">⬡</span>
@@ -49,21 +49,27 @@ function Dashboard() {
       {/* ── Main content ── */}
       <main className="dashboard-main">
  
-        {/* Topbar */}
+        {/* Mobile topbar with logo + threshold */}
         <header className="dashboard-topbar">
           <div className="topbar-left">
-            <h2 className="topbar-title">Dashboard</h2>
-            <p className="topbar-subtitle">Last updated: 10:45 AM · Chennai</p>
+            <div className="mobile-logo">
+              <span className="sidebar-logo-icon">⬡</span>
+              <span className="sidebar-logo-text">AQI Buddy</span>
+            </div>
+            <div className="topbar-titles">
+              <h2 className="topbar-title">Dashboard</h2>
+              <p className="topbar-subtitle">Last updated: 10:45 AM · Chennai</p>
+            </div>
           </div>
           <div className="topbar-right">
             <div className="topbar-threshold-badge">
-              <span className="threshold-label">Your Threshold</span>
+              <span className="threshold-label">Threshold</span>
               <span className="threshold-value">150</span>
             </div>
           </div>
         </header>
  
-        {/* Warning Banner — show/hide based on AQI logic */}
+        {/* Warning Banner */}
         <div className="aqi-warning-banner">
           <span className="warning-icon">⚠️</span>
           <p>AQI has crossed your personal limit of <strong>150</strong>. Avoid outdoor activity.</p>
@@ -122,7 +128,7 @@ function Dashboard() {
           <h3 className="section-title">Pollutant Breakdown</h3>
           <div className="pollutants-grid">
  
-            <div className="pollutant-card pollutant-card--poor">
+            <div className="pollutant-card">
               <div className="pollutant-top">
                 <span className="pollutant-name">PM2.5</span>
                 <span className="pollutant-status" style={{ color: 'var(--aqi-poor)' }}>Poor</span>
@@ -132,9 +138,13 @@ function Dashboard() {
                 <div className="pollutant-bar-fill" style={{ width: '74%', background: 'var(--aqi-poor)' }}></div>
               </div>
               <p className="pollutant-desc">Fine particulate matter</p>
+              <div className="pollutant-cause">
+                <span className="cause-icon">🔥</span>
+                <span>Main cause — Crop burning, vehicle exhaust</span>
+              </div>
             </div>
  
-            <div className="pollutant-card pollutant-card--moderate">
+            <div className="pollutant-card">
               <div className="pollutant-top">
                 <span className="pollutant-name">PM10</span>
                 <span className="pollutant-status" style={{ color: 'var(--aqi-moderate)' }}>Moderate</span>
@@ -144,9 +154,13 @@ function Dashboard() {
                 <div className="pollutant-bar-fill" style={{ width: '55%', background: 'var(--aqi-moderate)' }}></div>
               </div>
               <p className="pollutant-desc">Coarse particulate matter</p>
+              <div className="pollutant-cause">
+                <span className="cause-icon">🏗️</span>
+                <span>Main cause — Dust, construction sites</span>
+              </div>
             </div>
  
-            <div className="pollutant-card pollutant-card--good">
+            <div className="pollutant-card">
               <div className="pollutant-top">
                 <span className="pollutant-name">NO₂</span>
                 <span className="pollutant-status" style={{ color: 'var(--aqi-good)' }}>Good</span>
@@ -156,9 +170,13 @@ function Dashboard() {
                 <div className="pollutant-bar-fill" style={{ width: '18%', background: 'var(--aqi-good)' }}></div>
               </div>
               <p className="pollutant-desc">Nitrogen dioxide</p>
+              <div className="pollutant-cause">
+                <span className="cause-icon">🚗</span>
+                <span>Main cause — Vehicle engines, power plants</span>
+              </div>
             </div>
  
-            <div className="pollutant-card pollutant-card--satisfactory">
+            <div className="pollutant-card">
               <div className="pollutant-top">
                 <span className="pollutant-name">SO₂</span>
                 <span className="pollutant-status" style={{ color: 'var(--aqi-satisfactory)' }}>Satisfactory</span>
@@ -168,9 +186,13 @@ function Dashboard() {
                 <div className="pollutant-bar-fill" style={{ width: '30%', background: 'var(--aqi-satisfactory)' }}></div>
               </div>
               <p className="pollutant-desc">Sulphur dioxide</p>
+              <div className="pollutant-cause">
+                <span className="cause-icon">🏭</span>
+                <span>Main cause — Factories, burning coal & oil</span>
+              </div>
             </div>
  
-            <div className="pollutant-card pollutant-card--good">
+            <div className="pollutant-card">
               <div className="pollutant-top">
                 <span className="pollutant-name">CO</span>
                 <span className="pollutant-status" style={{ color: 'var(--aqi-good)' }}>Good</span>
@@ -180,9 +202,13 @@ function Dashboard() {
                 <div className="pollutant-bar-fill" style={{ width: '12%', background: 'var(--aqi-good)' }}></div>
               </div>
               <p className="pollutant-desc">Carbon monoxide</p>
+              <div className="pollutant-cause">
+                <span className="cause-icon">🚘</span>
+                <span>Main cause — Vehicle smoke, generators</span>
+              </div>
             </div>
  
-            <div className="pollutant-card pollutant-card--satisfactory">
+            <div className="pollutant-card">
               <div className="pollutant-top">
                 <span className="pollutant-name">O₃</span>
                 <span className="pollutant-status" style={{ color: 'var(--aqi-satisfactory)' }}>Satisfactory</span>
@@ -192,6 +218,10 @@ function Dashboard() {
                 <div className="pollutant-bar-fill" style={{ width: '38%', background: 'var(--aqi-satisfactory)' }}></div>
               </div>
               <p className="pollutant-desc">Ground-level ozone</p>
+              <div className="pollutant-cause">
+                <span className="cause-icon">☀️</span>
+                <span>Main cause — Sunlight reacting with exhaust fumes</span>
+              </div>
             </div>
  
           </div>
@@ -214,9 +244,33 @@ function Dashboard() {
         </section>
  
       </main>
+ 
+      {/* ── Bottom nav (mobile only) ── */}
+      <nav className="mobile-bottom-nav">
+        <a href="/dashboard" className="mobile-nav-item mobile-nav-item--active">
+          <span className="mobile-nav-icon">◈</span>
+          <span className="mobile-nav-label">Dashboard</span>
+        </a>
+        <a href="/watchlist" className="mobile-nav-item">
+          <span className="mobile-nav-icon">◉</span>
+          <span className="mobile-nav-label">Watchlist</span>
+        </a>
+        <a href="/journal" className="mobile-nav-item">
+          <span className="mobile-nav-icon">◎</span>
+          <span className="mobile-nav-label">Journal</span>
+        </a>
+        <a href="/history" className="mobile-nav-item">
+          <span className="mobile-nav-icon">◇</span>
+          <span className="mobile-nav-label">History</span>
+        </a>
+        <a href="/settings" className="mobile-nav-item">
+          <span className="mobile-nav-icon">◌</span>
+          <span className="mobile-nav-label">Settings</span>
+        </a>
+      </nav>
+ 
     </div>
   );
 }
  
 export default Dashboard;
- 

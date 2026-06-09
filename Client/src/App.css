@@ -368,13 +368,16 @@
 }
 
 
+ 
+/* ── Dashboard ─────────────────────────────────────────────────── */
+/* ── Layout ─────────────────────────────────────────────────── */
 .dashboard-layout {
   display: flex;
   min-height: 100vh;
   background: var(--bg-base);
 }
  
-/* ── Sidebar ─────────────────────────────────────────────────── */
+/* ── Sidebar (desktop only) ──────────────────────────────────── */
 .sidebar {
   width: var(--sidebar-width);
   min-height: 100vh;
@@ -480,9 +483,7 @@
   flex-shrink: 0;
 }
  
-.sidebar-user-info {
-  overflow: hidden;
-}
+.sidebar-user-info { overflow: hidden; }
  
 .sidebar-user-name {
   font-size: 0.82rem;
@@ -530,6 +531,8 @@
   flex-direction: column;
   gap: var(--space-8);
   overflow-y: auto;
+  /* space for mobile bottom nav */
+  padding-bottom: calc(var(--space-8) + 70px);
 }
  
 /* ── Topbar ──────────────────────────────────────────────────── */
@@ -541,17 +544,41 @@
   gap: var(--space-4);
 }
  
+.topbar-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+ 
+/* Mobile logo — hidden on desktop */
+.mobile-logo {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+ 
+.topbar-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+ 
 .topbar-title {
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: var(--space-1);
 }
  
 .topbar-subtitle {
   font-size: 0.82rem;
   color: var(--text-muted);
   font-family: var(--font-mono);
+}
+ 
+.topbar-right {
+  display: flex;
+  align-items: center;
 }
  
 .topbar-threshold-badge {
@@ -591,13 +618,10 @@
  
 @keyframes pulse-border {
   0%, 100% { border-left-color: var(--aqi-severe); }
-  50% { border-left-color: var(--aqi-very-poor); }
+  50%       { border-left-color: var(--aqi-very-poor); }
 }
  
-.warning-icon {
-  font-size: 1.2rem;
-  flex-shrink: 0;
-}
+.warning-icon { font-size: 1.2rem; flex-shrink: 0; }
  
 .aqi-warning-banner p {
   font-size: 0.9rem;
@@ -605,11 +629,9 @@
   line-height: 1.4;
 }
  
-.aqi-warning-banner strong {
-  color: #fff;
-}
+.aqi-warning-banner strong { color: #fff; }
  
-/* ── AQI Hero section ────────────────────────────────────────── */
+/* ── Hero AQI section ────────────────────────────────────────── */
 .aqi-hero-section {
   display: flex;
   flex-direction: column;
@@ -632,11 +654,9 @@
 .aqi-hero-card::before {
   content: '';
   position: absolute;
-  top: -60px;
-  right: -60px;
-  width: 220px;
-  height: 220px;
-  background: radial-gradient(circle, rgba(245, 166, 35, 0.07) 0%, transparent 70%);
+  top: -60px; right: -60px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(245,166,35,0.07) 0%, transparent 70%);
   pointer-events: none;
 }
  
@@ -655,7 +675,7 @@
 }
  
 .aqi-hero-number {
-  font-size: clamp(3.5rem, 6vw, 5rem);
+  font-size: clamp(3rem, 6vw, 5rem);
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -673,12 +693,12 @@
   width: fit-content;
 }
  
-.aqi-status-badge--good { background: rgba(86,199,104,0.15); color: var(--aqi-good); }
-.aqi-status-badge--satisfactory { background: rgba(168,213,79,0.15); color: var(--aqi-satisfactory); }
-.aqi-status-badge--moderate { background: rgba(245,211,39,0.15); color: var(--aqi-moderate); }
-.aqi-status-badge--poor { background: rgba(245,166,35,0.15); color: var(--aqi-poor); }
-.aqi-status-badge--very-poor { background: rgba(232,118,74,0.15); color: var(--aqi-very-poor); }
-.aqi-status-badge--severe { background: rgba(217,64,64,0.15); color: var(--aqi-severe); }
+.aqi-status-badge--good        { background: rgba(86,199,104,0.15);  color: var(--aqi-good); }
+.aqi-status-badge--satisfactory{ background: rgba(168,213,79,0.15);  color: var(--aqi-satisfactory); }
+.aqi-status-badge--moderate    { background: rgba(245,211,39,0.15);  color: var(--aqi-moderate); }
+.aqi-status-badge--poor        { background: rgba(245,166,35,0.15);  color: var(--aqi-poor); }
+.aqi-status-badge--very-poor   { background: rgba(232,118,74,0.15);  color: var(--aqi-very-poor); }
+.aqi-status-badge--severe      { background: rgba(217,64,64,0.15);   color: var(--aqi-severe); }
  
 .aqi-hero-city {
   font-size: 0.88rem;
@@ -686,9 +706,7 @@
 }
  
 /* Gauge ring */
-.aqi-hero-right {
-  flex-shrink: 0;
-}
+.aqi-hero-right { flex-shrink: 0; }
  
 .aqi-gauge-ring {
   width: 160px;
@@ -775,14 +793,11 @@
   margin-bottom: var(--space-4);
 }
  
-.pollutants-section {
-  display: flex;
-  flex-direction: column;
-}
+.pollutants-section { display: flex; flex-direction: column; }
  
 .pollutants-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: var(--space-4);
 }
  
@@ -855,11 +870,27 @@
   line-height: 1.4;
 }
  
-/* ── Quick journal ───────────────────────────────────────────── */
-.quick-journal-section {
+/* Main cause row — NEW */
+.pollutant-cause {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-1);
 }
+ 
+.cause-icon { font-size: 0.85rem; flex-shrink: 0; }
+ 
+.pollutant-cause span:last-child {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+ 
+/* ── Quick journal ───────────────────────────────────────────── */
+.quick-journal-section { display: flex; flex-direction: column; }
  
 .quick-journal-card {
   background: var(--bg-surface);
@@ -885,9 +916,7 @@
   width: 100%;
 }
  
-.quick-journal-input::placeholder {
-  color: var(--text-muted);
-}
+.quick-journal-input::placeholder { color: var(--text-muted); }
  
 .quick-journal-input:focus {
   outline: none;
@@ -922,23 +951,126 @@
   font-size: 0.85rem;
 }
  
+/* ── Mobile bottom nav ───────────────────────────────────────── */
+.mobile-bottom-nav {
+  display: none; /* hidden on desktop */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  z-index: 100;
+  padding: 0 var(--space-2);
+  align-items: center;
+  justify-content: space-around;
+}
+ 
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+  min-width: 52px;
+}
+ 
+.mobile-nav-item--active {
+  color: var(--accent-primary);
+}
+ 
+.mobile-nav-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+ 
+.mobile-nav-label {
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+ 
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
+ 
+  /* hide desktop sidebar */
   .sidebar {
     display: none;
   }
  
-  .dashboard-main {
-    padding: var(--space-5);
+  /* show mobile bottom nav */
+  .mobile-bottom-nav {
+    display: flex;
   }
  
+  /* show mobile logo in topbar */
+  .mobile-logo {
+    display: flex;
+  }
+ 
+  .dashboard-main {
+    padding: var(--space-5);
+    padding-bottom: 80px; /* clear bottom nav */
+    gap: var(--space-5);
+  }
+ 
+  /* hero card stacks vertically */
   .aqi-hero-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-5);
+    gap: var(--space-5);
+  }
+ 
+  .aqi-hero-right {
+    align-self: center;
+  }
+ 
+  .aqi-gauge-ring {
+    width: 130px;
+    height: 130px;
+  }
+ 
+  /* 2 columns on mobile for pollutants */
+  .pollutants-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+ 
+  .pollutant-card {
+    padding: var(--space-4);
+  }
+ 
+  .pollutant-value {
+    font-size: 1.3rem;
+  }
+ 
+  /* journal footer stacks */
+  .quick-journal-footer {
     flex-direction: column;
     align-items: flex-start;
   }
  
-  .aqi-gauge-ring {
-    width: 120px;
-    height: 120px;
+  .quick-journal-btn {
+    width: 100%;
+    text-align: center;
+  }
+ 
+  /* scale legend wraps tighter */
+  .aqi-scale-legend {
+    gap: var(--space-2) var(--space-3);
+    padding: var(--space-3) var(--space-4);
+  }
+}
+ 
+@media (max-width: 400px) {
+  .pollutants-grid {
+    grid-template-columns: 1fr;
   }
 }
