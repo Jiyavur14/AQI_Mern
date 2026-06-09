@@ -1,27 +1,36 @@
 import { useState } from "react";
 import '../App.css';
-import {Link} from 'react-router-dom';
+import {Link,Navigate, useNavigate} from 'react-router-dom';
 
-function LoginPage({formdata,showpassword,setShowpassword}){
+function LoginPage({showpassword,setShowpassword}){
 
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState(''); 
   const [isloading,setIsloading] = useState(false);
   const [errormessage,setErrormessage] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e)=>{
+  const handleSubmit = async (e)=>{
     e.preventDefault();
-    
-    
-    const email_existence = formdata.find((c)=>{
+
+    setIsloading(true)
+   try{
+    const data = await fetch("http://localhost:5000/users");
+    const allUsers = await data.json();
+    console.log("Returned: ",allUsers);
+
+    const email_existence = allUsers.find((c)=>{
         return c.email === email
     })
 
     if(email_existence)
     {
-              if(email_existence.password !== password)
+              if(email_existence.password === password)
+              {
+               navigate("/dashboard"); 
+              }else
                 {setErrormessage("Invalid Credentials");
-                return;
+                 return;
                 }   
     }
     else{
@@ -29,13 +38,12 @@ function LoginPage({formdata,showpassword,setShowpassword}){
       return;
     }
 
-    setIsloading(true);
-    
-    setTimeout(()=>{
-      setIsloading(false)
-    },3000)
+}catch(e){
+console.log("Login Failed");
+}finally{
+    setIsloading(false);
+}
 
-    console.log("Login formdata:", formdata);
   }
 
    return (
