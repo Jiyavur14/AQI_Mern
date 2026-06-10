@@ -2,6 +2,23 @@ import "../App.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 
+
+
+
+
+const INDIAN_STATES = [
+  "TamilNadu",
+  "Kerala",
+  "Up",
+  "Delhi",
+  "Telugana",
+  "Gujarat",
+  "Karnataka",
+  "Jarkant",
+  "Jammu",
+];
+
+
 /* List of major Indian cities for the home city dropdown */
 const INDIAN_CITIES = [
   "Ahmedabad",
@@ -9,7 +26,6 @@ const INDIAN_CITIES = [
   "Bhopal",
   "Chennai",
   "Coimbatore",
-  "Delhi",
   "Faridabad",
   "Ghaziabad",
   "Gurugram",
@@ -92,6 +108,7 @@ function RegisterPage({
       setUsers({
         name: "",
         email: "",
+        state:"",
         city: "",
         password: "",
         confirm_password: "",
@@ -201,6 +218,29 @@ function RegisterPage({
                 autoComplete="email"
                 required
               />
+            </div>
+
+             <div className="form-group">
+              <label className="form-label" htmlFor="state">
+                State
+              </label>
+              <select
+                name="state"
+                value={users.state}
+                onChange={handlechange}
+                required
+                id="city"
+                className="form-input form-select"
+              >
+                <option value="" disabled>
+                  Select your state
+                </option>
+                {INDIAN_STATES.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="form-group">

@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "name": "hhihihi",
+      "email": "jiyavurrr@gmail.com",
+      "city": "Gurugram",
+      "password": "1212",
+      "confirm_password": "1212",
+      "id": "mXnt9gYfnzU"
+    },
+    {
+      "name": "jiraya",
+      "email": "jiyavur4@gmail.com",
+      "city": "Gurugram",
+      "password": "1212",
+      "confirm_password": "1212",
+      "id": "XTBtVe6aC0Y"
+    },
+    {
+      "name": "jiraya",
+      "email": "tamil8334@gmail.com",
+      "city": "Delhi",
+      "password": "1212",
+      "confirm_password": "1212",
+      "id": "APx4uhEB-GE"
+    },
+    {
+      "name": "lllllll",
+      "email": "jiyavurra0@gmail.com",
+      "city": "Gurugram",
+      "password": "1214",
+      "confirm_password": "1214",
+      "id": "SqWCHlAJRsk"
+    },
+    {
+      "name": "hello",
+      "email": "balaji@gmail.com",
+      "city": "Hyderabad",
+      "password": "1212",
+      "confirm_password": "1212",
+      "id": "tjGoGSb4_hA"
+    },
+    {
+      "name": "tamil",
+      "email": "tamil83345@gmail.com",
+      "state": "TamilNadu",
+      "city": "Coimbatore",
+      "password": "1212",
+      "confirm_password": "1212",
+      "id": "zSpDsdQIBxA"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

@@ -1,25 +1,45 @@
 import '../App.css';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link,Navigate,useNavigate } from 'react-router-dom';
+
+
+
+const fakeAQI = {
+  city: "Trichy",
+  lastUpdated: "10:45 AM",
+
+  aqi: 247,
+  status: "Poor",
+
+  pollutants: {
+    pm25: 112,
+    pm10: 168,
+    no2: 28,
+    so2: 44,
+    co: 0.8,
+    o3: 62
+  }
+};
+
+
+
+
  
 function Dashboard() {
 
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("Currentuser"));
-  if(!user)
-    navigate("/login");
-
-  console.log(user.name);
 
   const handlelogout = ()=>{
    localStorage.removeItem("Currentuser");
    navigate("/login");
   }
 
+
   return (
     <div className="dashboard-layout">
  
-      {/* ── Sidebar (desktop) ── */}
+      {/* ── Sidebar (desktop only) ── */}
       <aside className="sidebar">
         <div className="sidebar-logo">
           <span className="sidebar-logo-icon">⬡</span>
@@ -27,34 +47,34 @@ function Dashboard() {
         </div>
  
         <nav className="sidebar-nav">
-          <a href="/dashboard" className="nav-item nav-item--active">
+          <Link to="/dashboard" className="nav-item nav-item--active">
             <span className="nav-icon">◈</span>
             <span>Dashboard</span>
-          </a>
-          <a href="/watchlist" className="nav-item">
+          </Link>
+          <Link to="/watchlist" className="nav-item">
             <span className="nav-icon">◉</span>
             <span>Watchlist</span>
-          </a>
-          <a href="/journal" className="nav-item">
+          </Link>
+          <Link to="/journal" className="nav-item">
             <span className="nav-icon">◎</span>
             <span>Journal</span>
-          </a>
-          <a href="/history" className="nav-item">
+          </Link>
+          <Link to="/history" className="nav-item">
             <span className="nav-icon">◇</span>
             <span>History</span>
-          </a>
-          <a href="/settings" className="nav-item">
+          </Link>
+          <Link to="/settings" className="nav-item">
             <span className="nav-icon">◌</span>
             <span>Settings</span>
-          </a>
+          </Link>
         </nav>
  
         <div className="sidebar-footer">
           <div className="sidebar-user">
-            <div className="sidebar-avatar">A</div>
+            <div className="sidebar-avatar">{user.name.charAt(0)}</div>
             <div className="sidebar-user-info">
-              <p className="sidebar-user-name">Arjun Sharma</p>
-              <p className="sidebar-user-city">Chennai</p>
+              <p className="sidebar-user-name">{user.name}</p>
+              <p className="sidebar-user-city">{user.city}</p>
             </div>
           </div>
           <button className="sidebar-logout" onClick={handlelogout}>↩</button>
@@ -64,24 +84,42 @@ function Dashboard() {
       {/* ── Main content ── */}
       <main className="dashboard-main">
  
-        {/* Mobile topbar with logo + threshold */}
+        {/* ── Topbar ── */}
         <header className="dashboard-topbar">
+ 
+          {/* Left: mobile logo + page heading */}
           <div className="topbar-left">
             <div className="mobile-logo">
               <span className="sidebar-logo-icon">⬡</span>
               <span className="sidebar-logo-text">AQI Buddy</span>
             </div>
-            <div className="topbar-titles">
-              <h2 className="topbar-title">Dashboard</h2>
-              <p className="topbar-subtitle">Last updated: 10:45 AM · Chennai</p>
+            <div className="topbar-heading-block">
+              <div className="topbar-heading-row">
+                <h2 className="topbar-title">Dashboard</h2>
+                <span className="topbar-live-dot"></span>
+                <span className="topbar-live-label">Live</span>
+              </div>
+              <p className="topbar-subtitle">
+                <span className="topbar-subtitle-dot">◎</span>
+                {user.city} · Last updated {fakeAQI.lastUpdated}
+              </p>
             </div>
           </div>
+ 
+          {/* Right: threshold + mobile user avatar + logout */}
           <div className="topbar-right">
             <div className="topbar-threshold-badge">
               <span className="threshold-label">Threshold</span>
               <span className="threshold-value">150</span>
             </div>
+ 
+            {/* Mobile only — avatar + logout */}
+            <div className="mobile-user-cluster">
+              <div className="mobile-avatar">A</div>
+              <button className="mobile-logout-btn" onClick={handlelogout}>↩</button>
+            </div>
           </div>
+ 
         </header>
  
         {/* Warning Banner */}
@@ -97,7 +135,7 @@ function Dashboard() {
               <p className="aqi-hero-label">Air Quality Index</p>
               <div className="aqi-hero-number aqi-number" style={{ color: 'var(--aqi-poor)' }}>247</div>
               <div className="aqi-status-badge aqi-status-badge--poor">Poor</div>
-              <p className="aqi-hero-city">Chennai, Tamil Nadu</p>
+              <p className="aqi-hero-city">{user.city}, {user.state}</p>
             </div>
             <div className="aqi-hero-right">
               <div className="aqi-gauge-ring" style={{ '--aqi-color': 'var(--aqi-poor)', '--aqi-pct': '62%' }}>
@@ -262,26 +300,26 @@ function Dashboard() {
  
       {/* ── Bottom nav (mobile only) ── */}
       <nav className="mobile-bottom-nav">
-        <a href="/dashboard" className="mobile-nav-item mobile-nav-item--active">
+        <Link to="/dashboard" className="mobile-nav-item mobile-nav-item--active">
           <span className="mobile-nav-icon">◈</span>
           <span className="mobile-nav-label">Dashboard</span>
-        </a>
-        <a href="/watchlist" className="mobile-nav-item">
+        </Link>
+        <Link to="/watchlist" className="mobile-nav-item">
           <span className="mobile-nav-icon">◉</span>
           <span className="mobile-nav-label">Watchlist</span>
-        </a>
-        <a href="/journal" className="mobile-nav-item">
+        </Link>
+        <Link to="/journal" className="mobile-nav-item">
           <span className="mobile-nav-icon">◎</span>
           <span className="mobile-nav-label">Journal</span>
-        </a>
-        <a href="/history" className="mobile-nav-item">
+        </Link>
+        <Link to="/history" className="mobile-nav-item">
           <span className="mobile-nav-icon">◇</span>
           <span className="mobile-nav-label">History</span>
-        </a>
-        <a href="/settings" className="mobile-nav-item">
+        </Link>
+        <Link to="/settings" className="mobile-nav-item">
           <span className="mobile-nav-icon">◌</span>
           <span className="mobile-nav-label">Settings</span>
-        </a>
+        </Link>
       </nav>
  
     </div>
@@ -289,3 +327,4 @@ function Dashboard() {
 }
  
 export default Dashboard;
+ 
