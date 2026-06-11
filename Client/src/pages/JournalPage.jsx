@@ -1,7 +1,25 @@
 import { Link } from 'react-router-dom';
 import '../App.css';
- 
-function JournalPage() {
+
+const fakeAQI = {
+  city: "Trichy",
+  lastUpdated: "10:45 AM",
+
+  aqi: 11,
+
+  pollutants: {
+    pm25: 115,
+    pm10: 100,
+    no2: 75,
+    so2: 50,
+    co: 0.8,
+    o3: 25,
+  },
+};
+
+
+
+function JournalPage({journaltext,setJournaltext,savingentry,handledown}) {
   return (
     <div className="dashboard-layout">
  
@@ -92,6 +110,9 @@ function JournalPage() {
             </div>
  
             <textarea
+              value={journaltext}
+              onChange={(e)=>setJournaltext(e.target.value)}
+               onKeyDown={handledown}
               className="journal-write-input"
               placeholder="How are you feeling today? Did the air affect you — headache, dry throat, cancelled your walk? Write it down..."
               rows={5}
@@ -104,7 +125,7 @@ function JournalPage() {
                 <span className="journal-hint-tag">🪟 Stayed indoors</span>
                 <span className="journal-hint-tag">💊 Medication</span>
               </div>
-              <button className="btn-primary journal-save-btn">Save Entry</button>
+              <button className="btn-primary journal-save-btn" onClick={savingentry} onKeyDown={handledown}>Save Entry</button>
             </div>
  
           </div>
@@ -209,6 +230,7 @@ function JournalPage() {
                   <div className="journal-entry-meta">
                     <span className="journal-entry-date">Saturday, 6 June 2026</span>
                     <div className="journal-entry-badges">
+
                       <span className="journal-aqi-chip aqi-chip--moderate">AQI 165</span>
                       <span className="journal-status-chip">Moderate</span>
                     </div>

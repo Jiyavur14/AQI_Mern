@@ -18,8 +18,8 @@ const fakeAQI = {
   },
 };
 
-function Dashboard() {
-  const [journaltext, setJournaltext] = useState("");
+function Dashboard({journaltext,setJournaltext,handledown,savingentry}) {
+ 
 
   const navigate = useNavigate();
 
@@ -66,43 +66,6 @@ function Dashboard() {
     if (aqi <= 400) return "aqi-status-badge--very-poor";
 
     return "aqi-status-badge--severe";
-  }
-
-  function savingentry() {
-    if (!journaltext.trim()) {
-      alert("Journal Can't be  empty");
-      return;
-    } else {
-      const wordCount = journaltext.trim().split(/\s+/).length;
-
-      if (wordCount > 100) {
-        alert("Maximum 100 words allowed");
-        return;
-      } else {
-
-        const today = new Date().toDateString();
-        const entri = JSON.parse(localStorage.getItem("entries"));
-        const today_entries = entri.filter((each)=>{
-             return new Date (each.createdAt).toDateString() === today
-        })
-
-        if(today_entries.length > 5){
-          alert("Maximum only 5 entries are allowed for Today..")
-          return;}
-        else{
-        const entry = JSON.parse(localStorage.getItem("entries")) || [];
-
-        const newentry = { text: journaltext, aqi: fakeAQI.aqi,createdAt: new Date().toISOString() };
-
-        entry.push(newentry);
-
-        localStorage.setItem("entries", JSON.stringify(entry));
-
-        setJournaltext("");
-
-        console.log("stored", entry);
-      }}
-    }
   }
 
   return (
@@ -474,6 +437,7 @@ function Dashboard() {
             <textarea
               value={journaltext}
               onChange={(e) => setJournaltext(e.target.value)}
+               onKeyDown={handledown}
               className="quick-journal-input"
               placeholder="How are you feeling today? Note any symptoms, outdoor plans, or observations about the air..."
               rows={3}
