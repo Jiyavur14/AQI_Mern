@@ -18,7 +18,7 @@ const fakeAQI = {
   },
 };
 
-function Dashboard({journaltext,setJournaltext,handledown,savingentry}) {
+function Dashboard({journaltext,setJournaltext,handledown,savingentry,getAQIStatus,getAQIColor}) {
  
 
   const navigate = useNavigate();
@@ -34,25 +34,7 @@ function Dashboard({journaltext,setJournaltext,handledown,savingentry}) {
     navigate("/login");
   };
 
-  function getAQIStatus(aqi) {
-    if (aqi <= 50) return "Good";
-    if (aqi <= 100) return "Satisfactory";
-    if (aqi <= 200) return "Moderate";
-    if (aqi <= 300) return "Poor";
-    if (aqi <= 400) return "Very Poor";
 
-    return "Severe";
-  }
-
-  function getAQIColor(aqi) {
-    if (aqi <= 50) return "var(--aqi-good)";
-    if (aqi <= 100) return "var(--aqi-satisfactory)";
-    if (aqi <= 200) return "var(--aqi-moderate)";
-    if (aqi <= 300) return "var(--aqi-poor)";
-    if (aqi <= 400) return "var(--aqi-very-poor)";
-
-    return "var(--aqi-severe)";
-  }
 
   function getAQIPercentage(aqi) {
     return `${(aqi / 500) * 100}%`;

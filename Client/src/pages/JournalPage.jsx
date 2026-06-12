@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import '../App.css';
+import { useState } from 'react';
 
 const fakeAQI = {
   city: "Trichy",
@@ -17,9 +18,33 @@ const fakeAQI = {
   },
 };
 
+const date = new Date();
+
+const options = {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric"
+};
+
+const formattedDate = date.toLocaleDateString("en-GB", options);
 
 
-function JournalPage({journaltext,setJournaltext,savingentry,handledown}) {
+function JournalPage({entryindex,setEntryindex,entries,setEntries,journaltext,setJournaltext,savingentry,handledown,getAQIStatus,getAQIColor}) {
+
+ 
+
+  const entri = JSON.parse(localStorage.getItem("entries"));
+
+  const deleteEntry = (indexToDelete) => {
+  const updatedentries = entri.filter((each,index)=>index !== indexToDelete)
+
+  setEntries(updatedentries);
+
+  localStorage.setItem("entries",JSON.stringify(updatedentries));
+}
+
+
   return (
     <div className="dashboard-layout">
  
@@ -56,7 +81,7 @@ function JournalPage({journaltext,setJournaltext,savingentry,handledown}) {
             <div className="sidebar-avatar">A</div>
             <div className="sidebar-user-info">
               <p className="sidebar-user-name">Arjun Sharma</p>
-              <p className="sidebar-user-city">Chennai</p>
+              <p className="sidebar-user-city">{fakeAQI.city}</p>
             </div>
           </div>
           <button className="sidebar-logout">↩</button>
@@ -79,7 +104,7 @@ function JournalPage({journaltext,setJournaltext,savingentry,handledown}) {
               </div>
               <p className="topbar-subtitle">
                 <span className="topbar-subtitle-dot">◎</span>
-                Chennai · AQI auto-stamped on every entry
+                {fakeAQI.city} · AQI auto-stamped on every entry
               </p>
             </div>
           </div>
@@ -101,10 +126,10 @@ function JournalPage({journaltext,setJournaltext,savingentry,handledown}) {
  
             <div className="journal-write-header">
               <div className="journal-write-meta">
-                <span className="journal-write-date">Tuesday, 9 June 2026</span>
+                <span className="journal-write-date">{formattedDate}</span>
                 <div className="journal-write-aqi-stamp">
-                  <span className="journal-stamp-dot" style={{ background: 'var(--aqi-poor)' }}></span>
-                  <span className="journal-stamp-text">Today's AQI <strong style={{ color: 'var(--aqi-poor)' }}>247</strong> · Poor</span>
+                  <span className="journal-stamp-dot" style={{ background: getAQIColor(fakeAQI.aqi)}}></span>
+                  <span className="journal-stamp-text">Today's AQI <strong style={{ color: getAQIColor(fakeAQI.aqi) }}>{fakeAQI.aqi}</strong> · {getAQIStatus(fakeAQI.aqi)}</span>
                 </div>
               </div>
             </div>
@@ -134,7 +159,7 @@ function JournalPage({journaltext,setJournaltext,savingentry,handledown}) {
         {/* ── Stats row ── */}
         <div className="journal-stats-row">
           <div className="journal-stat-card">
-            <span className="journal-stat-value aqi-number">12</span>
+            <span className="journal-stat-value aqi-number">{JSON.parse(localStorage.getItem("entries")).length}</span>
             <span className="journal-stat-label">Total entries</span>
           </div>
           <div className="journal-stat-card">
@@ -159,127 +184,52 @@ function JournalPage({journaltext,setJournaltext,savingentry,handledown}) {
           </div>
  
           <div className="journal-entries-list">
- 
-            {/* Entry 1 */}
-            <div className="journal-entry-card">
-              <div className="journal-entry-left">
-                <div className="journal-entry-aqi-bar" style={{ background: 'var(--aqi-very-poor)' }}></div>
-              </div>
-              <div className="journal-entry-body">
-                <div className="journal-entry-top">
-                  <div className="journal-entry-meta">
-                    <span className="journal-entry-date">Monday, 8 June 2026</span>
-                    <div className="journal-entry-badges">
-                      <span className="journal-aqi-chip aqi-chip--very-poor">AQI 318</span>
-                      <span className="journal-status-chip">Very Poor</span>
-                    </div>
-                  </div>
-                  <div className="journal-entry-actions">
-                    <button className="journal-action-btn">✎</button>
-                    <button className="journal-action-btn journal-action-btn--delete">✕</button>
-                  </div>
-                </div>
-                <p className="journal-entry-text">
-                  Woke up with a dry throat and burning eyes. Skipped my morning walk entirely.
-                  Stayed indoors all day and kept the windows shut. The sky had that familiar
-                  grey-brown haze over the city again.
-                </p>
-                <div className="journal-entry-footer">
-                  <span className="journal-entry-city">◎ Chennai</span>
-                </div>
-              </div>
-            </div>
- 
-            {/* Entry 2 */}
-            <div className="journal-entry-card">
-              <div className="journal-entry-left">
-                <div className="journal-entry-aqi-bar" style={{ background: 'var(--aqi-poor)' }}></div>
-              </div>
-              <div className="journal-entry-body">
-                <div className="journal-entry-top">
-                  <div className="journal-entry-meta">
-                    <span className="journal-entry-date">Sunday, 7 June 2026</span>
-                    <div className="journal-entry-badges">
-                      <span className="journal-aqi-chip aqi-chip--poor">AQI 247</span>
-                      <span className="journal-status-chip">Poor</span>
-                    </div>
-                  </div>
-                  <div className="journal-entry-actions">
-                    <button className="journal-action-btn">✎</button>
-                    <button className="journal-action-btn journal-action-btn--delete">✕</button>
-                  </div>
-                </div>
-                <p className="journal-entry-text">
-                  Mild headache by afternoon. Had to cancel our evening plans to visit the
-                  beach. Kids were disappointed. Took my inhaler twice today which is unusual
-                  for a weekend.
-                </p>
-                <div className="journal-entry-footer">
-                  <span className="journal-entry-city">◎ Chennai</span>
-                </div>
-              </div>
-            </div>
- 
-            {/* Entry 3 — editing state */}
-            <div className="journal-entry-card journal-entry-card--editing">
-              <div className="journal-entry-left">
-                <div className="journal-entry-aqi-bar" style={{ background: 'var(--aqi-moderate)' }}></div>
-              </div>
-              <div className="journal-entry-body">
-                <div className="journal-entry-top">
-                  <div className="journal-entry-meta">
-                    <span className="journal-entry-date">Saturday, 6 June 2026</span>
-                    <div className="journal-entry-badges">
+  
+  
 
-                      <span className="journal-aqi-chip aqi-chip--moderate">AQI 165</span>
-                      <span className="journal-status-chip">Moderate</span>
-                    </div>
-                  </div>
-                  <div className="journal-entry-actions">
-                    <button className="journal-action-btn journal-action-btn--confirm">✓ Save</button>
-                    <button className="journal-action-btn">✕ Cancel</button>
-                  </div>
-                </div>
-                {/* inline edit textarea */}
-                <textarea
-                  className="journal-edit-input"
-                  rows={3}
-                  defaultValue="Felt okay today, slightly congested in the morning but cleared up by noon. Went for a short walk in the evening."
-                />
-                <div className="journal-entry-footer">
-                  <span className="journal-entry-city">◎ Chennai</span>
-                </div>
-              </div>
-            </div>
- 
-            {/* Entry 4 */}
+          {entries.map((each,index)=>{
+                 {/* Entry 1 */}
+            return (<>
+            
             <div className="journal-entry-card">
               <div className="journal-entry-left">
-                <div className="journal-entry-aqi-bar" style={{ background: 'var(--aqi-good)' }}></div>
+                <div className="journal-entry-aqi-bar" style={{ background: getAQIColor(each.aqi) }}></div>
               </div>
               <div className="journal-entry-body">
                 <div className="journal-entry-top">
                   <div className="journal-entry-meta">
-                    <span className="journal-entry-date">Friday, 5 June 2026</span>
+                    <span className="journal-entry-date">{new Date(each.createdAt).toLocaleDateString("en-GB", {
+                                                weekday: "long",
+                                                day: "numeric",
+                                                month: "long",
+                                                year: "numeric"
+                                              })}</span>
                     <div className="journal-entry-badges">
-                      <span className="journal-aqi-chip aqi-chip--good">AQI 42</span>
-                      <span className="journal-status-chip">Good</span>
+                      <span className="journal-aqi-chip aqi-chip--very-poor">{each.aqi}</span>
+                      <span className="journal-status-chip">{getAQIStatus(each.aqi)}</span>
                     </div>
                   </div>
                   <div className="journal-entry-actions">
-                    <button className="journal-action-btn">✎</button>
-                    <button className="journal-action-btn journal-action-btn--delete">✕</button>
+                    <button className="journal-action-btn" onClick={()=>{
+                      setJournaltext(each.text);
+                      setEntryindex(index);
+                    }}>✎</button>
+                    <button className="journal-action-btn journal-action-btn--delete" onClick={()=>deleteEntry(index)}>✕</button>
                   </div>
                 </div>
                 <p className="journal-entry-text">
-                  Great day! Went for a 5km run in the morning. Air felt genuinely fresh —
-                  no burning sensation. Days like this are rare now.
+                 {each.text}
                 </p>
                 <div className="journal-entry-footer">
-                  <span className="journal-entry-city">◎ Chennai</span>
+                  <span className="journal-entry-city">◎ {fakeAQI.city}</span>
                 </div>
               </div>
             </div>
+            </>)
+
+          })}
+         
+   
  
           </div>
         </section>

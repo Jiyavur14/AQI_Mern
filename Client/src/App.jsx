@@ -39,6 +39,8 @@ function App(){
     console.log(formdata);
 
      const [journaltext, setJournaltext] = useState("");
+     const [entries,setEntries] =useState( JSON.parse(localStorage.getItem("entries")) || []);
+    const [entryindex,setEntryindex] = useState(null);
 
 function savingentry() {
     if (!journaltext.trim()) {
@@ -61,23 +63,35 @@ function savingentry() {
         if(today_entries.length >= 5){
           alert("Maximum only 5 entries are allowed for Today..")
           return;}
-        else{
-        const entry = JSON.parse(localStorage.getItem("entries")) || [];
+        else{ 
+          if(entryindex !== null)
+          {
+            const entr = JSON.parse(localStorage.getItem("entries"));
+            const updatedentr = [...entr]
+            updatedentr[entryindex].text = journaltext;
+            localStorage.setItem("entries",JSON.stringify(updatedentr));
+            setEntries(updatedentr);
+            setEntryindex(null);
+          }else{
+        
 
         const newentry = { text: journaltext, aqi: fakeAQI.aqi,createdAt: new Date().toISOString() };
+  
+        const updatedentry = [...entries,newentry]
+         
+        setEntries(updatedentry);
 
-        entry.push(newentry);
-
-        localStorage.setItem("entries", JSON.stringify(entry));
+        localStorage.setItem("entries", JSON.stringify(updatedentry));
 
         alert("Entry Saved");
 
         setJournaltext("");
 
-        console.log("stored", entry);
-      }}
+        console.log("stored", entries);
+        }}}
     }
   }
+
 
   const handledown = (e)=> {
     if(e.key === "Enter")
@@ -86,7 +100,33 @@ function savingentry() {
         savingentry();
     }
 
+
+}
+
+
+  function getAQIStatus(aqi) {
+    if (aqi <= 50) return "Good";
+    if (aqi <= 100) return "Satisfactory";
+    if (aqi <= 200) return "Moderate";
+    if (aqi <= 300) return "Poor";
+    if (aqi <= 400) return "Very Poor";
+
+    return "Severe";
+
   }
+
+  
+  function getAQIColor(aqi) {
+    if (aqi <= 50) return "var(--aqi-good)";
+    if (aqi <= 100) return "var(--aqi-satisfactory)";
+    if (aqi <= 200) return "var(--aqi-moderate)";
+    if (aqi <= 300) return "var(--aqi-poor)";
+    if (aqi <= 400) return "var(--aqi-very-poor)";
+
+    return "var(--aqi-severe)";
+  }
+
+
 
     return(<>
     
@@ -94,9 +134,9 @@ function savingentry() {
         <Route path="/login" element={<LoginPage formdata={formdata} showpassword={showpassword} setShowpassword={setShowpassword}/>}/>
         <Route path="/register" element={<RegisterPage formdata ={formdata} setFormdata={setFormdata} setUsers={setUsers} users={users} showpassword={showpassword} setShowpassword={setShowpassword}/>}/>
         <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
-        <Route path="/dashboard" element={ <ProtectedRoute><Dashboard handledown={handledown} savingentry={savingentry} journaltext={journaltext} setJournaltext={setJournaltext}/></ProtectedRoute>}/>
+        <Route path="/dashboard" element={ <ProtectedRoute><Dashboard getAQIColor={getAQIColor} getAQIStatus={getAQIStatus} handledown={handledown} savingentry={savingentry} journaltext={journaltext} setJournaltext={setJournaltext}/></ProtectedRoute>}/>
         <Route path="/watchlist" element={ <ProtectedRoute><WatchlistPage/></ProtectedRoute>}/>
-        <Route path="/journal" element={ <ProtectedRoute><JournalPage handledown={handledown} savingentry={savingentry} journaltext={journaltext} setJournaltext={setJournaltext}/></ProtectedRoute>}/>
+        <Route path="/journal" element={ <ProtectedRoute><JournalPage entryindex={entryindex} setEntryindex={setEntryindex} entries={entries} setEntries={setEntries} getAQIColor={getAQIColor} getAQIStatus={getAQIStatus} handledown={handledown} savingentry={savingentry} journaltext={journaltext} setJournaltext={setJournaltext}/></ProtectedRoute>}/>
     </Routes>
     
     
