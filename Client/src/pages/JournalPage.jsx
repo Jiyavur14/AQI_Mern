@@ -6,7 +6,7 @@ const fakeAQI = {
   city: "Trichy",
   lastUpdated: "10:45 AM",
 
-  aqi: 11,
+  aqi: 161,
 
   pollutants: {
     pm25: 115,
@@ -36,12 +36,17 @@ function JournalPage({entryindex,setEntryindex,entries,setEntries,journaltext,se
 
   const entri = JSON.parse(localStorage.getItem("entries"));
 
+  
   const deleteEntry = (indexToDelete) => {
+
+  if(confirm("Do you wanna Delete this entry?")){
+
   const updatedentries = entri.filter((each,index)=>index !== indexToDelete)
 
   setEntries(updatedentries);
 
-  localStorage.setItem("entries",JSON.stringify(updatedentries));
+  localStorage.setItem("entries",JSON.stringify(updatedentries));}
+  else{return;}
 }
 
 
@@ -205,7 +210,7 @@ function JournalPage({entryindex,setEntryindex,entries,setEntries,journaltext,se
                                                 year: "numeric"
                                               })}</span>
                     <div className="journal-entry-badges">
-                      <span className="journal-aqi-chip aqi-chip--very-poor">{each.aqi}</span>
+                      <span className="journal-aqi-chip" style={{ background: getAQIColor(fakeAQI.aqi)}}>{each.aqi}</span>
                       <span className="journal-status-chip">{getAQIStatus(each.aqi)}</span>
                     </div>
                   </div>

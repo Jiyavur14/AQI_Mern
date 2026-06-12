@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {Routes,Route} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/FPPage";
@@ -8,12 +8,11 @@ import Dashboard from "./pages/Dashboard";
 import WatchlistPage from "./pages/Watchlist";
 import JournalPage from "./pages/JournalPage";
 
-
 const fakeAQI = {
   city: "Trichy",
   lastUpdated: "10:45 AM",
 
-  aqi: 11,
+  aqi: 519,
 
   pollutants: {
     pm25: 115,
@@ -25,24 +24,33 @@ const fakeAQI = {
   },
 };
 
+function App() {
+  const [users, setUsers] = useState({
+    name: "",
+    email: "",
+    state: "",
+    city: "",
+    password: "",
+    confirm_password: "",
+  });
 
-function App(){
+  console.log(users);
 
-    const [users,setUsers] = useState({name:"",email:"",state:"",city:"",password:"",confirm_password:""})
-    
-    console.log(users);
+  const [showpassword, setShowpassword] = useState(false);
 
-    const [showpassword,setShowpassword] = useState(false); 
+  const [formdata, setFormdata] = useState([]);
 
-    const [formdata,setFormdata] = useState([]);
+  console.log(formdata);
 
-    console.log(formdata);
+  const [journaltext, setJournaltext] = useState("");
 
-     const [journaltext, setJournaltext] = useState("");
-     const [entries,setEntries] =useState( JSON.parse(localStorage.getItem("entries")) || []);
-    const [entryindex,setEntryindex] = useState(null);
+  const [entries, setEntries] = useState(
+    JSON.parse(localStorage.getItem("entries")) || [],
+  );
 
-function savingentry() {
+  const [entryindex, setEntryindex] = useState(null);
+
+  function savingentry() {
     if (!journaltext.trim()) {
       alert("Journal Can't be  empty");
       return;
@@ -53,56 +61,52 @@ function savingentry() {
         alert("Maximum 100 words allowed");
         return;
       } else {
-
         const today = new Date().toDateString();
         const entri = JSON.parse(localStorage.getItem("entries"));
-        const today_entries = entri.filter((each)=>{
-             return new Date (each.createdAt).toDateString() === today
-        })
+        const today_entries = entri.filter((each) => {
+          return new Date(each.createdAt).toDateString() === today;
+        });
 
-        if(today_entries.length >= 5){
-          alert("Maximum only 5 entries are allowed for Today..")
-          return;}
-        else{ 
-          if(entryindex !== null)
-          {
-            const entr = JSON.parse(localStorage.getItem("entries"));
-            const updatedentr = [...entr]
-            updatedentr[entryindex].text = journaltext;
-            localStorage.setItem("entries",JSON.stringify(updatedentr));
-            setEntries(updatedentr);
+        if (today_entries.length >= 5) {
+          alert("Maximum only 5 entries are allowed for Today..");
+          return;
+        } else {
+          if (entryindex !== null) {
+            entries[entryindex].text = journaltext;
+            localStorage.setItem("entries", JSON.stringify(entries));
+            setEntries(entries);
+            setJournaltext("");
             setEntryindex(null);
-          }else{
-        
+          } else {
+            const newentry = {
+              text: journaltext,
+              aqi: fakeAQI.aqi,
+              createdAt: new Date().toISOString(),
+            };
 
-        const newentry = { text: journaltext, aqi: fakeAQI.aqi,createdAt: new Date().toISOString() };
-  
-        const updatedentry = [...entries,newentry]
-         
-        setEntries(updatedentry);
+            const updatedentry = [...entries, newentry];
 
-        localStorage.setItem("entries", JSON.stringify(updatedentry));
+            setEntries(updatedentry);
 
-        alert("Entry Saved");
+            localStorage.setItem("entries", JSON.stringify(updatedentry));
 
-        setJournaltext("");
+            alert("Entry Saved");
 
-        console.log("stored", entries);
-        }}}
+            setJournaltext("");
+
+            console.log("stored", entries);
+          }
+        }
+      }
     }
   }
 
-
-  const handledown = (e)=> {
-    if(e.key === "Enter")
-    {
-        e.preventDefault();
-        savingentry();
+  const handledown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      savingentry();
     }
-
-
-}
-
+  };
 
   function getAQIStatus(aqi) {
     if (aqi <= 50) return "Good";
@@ -112,10 +116,8 @@ function savingentry() {
     if (aqi <= 400) return "Very Poor";
 
     return "Severe";
-
   }
 
-  
   function getAQIColor(aqi) {
     if (aqi <= 50) return "var(--aqi-good)";
     if (aqi <= 100) return "var(--aqi-satisfactory)";
@@ -126,21 +128,78 @@ function savingentry() {
     return "var(--aqi-severe)";
   }
 
-
-
-    return(<>
-    
-    <Routes>
-        <Route path="/login" element={<LoginPage formdata={formdata} showpassword={showpassword} setShowpassword={setShowpassword}/>}/>
-        <Route path="/register" element={<RegisterPage formdata ={formdata} setFormdata={setFormdata} setUsers={setUsers} users={users} showpassword={showpassword} setShowpassword={setShowpassword}/>}/>
-        <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
-        <Route path="/dashboard" element={ <ProtectedRoute><Dashboard getAQIColor={getAQIColor} getAQIStatus={getAQIStatus} handledown={handledown} savingentry={savingentry} journaltext={journaltext} setJournaltext={setJournaltext}/></ProtectedRoute>}/>
-        <Route path="/watchlist" element={ <ProtectedRoute><WatchlistPage/></ProtectedRoute>}/>
-        <Route path="/journal" element={ <ProtectedRoute><JournalPage entryindex={entryindex} setEntryindex={setEntryindex} entries={entries} setEntries={setEntries} getAQIColor={getAQIColor} getAQIStatus={getAQIStatus} handledown={handledown} savingentry={savingentry} journaltext={journaltext} setJournaltext={setJournaltext}/></ProtectedRoute>}/>
-    </Routes>
-    
-    
-    </>)
+  return (
+    <>
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <LoginPage
+              formdata={formdata}
+              showpassword={showpassword}
+              setShowpassword={setShowpassword}
+            />
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <RegisterPage
+              formdata={formdata}
+              setFormdata={setFormdata}
+              setUsers={setUsers}
+              users={users}
+              showpassword={showpassword}
+              setShowpassword={setShowpassword}
+            />
+          }
+        />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard
+                getAQIColor={getAQIColor}
+                getAQIStatus={getAQIStatus}
+                handledown={handledown}
+                savingentry={savingentry}
+                journaltext={journaltext}
+                setJournaltext={setJournaltext}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/watchlist"
+          element={
+            <ProtectedRoute>
+              <WatchlistPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/journal"
+          element={
+            <ProtectedRoute>
+              <JournalPage
+                entryindex={entryindex}
+                setEntryindex={setEntryindex}
+                entries={entries}
+                setEntries={setEntries}
+                getAQIColor={getAQIColor}
+                getAQIStatus={getAQIStatus}
+                handledown={handledown}
+                savingentry={savingentry}
+                journaltext={journaltext}
+                setJournaltext={setJournaltext}
+              />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
+  );
 }
 
 export default App;

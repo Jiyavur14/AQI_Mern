@@ -1824,6 +1824,7 @@
   font-weight: 700;
   padding: 2px var(--space-3);
   border-radius: var(--radius-full);
+  color: black;
 }
  
 .aqi-chip--good        { background: rgba(86,199,104,0.15);  color: var(--aqi-good); }
