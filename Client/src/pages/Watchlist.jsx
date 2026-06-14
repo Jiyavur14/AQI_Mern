@@ -1,7 +1,68 @@
+import { useState } from 'react';
 import '../App.css';
 import { Link } from 'react-router-dom';
  
-function Watchlist() {
+function Watchlist({getAQIBadgeClass,getAQIStatus,getAQIColor,cities,setCities,cityinput,setCityinput}) {
+
+
+  const [warning,setWarning] = useState(false);
+  
+  const [samp,setSamp]=useState([1,1,1,1,1]);
+
+  const addcity = ()=> {
+
+    if(!cityinput.trim())
+      return;
+    else{
+      if(cities.length>=5)
+        return alert("Maximum limit has reached");
+      else{
+        setSamp(()=>samp.slice(0,-1));
+      const newentry={
+        city: cityinput,
+        aqi: Math.floor(Math.random() * 500),
+        pm: Math.floor(Math.random() * 500),
+        pn: Math.floor(Math.random() * 500),
+        no: Math.floor(Math.random() * 500),
+        so: Math.floor(Math.random() * 500),
+        state: "TamilNadu",
+        updatedAt: new Date().toLocaleTimeString("en-US", {
+                                    hour: "numeric",
+                                    minute: "2-digit",
+                                    hour12: true
+                                  })
+      }
+
+      const updatedcities = [...cities,newentry]
+
+      setCities(updatedcities);
+
+      localStorage.setItem("cities",JSON.stringify(updatedcities));
+
+      setCityinput("");
+    }
+    }
+  }
+
+
+  const deletecity = (indexToDelete)=>{
+    
+        setSamp(()=>[...samp,1]);
+        const newupdate = cities.filter((each,index)=>{
+          return index !== indexToDelete;
+        })
+
+        setCities(newupdate);
+
+        localStorage.setItem("cities",JSON.stringify(newupdate));
+  }
+
+  const handledown = (e)=>{
+       if(e.key === "Enter")
+        addcity();
+  }
+
+
   return (
     <div className="dashboard-layout">
  
@@ -85,138 +146,111 @@ function Watchlist() {
             <span className="watchlist-add-icon">◉</span>
             <input
               type="text"
+              value={cityinput}
+              onChange={(e)=>setCityinput(e.target.value)}
+              onKeyDown={handledown}
               className="watchlist-add-input"
               placeholder="Type a city name — e.g. Mumbai, Kolkata, Jaipur..."
             />
-            <button className="watchlist-add-btn">
+            <button className="watchlist-add-btn" onClick={addcity}>
               <span>+ Add City</span>
             </button>
           </div>
           <p className="watchlist-add-hint">
-            2 of 5 cities added
+            {cities.length} of 5 cities added
           </p>
         </div>
  
         {/* ── Slot indicators ── */}
-        <div className="watchlist-slots">
-          <div className="slot slot--filled">
-            <span className="slot-dot slot-dot--filled"></span>
-          </div>
-          <div className="slot slot--filled">
-            <span className="slot-dot slot-dot--filled"></span>
-          </div>
-          <div className="slot slot--empty">
-            <span className="slot-dot slot-dot--empty"></span>
-          </div>
-          <div className="slot slot--empty">
-            <span className="slot-dot slot-dot--empty"></span>
-          </div>
-          <div className="slot slot--empty">
-            <span className="slot-dot slot-dot--empty"></span>
-          </div>
-        </div>
+      <div className="watchlist-slots" >
+  {[0, 1, 2, 3, 4].map((index) => (
+    <div
+      key={index}
+      className={`slot ${
+        index < cities.length ? "slot--filled" : "slot--empty"
+      }`}
+    >
+      <span
+        className={`slot-dot ${
+          index < cities.length
+            ? "slot-dot--filled"
+            : "slot-dot--empty"
+        }`}
+      ></span>
+    </div>
+  ))}
+</div>
  
         {/* ── City cards ── */}
         <section className="watchlist-section">
           <h3 className="section-title">Your Cities</h3>
           <div className="watchlist-grid">
  
-            {/* Card 1 — Worst (Delhi) */}
+            
+            {cities.map((each,index)=>{
+
+            const isThresholdCrossed = each.aqi >= 150;
+                 
+            return (<>
+                  {/* Card 1 — Worst (Delhi) */}
             <div className="city-card city-card--very-poor">
-              <div className="city-card-rank">01</div>
+              <div className="city-card-rank">{index+1}</div>
               <div className="city-card-header">
                 <div className="city-card-info">
-                  <h3 className="city-card-name">Delhi</h3>
-                  <p className="city-card-state">Delhi NCR</p>
+                  <h3 className="city-card-name">{each.city}</h3>
+                  <p className="city-card-state">{each.state}</p>
                 </div>
-                <button className="city-card-remove">×</button>
+                <button className="city-card-remove" onClick={()=>deletecity(index)}>×</button>
               </div>
  
               <div className="city-card-aqi-row">
-                <span className="city-card-aqi-number aqi-number" style={{ color: 'var(--aqi-very-poor)' }}>318</span>
+                <span className="city-card-aqi-number aqi-number" style={{ color: getAQIColor(each.aqi) }}>{each.aqi}</span>
                 <div className="city-card-status-col">
-                  <span className="aqi-status-badge aqi-status-badge--very-poor">Very Poor</span>
-                  <span className="city-card-updated">Updated 11:02 AM</span>
+                  <span className={`aqi-status-badge ${getAQIBadgeClass(each.aqi)}`}>{getAQIStatus(each.aqi)}</span>
+                  <span className="city-card-updated">Updated {each.updatedAt}</span>
                 </div>
               </div>
  
               <div className="city-card-bar-track">
-                <div className="city-card-bar-fill" style={{ width: '79%', background: 'var(--aqi-very-poor)' }}></div>
+                <div className="city-card-bar-fill" style={{ width: '79%', background: getAQIColor(each.aqi) }}></div>
               </div>
  
               <div className="city-card-pollutants">
                 <div className="city-mini-pollutant">
                   <span className="cmp-label">PM2.5</span>
-                  <span className="cmp-value aqi-number" style={{ color: 'var(--aqi-very-poor)' }}>189</span>
+                  <span className="cmp-value aqi-number" style={{ color: getAQIColor(each.pm) }}>{each.pm}</span>
                 </div>
                 <div className="city-mini-pollutant">
                   <span className="cmp-label">PM10</span>
-                  <span className="cmp-value aqi-number" style={{ color: 'var(--aqi-poor)' }}>241</span>
+                  <span className="cmp-value aqi-number" style={{ color: getAQIColor(each.pn) }}>{each.pn}</span>
                 </div>
                 <div className="city-mini-pollutant">
                   <span className="cmp-label">NO₂</span>
-                  <span className="cmp-value aqi-number" style={{ color: 'var(--aqi-moderate)' }}>112</span>
+                  <span className="cmp-value aqi-number" style={{ color: getAQIColor(each.no) }}>{each.no}</span>
                 </div>
                 <div className="city-mini-pollutant">
                   <span className="cmp-label">SO₂</span>
-                  <span className="cmp-value aqi-number" style={{ color: 'var(--aqi-satisfactory)' }}>58</span>
+                  <span className="cmp-value aqi-number" style={{ color: getAQIColor(each.so) }}>{each.so}</span>
                 </div>
               </div>
  
-              <div className="city-card-warning">
+                         
+         {isThresholdCrossed && (<div className="city-card-warning">
                 <span>⚠️</span>
                 <span>Above your threshold of 150</span>
-              </div>
+              </div>)
+            }
+
+             {!isThresholdCrossed && (<div className="city-card-warning"  style={{  background: "rgba(90, 217, 64, 0.08)",border: "1px solid rgba(128, 217, 64, 0.2)"}}>
+                <span>✅</span>
+                <span>Air Quality is in {getAQIStatus(each.aqi)} Level</span>
+              </div>)
+            }
+
             </div>
- 
-            {/* Card 2 — Chennai */}
-            <div className="city-card city-card--poor">
-              <div className="city-card-rank">02</div>
-              <div className="city-card-header">
-                <div className="city-card-info">
-                  <h3 className="city-card-name">Chennai</h3>
-                  <p className="city-card-state">Tamil Nadu</p>
-                </div>
-                <button className="city-card-remove">×</button>
-              </div>
- 
-              <div className="city-card-aqi-row">
-                <span className="city-card-aqi-number aqi-number" style={{ color: 'var(--aqi-poor)' }}>247</span>
-                <div className="city-card-status-col">
-                  <span className="aqi-status-badge aqi-status-badge--poor">Poor</span>
-                  <span className="city-card-updated">Updated 10:45 AM</span>
-                </div>
-              </div>
- 
-              <div className="city-card-bar-track">
-                <div className="city-card-bar-fill" style={{ width: '62%', background: 'var(--aqi-poor)' }}></div>
-              </div>
- 
-              <div className="city-card-pollutants">
-                <div className="city-mini-pollutant">
-                  <span className="cmp-label">PM2.5</span>
-                  <span className="cmp-value aqi-number" style={{ color: 'var(--aqi-poor)' }}>112</span>
-                </div>
-                <div className="city-mini-pollutant">
-                  <span className="cmp-label">PM10</span>
-                  <span className="cmp-value aqi-number" style={{ color: 'var(--aqi-moderate)' }}>168</span>
-                </div>
-                <div className="city-mini-pollutant">
-                  <span className="cmp-label">NO₂</span>
-                  <span className="cmp-value aqi-number" style={{ color: 'var(--aqi-good)' }}>28</span>
-                </div>
-                <div className="city-mini-pollutant">
-                  <span className="cmp-label">SO₂</span>
-                  <span className="cmp-value aqi-number" style={{ color: 'var(--aqi-satisfactory)' }}>44</span>
-                </div>
-              </div>
- 
-              <div className="city-card-warning">
-                <span>⚠️</span>
-                <span>Above your threshold of 150</span>
-              </div>
-            </div>
- 
+            </>)
+             })
+            }            
           </div>
         </section>
  
@@ -225,29 +259,20 @@ function Watchlist() {
           <h3 className="section-title">Available Slots</h3>
           <div className="empty-slots-grid">
  
-            <div className="empty-city-card">
+         {samp.map((_,index)=>{
+             return (
+            <>
+             <div className="empty-city-card" key={index}>
               <div className="empty-card-inner">
                 <span className="empty-card-plus">+</span>
                 <p className="empty-card-text">Add a city</p>
                 <p className="empty-card-hint">Type above to search</p>
               </div>
-            </div>
+             </div>
+           </>
+                  )
+            })}
  
-            <div className="empty-city-card">
-              <div className="empty-card-inner">
-                <span className="empty-card-plus">+</span>
-                <p className="empty-card-text">Add a city</p>
-                <p className="empty-card-hint">Type above to search</p>
-              </div>
-            </div>
- 
-            <div className="empty-city-card">
-              <div className="empty-card-inner">
-                <span className="empty-card-plus">+</span>
-                <p className="empty-card-text">Add a city</p>
-                <p className="empty-card-hint">Type above to search</p>
-              </div>
-            </div>
  
           </div>
         </section>

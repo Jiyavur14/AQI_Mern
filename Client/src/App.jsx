@@ -12,7 +12,7 @@ const fakeAQI = {
   city: "Trichy",
   lastUpdated: "10:45 AM",
 
-  aqi: 519,
+  aqi: 11,
 
   pollutants: {
     pm25: 115,
@@ -49,6 +49,12 @@ function App() {
   );
 
   const [entryindex, setEntryindex] = useState(null);
+
+  const [cities, setCities] = useState(
+    JSON.parse(localStorage.getItem("cities")) || [],
+  );
+
+  const [cityinput, setCityinput] = useState("");
 
   function savingentry() {
     if (!journaltext.trim()) {
@@ -128,6 +134,16 @@ function App() {
     return "var(--aqi-severe)";
   }
 
+  function getAQIBadgeClass(aqi) {
+    if (aqi <= 50) return "aqi-status-badge--good";
+    if (aqi <= 100) return "aqi-status-badge--satisfactory";
+    if (aqi <= 200) return "aqi-status-badge--moderate";
+    if (aqi <= 300) return "aqi-status-badge--poor";
+    if (aqi <= 400) return "aqi-status-badge--very-poor";
+
+    return "aqi-status-badge--severe";
+  }
+
   return (
     <>
       <Routes>
@@ -160,6 +176,7 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard
+                getAQIBadgeClass={getAQIBadgeClass}
                 getAQIColor={getAQIColor}
                 getAQIStatus={getAQIStatus}
                 handledown={handledown}
@@ -174,7 +191,15 @@ function App() {
           path="/watchlist"
           element={
             <ProtectedRoute>
-              <WatchlistPage />
+              <WatchlistPage
+                getAQIBadgeClass={getAQIBadgeClass}
+                getAQIStatus={getAQIStatus}
+                getAQIColor={getAQIColor}
+                cities={cities}
+                setCities={setCities}
+                cityinput={cityinput}
+                setCityinput={setCityinput}
+              />
             </ProtectedRoute>
           }
         />

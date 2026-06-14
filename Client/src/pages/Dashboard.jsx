@@ -18,7 +18,7 @@ const fakeAQI = {
   },
 };
 
-function Dashboard({journaltext,setJournaltext,handledown,savingentry,getAQIStatus,getAQIColor}) {
+function Dashboard({journaltext,setJournaltext,handledown,savingentry,getAQIStatus,getAQIColor,getAQIBadgeClass}) {
  
 
   const navigate = useNavigate();
@@ -40,16 +40,7 @@ function Dashboard({journaltext,setJournaltext,handledown,savingentry,getAQIStat
     return `${(aqi / 500) * 100}%`;
   }
 
-  function getAQIBadgeClass(aqi) {
-    if (aqi <= 50) return "aqi-status-badge--good";
-    if (aqi <= 100) return "aqi-status-badge--satisfactory";
-    if (aqi <= 200) return "aqi-status-badge--moderate";
-    if (aqi <= 300) return "aqi-status-badge--poor";
-    if (aqi <= 400) return "aqi-status-badge--very-poor";
-
-    return "aqi-status-badge--severe";
-  }
-
+ 
   return (
     <div className="dashboard-layout">
       {/* ── Sidebar (desktop only) ── */}
