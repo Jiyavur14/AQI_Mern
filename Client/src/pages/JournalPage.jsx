@@ -37,6 +37,7 @@ function JournalPage({
   setJournaltext,
   savingentry,
   handledown,
+  handlelogout,
   getAQIStatus,
   getAQIColor,
 }) {
@@ -77,10 +78,6 @@ function JournalPage({
             <span className="nav-icon">◎</span>
             <span>Journal</span>
           </Link>
-          <Link to="/history" className="nav-item">
-            <span className="nav-icon">◇</span>
-            <span>History</span>
-          </Link>
           <Link to="/settings" className="nav-item">
             <span className="nav-icon">◌</span>
             <span>Settings</span>
@@ -94,7 +91,7 @@ function JournalPage({
               <p className="sidebar-user-city">{fakeAQI.city}</p>
             </div>
           </div>
-          <button className="sidebar-logout">↩</button>
+          <button className="sidebar-logout" onClick={handlelogout}>↩</button>
         </div>
       </aside>
 
@@ -305,10 +302,6 @@ function JournalPage({
         <Link to="/journal" className="mobile-nav-item mobile-nav-item--active">
           <span className="mobile-nav-icon">◎</span>
           <span className="mobile-nav-label">Journal</span>
-        </Link>
-        <Link to="/history" className="mobile-nav-item">
-          <span className="mobile-nav-icon">◇</span>
-          <span className="mobile-nav-label">History</span>
         </Link>
         <Link to="/settings" className="mobile-nav-item">
           <span className="mobile-nav-icon">◌</span>

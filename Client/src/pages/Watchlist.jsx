@@ -2,7 +2,7 @@ import { useState } from 'react';
 import '../App.css';
 import { Link } from 'react-router-dom';
  
-function Watchlist({getAQIBadgeClass,getAQIStatus,getAQIColor,cities,setCities,cityinput,setCityinput}) {
+function Watchlist({handlelogout,getAQIBadgeClass,getAQIStatus,getAQIColor,cities,setCities,cityinput,setCityinput}) {
 
 
   const [warning,setWarning] = useState(false);
@@ -81,18 +81,14 @@ function Watchlist({getAQIBadgeClass,getAQIStatus,getAQIColor,cities,setCities,c
             <span className="nav-icon">◉</span>
             <span>Watchlist</span>
           </Link>
-          <a href="/journal" className="nav-item">
+          <Link to="/journal" className="nav-item">
             <span className="nav-icon">◎</span>
             <span>Journal</span>
-          </a>
-          <a href="/history" className="nav-item">
-            <span className="nav-icon">◇</span>
-            <span>History</span>
-          </a>
-          <a href="/settings" className="nav-item">
+          </Link>
+          <Link to="/settings" className="nav-item">
             <span className="nav-icon">◌</span>
             <span>Settings</span>
-          </a>
+          </Link>
         </nav>
         <div className="sidebar-footer">
           <div className="sidebar-user">
@@ -102,7 +98,7 @@ function Watchlist({getAQIBadgeClass,getAQIStatus,getAQIColor,cities,setCities,c
               <p className="sidebar-user-city">Chennai</p>
             </div>
           </div>
-          <button className="sidebar-logout">↩</button>
+          <button className="sidebar-logout" onClick={handlelogout}>↩</button>
         </div>
       </aside>
  

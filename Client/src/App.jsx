@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route,Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/FPPage";
@@ -108,6 +108,13 @@ function App() {
     }
   }
 
+  const handlelogout = () => {
+    localStorage.removeItem("Currentuser");
+    navigate("/login");
+  };
+
+  
+
   const handledown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -144,6 +151,8 @@ function App() {
 
     return "aqi-status-badge--severe";
   }
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -193,6 +202,7 @@ function App() {
           element={
             <ProtectedRoute>
               <WatchlistPage
+                handlelogout={handlelogout}
                 getAQIBadgeClass={getAQIBadgeClass}
                 getAQIStatus={getAQIStatus}
                 getAQIColor={getAQIColor}
@@ -209,6 +219,7 @@ function App() {
           element={
             <ProtectedRoute>
               <JournalPage
+                handlelogout={handlelogout}
                 entryindex={entryindex}
                 setEntryindex={setEntryindex}
                 entries={entries}
@@ -226,7 +237,7 @@ function App() {
 
         <Route path="/settings" element={
           <ProtectedRoute>
-            <SettingsPage/>
+            <SettingsPage handlelogout={handlelogout}/>
             </ProtectedRoute>
         }/>
       </Routes>

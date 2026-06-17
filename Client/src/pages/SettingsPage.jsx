@@ -1,6 +1,13 @@
 import '../App.css';
+import {Link} from 'react-router-dom';
+import { useState } from 'react';
 
-function SettingsPage() {
+function SettingsPage({handlelogout}) {
+
+
+
+    const [user,setUser] = useState(JSON.parse(localStorage.getItem("Currentuser")));
+
   return (
     <div className="dashboard-layout">
 
@@ -32,11 +39,11 @@ function SettingsPage() {
           <div className="sidebar-user">
             <div className="sidebar-avatar">A</div>
             <div className="sidebar-user-info">
-              <p className="sidebar-user-name">Arjun Sharma</p>
-              <p className="sidebar-user-city">Chennai</p>
+              <p className="sidebar-user-name">{user.name}</p>
+              <p className="sidebar-user-city">{user.city}</p>
             </div>
           </div>
-          <button className="sidebar-logout">↩</button>
+          <button className="sidebar-logout" onClick={handlelogout}>↩</button>
         </div>
       </aside>
 
@@ -81,8 +88,8 @@ function SettingsPage() {
             <div className="settings-avatar-row">
               <div className="settings-avatar-big">A</div>
               <div className="settings-avatar-info">
-                <p className="settings-avatar-name">Arjun Sharma</p>
-                <p className="settings-avatar-email">arjun@example.com</p>
+                <p className="settings-avatar-name">{user.name}</p>
+                <p className="settings-avatar-email">{user.email}</p>
               </div>
             </div>
 
@@ -94,7 +101,7 @@ function SettingsPage() {
               <input
                 type="text"
                 className="settings-input"
-                defaultValue="Arjun Sharma"
+                value={user.name}
                 placeholder="Your full name"
               />
             </div>
@@ -105,7 +112,7 @@ function SettingsPage() {
               <input
                 type="email"
                 className="settings-input"
-                defaultValue="arjun@example.com"
+                value={user.email}
                 placeholder="you@example.com"
               />
             </div>
@@ -114,7 +121,7 @@ function SettingsPage() {
             <div className="settings-field">
               <label className="settings-label">Home city</label>
               <select className="settings-input settings-select">
-                <option value="Chennai" selected>Chennai</option>
+                <option value={user.city} selected>{user.city}</option>
                 <option value="Delhi">Delhi</option>
                 <option value="Mumbai">Mumbai</option>
                 <option value="Bengaluru">Bengaluru</option>
@@ -129,7 +136,7 @@ function SettingsPage() {
             </div>
 
             <div className="settings-card-footer">
-              <button className="btn-primary settings-save-btn">Save Profile</button>
+              <button className="btn-primary settings-save-btn">Edit Profile</button>
             </div>
 
           </div>

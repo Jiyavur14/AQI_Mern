@@ -18,7 +18,7 @@ const fakeAQI = {
   },
 };
 
-function Dashboard({journaltext,setJournaltext,handledown,savingentry,getAQIStatus,getAQIColor,getAQIBadgeClass}) {
+function Dashboard({handlelogout,journaltext,setJournaltext,handledown,savingentry,getAQIStatus,getAQIColor,getAQIBadgeClass}) {
  
 
   const navigate = useNavigate();
@@ -29,11 +29,7 @@ function Dashboard({journaltext,setJournaltext,handledown,savingentry,getAQIStat
 
   console.log(journaltext);
 
-  const handlelogout = () => {
-    localStorage.removeItem("Currentuser");
-    navigate("/login");
-  };
-
+  
 
 
   function getAQIPercentage(aqi) {
@@ -62,10 +58,6 @@ function Dashboard({journaltext,setJournaltext,handledown,savingentry,getAQIStat
           <Link to="/journal" className="nav-item">
             <span className="nav-icon">◎</span>
             <span>Journal</span>
-          </Link>
-          <Link to="/history" className="nav-item">
-            <span className="nav-icon">◇</span>
-            <span>History</span>
           </Link>
           <Link to="/settings" className="nav-item">
             <span className="nav-icon">◌</span>
@@ -446,10 +438,6 @@ function Dashboard({journaltext,setJournaltext,handledown,savingentry,getAQIStat
         <Link to="/journal" className="mobile-nav-item">
           <span className="mobile-nav-icon">◎</span>
           <span className="mobile-nav-label">Journal</span>
-        </Link>
-        <Link to="/history" className="mobile-nav-item">
-          <span className="mobile-nav-icon">◇</span>
-          <span className="mobile-nav-label">History</span>
         </Link>
         <Link to="/settings" className="mobile-nav-item">
           <span className="mobile-nav-icon">◌</span>
