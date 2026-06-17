@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import WatchlistPage from "./pages/Watchlist";
 import JournalPage from "./pages/JournalPage";
+import SettingsPage from "./pages/SettingsPage";
 
 const fakeAQI = {
   city: "Trichy",
@@ -222,6 +223,12 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <SettingsPage/>
+            </ProtectedRoute>
+        }/>
       </Routes>
     </>
   );

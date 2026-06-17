@@ -212,7 +212,7 @@ function Watchlist({getAQIBadgeClass,getAQIStatus,getAQIColor,cities,setCities,c
               </div>
  
               <div className="city-card-bar-track">
-                <div className="city-card-bar-fill" style={{ width: '79%', background: getAQIColor(each.aqi) }}></div>
+                <div className="city-card-bar-fill" style={{ width:`${(each.aqi/500)*100}%`, background: getAQIColor(each.aqi) }}></div>
               </div>
  
               <div className="city-card-pollutants">
@@ -255,27 +255,24 @@ function Watchlist({getAQIBadgeClass,getAQIStatus,getAQIColor,cities,setCities,c
         </section>
  
         {/* ── Empty slots section ── */}
+     {cities.length < 5 && (
         <section className="watchlist-empty-slots">
           <h3 className="section-title">Available Slots</h3>
           <div className="empty-slots-grid">
- 
-         {samp.map((_,index)=>{
-             return (
-            <>
-             <div className="empty-city-card" key={index}>
-              <div className="empty-card-inner">
-                <span className="empty-card-plus">+</span>
-                <p className="empty-card-text">Add a city</p>
-                <p className="empty-card-hint">Type above to search</p>
+            {Array.from({ length: 5 - cities.length }).map((_, index) => (
+              <div className="empty-city-card" key={index}>
+                <div className="empty-card-inner">
+                  <span className="empty-card-plus">+</span>
+                  <p className="empty-card-text">Add a city</p>
+                  <p className="empty-card-hint">Type above to search</p>
+                </div>
               </div>
-             </div>
-           </>
-                  )
-            })}
- 
- 
+            ))}
           </div>
         </section>
+      )}
+ 
+ 
  
         {/* ── AQI scale legend ── */}
         <div className="aqi-scale-legend">
@@ -309,26 +306,22 @@ function Watchlist({getAQIBadgeClass,getAQIStatus,getAQIColor,cities,setCities,c
  
       {/* ── Mobile bottom nav ── */}
       <nav className="mobile-bottom-nav">
-        <a href="/dashboard" className="mobile-nav-item">
+        <Link to="/dashboard" className="mobile-nav-item">
           <span className="mobile-nav-icon">◈</span>
           <span className="mobile-nav-label">Dashboard</span>
-        </a>
-        <a href="/watchlist" className="mobile-nav-item mobile-nav-item--active">
+        </Link>
+        <Link to="/watchlist" className="mobile-nav-item mobile-nav-item--active">
           <span className="mobile-nav-icon">◉</span>
           <span className="mobile-nav-label">Watchlist</span>
-        </a>
-        <a href="/journal" className="mobile-nav-item">
+        </Link>
+        <Link to="/journal" className="mobile-nav-item">
           <span className="mobile-nav-icon">◎</span>
           <span className="mobile-nav-label">Journal</span>
-        </a>
-        <a href="/history" className="mobile-nav-item">
-          <span className="mobile-nav-icon">◇</span>
-          <span className="mobile-nav-label">History</span>
-        </a>
-        <a href="/settings" className="mobile-nav-item">
+        </Link>
+        <Link to="/settings" className="mobile-nav-item">
           <span className="mobile-nav-icon">◌</span>
           <span className="mobile-nav-label">Settings</span>
-        </a>
+        </Link>
       </nav>
  
     </div>
