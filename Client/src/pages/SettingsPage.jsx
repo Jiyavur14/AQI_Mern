@@ -6,7 +6,48 @@ function SettingsPage({handlelogout}) {
 
 
 
-    const [user,setUser] = useState(JSON.parse(localStorage.getItem("Currentuser")));
+    const [editThreshold,setEditThreshold] = useState(false);
+
+    const [meter,setMeter] = useState(Number(localStorage.getItem("newT")) || 150);
+    
+    const [user,setUser] = useState(JSON.parse(localStorage.getItem("Currentuser")) || []);
+
+    const [editStatus,setEditStatus] = useState(true);
+
+    console.log("okkala",user);
+
+    const handleedit = (e)=>{
+         const {name,value} = e.target;
+
+         setUser((prev)=>({
+          ...prev,[name]:value
+         }))
+    }
+
+    const updateUserProfile = async () =>{
+      const updateUser = await fetch(`http://localhost:5000/users/${user.id}`,{
+        method:"PATCH",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+        name: user.name,
+        email: user.email,
+        city: user.city
+      })
+      })
+
+      const res = await updateUser.json(); 
+
+      console.log(res);
+
+      localStorage.setItem("Currentuser",JSON.stringify(res));
+
+    }
+
+    const updateUserThreshold = ()=>{
+     
+    }
 
   return (
     <div className="dashboard-layout">
@@ -102,6 +143,9 @@ function SettingsPage({handlelogout}) {
                 type="text"
                 className="settings-input"
                 value={user.name}
+                name="name"
+                disabled={editStatus}
+                onChange={handleedit}
                 placeholder="Your full name"
               />
             </div>
@@ -113,6 +157,9 @@ function SettingsPage({handlelogout}) {
                 type="email"
                 className="settings-input"
                 value={user.email}
+                name="email"
+                onChange={handleedit}
+                disabled={editStatus}
                 placeholder="you@example.com"
               />
             </div>
@@ -120,7 +167,7 @@ function SettingsPage({handlelogout}) {
             {/* Home city field */}
             <div className="settings-field">
               <label className="settings-label">Home city</label>
-              <select className="settings-input settings-select">
+              <select className="settings-input settings-select" name="city" disabled={editStatus} onChange={handleedit}>
                 <option value={user.city} selected>{user.city}</option>
                 <option value="Delhi">Delhi</option>
                 <option value="Mumbai">Mumbai</option>
@@ -136,7 +183,13 @@ function SettingsPage({handlelogout}) {
             </div>
 
             <div className="settings-card-footer">
-              <button className="btn-primary settings-save-btn">Edit Profile</button>
+              <button className="btn-primary settings-save-btn" onClick={()=>{
+                setEditStatus((prev)=>!prev);
+                if(!editStatus) 
+                  updateUserProfile();
+              }}
+
+                >{editStatus ? "Edit" : "Save"} Profile</button>
             </div>
 
           </div>
@@ -155,7 +208,7 @@ function SettingsPage({handlelogout}) {
             <div className="threshold-display-row">
               <div className="threshold-display-left">
                 <span className="threshold-current-label">Your current threshold</span>
-                <span className="threshold-current-value aqi-number" style={{ color: 'var(--aqi-poor)' }}>150</span>
+                <span className="threshold-current-value aqi-number" style={{ color: 'var(--aqi-poor)' }}>{meter}</span>
                 <span className="aqi-status-badge aqi-status-badge--poor">Poor zone</span>
               </div>
               <div className="threshold-display-right">
@@ -174,8 +227,10 @@ function SettingsPage({handlelogout}) {
                 type="range"
                 min="50"
                 max="400"
-                defaultValue="150"
+                value={meter}
+                onChange={(e)=>setMeter(e.target.value)}
                 className="threshold-slider"
+                disabled={!editThreshold}
               />
               <div className="threshold-scale-strip">
                 <span className="threshold-scale-seg" style={{ background: 'var(--aqi-good)' }}></span>
@@ -204,7 +259,10 @@ function SettingsPage({handlelogout}) {
             </div>
 
             <div className="settings-card-footer">
-              <button className="btn-primary settings-save-btn">Save Threshold</button>
+              <button onClick={()=>{
+                setEditThreshold((prev)=>!prev);
+                if(editThreshold){localStorage.setItem("newT",JSON.stringify(Number(meter)));}
+              }} className="btn-primary settings-save-btn">{editThreshold ? "Save":"Edit"} Threshold</button>
             </div>
 
           </div>
