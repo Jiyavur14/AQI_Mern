@@ -1,84 +1,103 @@
-import '../App.css';
-import {Link} from 'react-router-dom';
+import "../App.css";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { useState } from 'react';
+import { useState } from "react";
 
+function SettingsPage({
+  handlelogout,
+  getAQIColor,
+  getAQIStatus,
+  getAQIBadgeClass,
+}) {
+  const [password, setpassword] = useState("");
 
-function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) {
+  const [confirmpassword, setConfirmPassword] = useState("");
 
-    const [password,setpassword] = useState("");
+  const [currentpassword, setCurrentPassword] = useState("");
 
-    const [confirmpassword,setConfirmPassword] = useState("");
+  const [errmsg, setErrMsg] = useState("");
 
-    const [currentpassword,setCurrentPassword] = useState("");    
+  const [updatePassword, setUpdatePassword] = useState(false);
 
-    const [errmsg,setErrMsg] = useState("");
+  const [editThreshold, setEditThreshold] = useState(false);
 
-    const [updatePassword,setUpdatePassword] = useState(false);
+  const [meter, setMeter] = useState(
+    Number(localStorage.getItem("newT")) || 150,
+  );
 
-    const [editThreshold,setEditThreshold] = useState(false);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("Currentuser")) || [],
+  );
 
-    const [meter,setMeter] = useState(Number(localStorage.getItem("newT")) || 150);
-    
-    const [user,setUser] = useState(JSON.parse(localStorage.getItem("Currentuser")) || []);
+  const [editStatus, setEditStatus] = useState(true);
 
-    const [editStatus,setEditStatus] = useState(true);
+  console.log("okkala", user);
 
-    console.log("okkala",user);
+  const handleedit = (e) => {
+    const { name, value } = e.target;
 
-    const handleedit = (e)=>{
-         const {name,value} = e.target;
+    setUser((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-         setUser((prev)=>({
-          ...prev,[name]:value
-         }))
-    }
-
-    const updateUserProfile = async () =>{
-      const updateUser = await fetch(`http://localhost:5000/users/${user.id}`,{
-        method:"PATCH",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body:JSON.stringify({
+  const updateUserProfile = async () => {
+    const updateUser = await fetch(`http://localhost:5000/users/${user.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         name: user.name,
         email: user.email,
-        city: user.city
-      })
-      })
+        city: user.city,
+      }),
+    });
 
-      const res = await updateUser.json(); 
+    const res = await updateUser.json();
 
-      console.log(res);
+    console.log(res);
 
-      localStorage.setItem("Currentuser",JSON.stringify(res));
+    localStorage.setItem("Currentuser", JSON.stringify(res));
+  };
 
+  const handlePassword = async () => {
+    const c_user = JSON.parse(localStorage.getItem("Currentuser"));
+    console.log("pass:", c_user.password);
+    console.log("passww:", currentpassword);
+    if (c_user.password !== currentpassword) {
+      alert("Current Password is Wrong");
+      return;
+    } else {
+      if (password !== confirmpassword) {
+        alert("Password Mismatched");
+        return;
+      } else {
+        const patchWork = await axios.patch(
+          `http://localhost:5000/users/${user.id}`,
+          { ...user, password: password, confirm_password: confirmpassword },
+        );
+
+        
+        localStorage.setItem("Currentuser", JSON.stringify(patchWork.data));
+      
+        setUser(patchWork.data);
+        
+        console.log(
+          "LOCAL STORAGE NOW:",
+          JSON.parse(localStorage.getItem("Currentuser")),
+        );
+      }
     }
+  };
 
-    const handlePassword = async () =>{
-         const c_user = JSON.parse(localStorage.getItem("Currentuser"));
-         if(c_user.password !== currentpassword){
-                alert("Current Password is Wrong");
-                return;}
-           else {
-                  if(password !== confirmpassword)
-                  {
-                    alert("Password Mismatched");
-                    return;
-                  }else{
-                    const getuser = JSON.parse(localStorage.getItem("Currentuser"));
-                 
-                    const patchWork = await axios.patch(`http://localhost:5000/users/${getuser.id}`,{...getuser,"password":password,"confirm_password":confirmpassword})
-
-                    console.log(patchWork);
-                  }
-           }
-    }
-
+  const handledown = (e) => {
+    if (e.Key === "Enter") handlePassword();
+  };
 
   return (
     <div className="dashboard-layout">
-
       {/* ── Sidebar (desktop only) ── */}
       <aside className="sidebar">
         <div className="sidebar-logo">
@@ -111,13 +130,14 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
               <p className="sidebar-user-city">{user.city}</p>
             </div>
           </div>
-          <button className="sidebar-logout" onClick={handlelogout}>↩</button>
+          <button className="sidebar-logout" onClick={handlelogout}>
+            ↩
+          </button>
         </div>
       </aside>
 
       {/* ── Main content ── */}
       <main className="dashboard-main">
-
         {/* Topbar */}
         <header className="dashboard-topbar">
           <div className="topbar-left">
@@ -151,7 +171,6 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
           </div>
 
           <div className="settings-card">
-
             {/* Avatar row */}
             <div className="settings-avatar-row">
               <div className="settings-avatar-big">A</div>
@@ -194,8 +213,15 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
             {/* Home city field */}
             <div className="settings-field">
               <label className="settings-label">Home city</label>
-              <select className="settings-input settings-select" name="city" disabled={editStatus} onChange={handleedit}>
-                <option value={user.city} selected>{user.city}</option>
+              <select
+                className="settings-input settings-select"
+                name="city"
+                disabled={editStatus}
+                onChange={handleedit}
+              >
+                <option value={user.city} selected>
+                  {user.city}
+                </option>
                 <option value="Delhi">Delhi</option>
                 <option value="Mumbai">Mumbai</option>
                 <option value="Bengaluru">Bengaluru</option>
@@ -206,19 +232,23 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
                 <option value="Jaipur">Jaipur</option>
                 <option value="Lucknow">Lucknow</option>
               </select>
-              <p className="settings-field-hint">This city's AQI is shown on your dashboard and auto-stamped on journal entries</p>
+              <p className="settings-field-hint">
+                This city's AQI is shown on your dashboard and auto-stamped on
+                journal entries
+              </p>
             </div>
 
             <div className="settings-card-footer">
-              <button className="btn-primary settings-save-btn" onClick={()=>{
-                setEditStatus((prev)=>!prev);
-                if(!editStatus) 
-                  updateUserProfile();
-              }}
-
-                >{editStatus ? "Edit" : "Save"} Profile</button>
+              <button
+                className="btn-primary settings-save-btn"
+                onClick={() => {
+                  setEditStatus((prev) => !prev);
+                  if (!editStatus) updateUserProfile();
+                }}
+              >
+                {editStatus ? "Edit" : "Save"} Profile
+              </button>
             </div>
-
           </div>
         </section>
 
@@ -226,20 +256,32 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
         <section className="settings-section">
           <div className="settings-section-header">
             <h3 className="settings-section-title">Personal AQI Threshold</h3>
-            <p className="settings-section-desc">Get warned when air crosses your personal limit</p>
+            <p className="settings-section-desc">
+              Get warned when air crosses your personal limit
+            </p>
           </div>
 
           <div className="settings-card">
-
             {/* Threshold display */}
             <div className="threshold-display-row">
               <div className="threshold-display-left">
-                <span className="threshold-current-label">Your current threshold</span>
-                <span className="threshold-current-value aqi-number" style={{ color: getAQIColor(meter) }}>{meter}</span>
-                <span className={`aqi-status-badge ${getAQIBadgeClass(meter)}`}>{getAQIStatus(meter)} zone</span>
+                <span className="threshold-current-label">
+                  Your current threshold
+                </span>
+                <span
+                  className="threshold-current-value aqi-number"
+                  style={{ color: getAQIColor(meter) }}
+                >
+                  {meter}
+                </span>
+                <span className={`aqi-status-badge ${getAQIBadgeClass(meter)}`}>
+                  {getAQIStatus(meter)} zone
+                </span>
               </div>
               <div className="threshold-display-right">
-                <p className="threshold-tip">⚠️ Warning fires when AQI exceeds this value</p>
+                <p className="threshold-tip">
+                  ⚠️ Warning fires when AQI exceeds this value
+                </p>
               </div>
             </div>
 
@@ -255,43 +297,82 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
                 min="50"
                 max="400"
                 value={meter}
-                onChange={(e)=>setMeter(e.target.value)}
+                onChange={(e) => setMeter(e.target.value)}
                 className="threshold-slider"
                 disabled={!editThreshold}
               />
               <div className="threshold-scale-strip">
-                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter)}}></span>
-                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter) }}></span>
-                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter) }}></span>
-                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter) }}></span>
-                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter) }}></span>
-                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter) }}></span>
+                <span
+                  className="threshold-scale-seg"
+                  style={{ background: getAQIColor(meter) }}
+                ></span>
+                <span
+                  className="threshold-scale-seg"
+                  style={{ background: getAQIColor(meter) }}
+                ></span>
+                <span
+                  className="threshold-scale-seg"
+                  style={{ background: getAQIColor(meter) }}
+                ></span>
+                <span
+                  className="threshold-scale-seg"
+                  style={{ background: getAQIColor(meter) }}
+                ></span>
+                <span
+                  className="threshold-scale-seg"
+                  style={{ background: getAQIColor(meter) }}
+                ></span>
+                <span
+                  className="threshold-scale-seg"
+                  style={{ background: getAQIColor(meter) }}
+                ></span>
               </div>
             </div>
 
             {/* Who should set what */}
             <div className="threshold-guide">
               <div className="threshold-guide-item">
-                <span className="threshold-guide-dot" style={{ background: 'var(--aqi-good)' }}></span>
-                <span><strong>50–100</strong> — Asthma patients, elderly, children</span>
+                <span
+                  className="threshold-guide-dot"
+                  style={{ background: "var(--aqi-good)" }}
+                ></span>
+                <span>
+                  <strong>50–100</strong> — Asthma patients, elderly, children
+                </span>
               </div>
               <div className="threshold-guide-item">
-                <span className="threshold-guide-dot" style={{ background: 'var(--aqi-moderate)' }}></span>
-                <span><strong>100–200</strong> — Sensitive individuals</span>
+                <span
+                  className="threshold-guide-dot"
+                  style={{ background: "var(--aqi-moderate)" }}
+                ></span>
+                <span>
+                  <strong>100–200</strong> — Sensitive individuals
+                </span>
               </div>
               <div className="threshold-guide-item">
-                <span className="threshold-guide-dot" style={{ background: 'var(--aqi-poor)' }}></span>
-                <span><strong>200–300</strong> — Healthy adults</span>
+                <span
+                  className="threshold-guide-dot"
+                  style={{ background: "var(--aqi-poor)" }}
+                ></span>
+                <span>
+                  <strong>200–300</strong> — Healthy adults
+                </span>
               </div>
             </div>
 
             <div className="settings-card-footer">
-              <button onClick={()=>{
-                setEditThreshold((prev)=>!prev);
-                if(editThreshold){localStorage.setItem("newT",JSON.stringify(Number(meter)));}
-              }} className="btn-primary settings-save-btn">{editThreshold ? "Save":"Edit"} Threshold</button>
+              <button
+                onClick={() => {
+                  setEditThreshold((prev) => !prev);
+                  if (editThreshold) {
+                    localStorage.setItem("newT", JSON.stringify(Number(meter)));
+                  }
+                }}
+                className="btn-primary settings-save-btn"
+              >
+                {editThreshold ? "Save" : "Edit"} Threshold
+              </button>
             </div>
-
           </div>
         </section>
 
@@ -299,11 +380,12 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
         <section className="settings-section">
           <div className="settings-section-header">
             <h3 className="settings-section-title">Change Password</h3>
-            <p className="settings-section-desc">Update your account password</p>
+            <p className="settings-section-desc">
+              Update your account password
+            </p>
           </div>
 
           <div className="settings-card">
-
             <div className="settings-field">
               <label className="settings-label">Current password</label>
               <input
@@ -312,7 +394,7 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
                 placeholder="••••••••"
                 disabled={!updatePassword}
                 value={currentpassword}
-                onChange={(e)=>setCurrentPassword(e.target.value)}
+                onChange={(e) => setCurrentPassword(e.target.value)}
               />
             </div>
 
@@ -323,7 +405,7 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
                 className="settings-input"
                 placeholder="••••••••"
                 value={password}
-                onChange={(e)=>setpassword(e.target.value)}
+                onChange={(e) => setpassword(e.target.value)}
                 disabled={!updatePassword}
               />
             </div>
@@ -335,39 +417,49 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
                 className="settings-input"
                 placeholder="••••••••"
                 value={confirmpassword}
-                onChange={(e)=>setConfirmPassword(e.target.value)}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 disabled={!updatePassword}
               />
             </div>
 
             <div className="settings-card-footer">
-              <button className="btn-primary settings-save-btn" onClick={()=>{
-                setUpdatePassword((prev)=>!prev)
-                 if(updatePassword){
-                  handlePassword();
-                  setCurrentPassword("");
-                  setpassword("");
-                  setConfirmPassword("");
-                }
-              }}>{updatePassword ? "Set New":"Update"} Password</button>
+              <button
+                className="btn-primary settings-save-btn"
+                onClick={() => {
+                  setUpdatePassword((prev) => !prev);
+                  if (updatePassword) {
+                    handlePassword();
+                    setCurrentPassword("");
+                    setpassword("");
+                    setConfirmPassword("");
+                  }
+                }}
+              >
+                {updatePassword ? "Set New" : "Update"} Password
+              </button>
             </div>
-
           </div>
         </section>
 
         {/* ── Danger zone ── */}
         <section className="settings-section">
           <div className="settings-section-header">
-            <h3 className="settings-section-title settings-section-title--danger">Danger Zone</h3>
-            <p className="settings-section-desc">Irreversible actions — proceed with caution</p>
+            <h3 className="settings-section-title settings-section-title--danger">
+              Danger Zone
+            </h3>
+            <p className="settings-section-desc">
+              Irreversible actions — proceed with caution
+            </p>
           </div>
 
           <div className="settings-card settings-card--danger">
-
             <div className="danger-row">
               <div className="danger-row-info">
                 <p className="danger-row-title">Clear all journal entries</p>
-                <p className="danger-row-desc">Permanently deletes all your health journal entries and AQI history. Cannot be undone.</p>
+                <p className="danger-row-desc">
+                  Permanently deletes all your health journal entries and AQI
+                  history. Cannot be undone.
+                </p>
               </div>
               <button className="settings-danger-btn">Clear Journal</button>
             </div>
@@ -377,14 +469,17 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
             <div className="danger-row">
               <div className="danger-row-info">
                 <p className="danger-row-title">Delete account</p>
-                <p className="danger-row-desc">Permanently deletes your account, all journal entries, and watchlist data. Cannot be undone.</p>
+                <p className="danger-row-desc">
+                  Permanently deletes your account, all journal entries, and
+                  watchlist data. Cannot be undone.
+                </p>
               </div>
-              <button className="settings-danger-btn settings-danger-btn--hard">Delete Account</button>
+              <button className="settings-danger-btn settings-danger-btn--hard">
+                Delete Account
+              </button>
             </div>
-
           </div>
         </section>
-
       </main>
 
       {/* ── Mobile bottom nav ── */}
@@ -401,12 +496,14 @@ function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) 
           <span className="mobile-nav-icon">◎</span>
           <span className="mobile-nav-label">Journal</span>
         </Link>
-        <Link to="/settings" className="mobile-nav-item mobile-nav-item--active">
+        <Link
+          to="/settings"
+          className="mobile-nav-item mobile-nav-item--active"
+        >
           <span className="mobile-nav-icon">◌</span>
           <span className="mobile-nav-label">Settings</span>
         </Link>
       </nav>
-
     </div>
   );
 }
