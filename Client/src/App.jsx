@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Routes, Route,Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/FPPage";
@@ -112,8 +112,6 @@ function App() {
     localStorage.removeItem("Currentuser");
     navigate("/login");
   };
-
-  
 
   const handledown = (e) => {
     if (e.key === "Enter") {
@@ -235,11 +233,19 @@ function App() {
           }
         />
 
-        <Route path="/settings" element={
-          <ProtectedRoute>
-            <SettingsPage handlelogout={handlelogout}/>
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <SettingsPage
+                handlelogout={handlelogout}
+                getAQIColor={getAQIColor}
+                getAQIStatus={getAQIStatus}
+                getAQIBadgeClass={getAQIBadgeClass}
+              />
             </ProtectedRoute>
-        }/>
+          }
+        />
       </Routes>
     </>
   );

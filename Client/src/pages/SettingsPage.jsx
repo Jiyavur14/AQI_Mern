@@ -1,10 +1,20 @@
 import '../App.css';
 import {Link} from 'react-router-dom';
+import axios from "axios";
 import { useState } from 'react';
 
-function SettingsPage({handlelogout}) {
 
+function SettingsPage({handlelogout,getAQIColor,getAQIStatus,getAQIBadgeClass}) {
 
+    const [password,setpassword] = useState("");
+
+    const [confirmpassword,setConfirmPassword] = useState("");
+
+    const [currentpassword,setCurrentPassword] = useState("");    
+
+    const [errmsg,setErrMsg] = useState("");
+
+    const [updatePassword,setUpdatePassword] = useState(false);
 
     const [editThreshold,setEditThreshold] = useState(false);
 
@@ -45,9 +55,26 @@ function SettingsPage({handlelogout}) {
 
     }
 
-    const updateUserThreshold = ()=>{
-     
+    const handlePassword = async () =>{
+         const c_user = JSON.parse(localStorage.getItem("Currentuser"));
+         if(c_user.password !== currentpassword){
+                alert("Current Password is Wrong");
+                return;}
+           else {
+                  if(password !== confirmpassword)
+                  {
+                    alert("Password Mismatched");
+                    return;
+                  }else{
+                    const getuser = JSON.parse(localStorage.getItem("Currentuser"));
+                 
+                    const patchWork = await axios.patch(`http://localhost:5000/users/${getuser.id}`,{...getuser,"password":password,"confirm_password":confirmpassword})
+
+                    console.log(patchWork);
+                  }
+           }
     }
+
 
   return (
     <div className="dashboard-layout">
@@ -208,8 +235,8 @@ function SettingsPage({handlelogout}) {
             <div className="threshold-display-row">
               <div className="threshold-display-left">
                 <span className="threshold-current-label">Your current threshold</span>
-                <span className="threshold-current-value aqi-number" style={{ color: 'var(--aqi-poor)' }}>{meter}</span>
-                <span className="aqi-status-badge aqi-status-badge--poor">Poor zone</span>
+                <span className="threshold-current-value aqi-number" style={{ color: getAQIColor(meter) }}>{meter}</span>
+                <span className={`aqi-status-badge ${getAQIBadgeClass(meter)}`}>{getAQIStatus(meter)} zone</span>
               </div>
               <div className="threshold-display-right">
                 <p className="threshold-tip">⚠️ Warning fires when AQI exceeds this value</p>
@@ -233,12 +260,12 @@ function SettingsPage({handlelogout}) {
                 disabled={!editThreshold}
               />
               <div className="threshold-scale-strip">
-                <span className="threshold-scale-seg" style={{ background: 'var(--aqi-good)' }}></span>
-                <span className="threshold-scale-seg" style={{ background: 'var(--aqi-satisfactory)' }}></span>
-                <span className="threshold-scale-seg" style={{ background: 'var(--aqi-moderate)' }}></span>
-                <span className="threshold-scale-seg" style={{ background: 'var(--aqi-poor)' }}></span>
-                <span className="threshold-scale-seg" style={{ background: 'var(--aqi-very-poor)' }}></span>
-                <span className="threshold-scale-seg" style={{ background: 'var(--aqi-severe)' }}></span>
+                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter)}}></span>
+                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter) }}></span>
+                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter) }}></span>
+                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter) }}></span>
+                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter) }}></span>
+                <span className="threshold-scale-seg" style={{ background: getAQIColor(meter) }}></span>
               </div>
             </div>
 
@@ -283,6 +310,9 @@ function SettingsPage({handlelogout}) {
                 type="password"
                 className="settings-input"
                 placeholder="••••••••"
+                disabled={!updatePassword}
+                value={currentpassword}
+                onChange={(e)=>setCurrentPassword(e.target.value)}
               />
             </div>
 
@@ -292,6 +322,9 @@ function SettingsPage({handlelogout}) {
                 type="password"
                 className="settings-input"
                 placeholder="••••••••"
+                value={password}
+                onChange={(e)=>setpassword(e.target.value)}
+                disabled={!updatePassword}
               />
             </div>
 
@@ -301,11 +334,22 @@ function SettingsPage({handlelogout}) {
                 type="password"
                 className="settings-input"
                 placeholder="••••••••"
+                value={confirmpassword}
+                onChange={(e)=>setConfirmPassword(e.target.value)}
+                disabled={!updatePassword}
               />
             </div>
 
             <div className="settings-card-footer">
-              <button className="btn-primary settings-save-btn">Update Password</button>
+              <button className="btn-primary settings-save-btn" onClick={()=>{
+                setUpdatePassword((prev)=>!prev)
+                 if(updatePassword){
+                  handlePassword();
+                  setCurrentPassword("");
+                  setpassword("");
+                  setConfirmPassword("");
+                }
+              }}>{updatePassword ? "Set New":"Update"} Password</button>
             </div>
 
           </div>
