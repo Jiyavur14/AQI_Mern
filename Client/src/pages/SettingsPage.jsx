@@ -57,8 +57,6 @@ function SettingsPage({
 
     const res = await updateUser.json();
 
-    console.log(res);
-
     localStorage.setItem("Currentuser", JSON.stringify(res));
   };
 
@@ -83,11 +81,7 @@ function SettingsPage({
         localStorage.setItem("Currentuser", JSON.stringify(patchWork.data));
       
         setUser(patchWork.data);
-        
-        console.log(
-          "LOCAL STORAGE NOW:",
-          JSON.parse(localStorage.getItem("Currentuser")),
-        );
+      
       }
     }
   };

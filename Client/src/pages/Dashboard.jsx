@@ -26,11 +26,7 @@ function Dashboard({handlelogout,journaltext,setJournaltext,handledown,savingent
   const user = JSON.parse(localStorage.getItem("Currentuser"));
 
   const threshold = 150;
-
-  console.log(journaltext);
-
   
-
 
   function getAQIPercentage(aqi) {
     return `${(aqi / 500) * 100}%`;

@@ -45,6 +45,8 @@ function Watchlist({handlelogout,getAQIBadgeClass,getAQIStatus,getAQIColor,citie
   }
 
 
+  const userrr = JSON.parse(localStorage.getItem("Currentuser"));
+
   const deletecity = (indexToDelete)=>{
     
         setSamp(()=>[...samp,1]);
@@ -92,9 +94,9 @@ function Watchlist({handlelogout,getAQIBadgeClass,getAQIStatus,getAQIColor,citie
         </nav>
         <div className="sidebar-footer">
           <div className="sidebar-user">
-            <div className="sidebar-avatar">A</div>
+            <div className="sidebar-avatar">{userrr.name.charAt(0)}</div>
             <div className="sidebar-user-info">
-              <p className="sidebar-user-name">Arjun Sharma</p>
+              <p className="sidebar-user-name">{userrr.name}</p>
               <p className="sidebar-user-city">Chennai</p>
             </div>
           </div>

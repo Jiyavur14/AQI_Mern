@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -9,6 +9,7 @@ import WatchlistPage from "./pages/Watchlist";
 import JournalPage from "./pages/JournalPage";
 import SettingsPage from "./pages/SettingsPage";
 import axios from "axios";
+
 
 const fakeAQI = {
   city: "Trichy",
@@ -56,7 +57,7 @@ function App() {
 
   const [cityinput, setCityinput] = useState("");
 
-  function savingentry() {
+  async function savingentry() {
     if (!journaltext.trim()) {
       alert("Journal Can't be  empty");
       return;
@@ -77,28 +78,31 @@ function App() {
           return;
         } else {
           if (entryindex !== null) {
-            entries[entryindex].text = journaltext;
-            localStorage.setItem("Currentuser", JSON.stringify(user.journalEntries));
-            setEntries(entries);
+            const updatedEntries = [...entries];
+            updatedEntries[entryindex].text = journaltext;
+            setEntries(updatedEntries);
+            localStorage.setItem("Currentuser", JSON.stringify(updatedEntries));
             setJournaltext("");
             setEntryindex(null);
           } else {
-
             const newentry = {
               text: journaltext,
               aqi: fakeAQI.aqi,
               createdAt: new Date().toISOString(),
             };
 
-            const updatedUser = {...user,"journalEntries":[...user.journalEntries,newentry]}
+            const updatedUser = {
+              ...user,
+              journalEntries: [...entries, newentry],
+            };
 
             console.log(updatedUser);
 
+            await axios.patch(
+              `http://localhost:5000/users/${user.id}`,
+              updatedUser,
+            );
 
-            const entryUpdate = async () => await axios.patch(`http://localhost:5000/users/${user.id}`,updatedUser);
-  
-            entryUpdate
-            
             setEntries(updatedUser.journalEntries);
 
             localStorage.setItem("Currentuser", JSON.stringify(updatedUser));
@@ -157,6 +161,14 @@ function App() {
   }
 
   const navigate = useNavigate();
+
+  const now_user = JSON.parse(localStorage.getItem("Currentuser"));
+
+  console.log("Now-User: ", now_user);
+
+  useEffect(() => {
+    setEntries(user?.journalEntries || []);
+  }, [user?.id]);
 
   return (
     <>

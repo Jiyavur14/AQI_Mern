@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
 import "../App.css";
-import { useState } from "react";
 
 const fakeAQI = {
   city: "Trichy",
   lastUpdated: "10:45 AM",
-
   aqi: 11,
 
   pollutants: {
@@ -41,17 +39,17 @@ function JournalPage({
   getAQIStatus,
   getAQIColor,
 }) {
-  const entri = JSON.parse(localStorage.getItem("entries"));
+  const userr = JSON.parse(localStorage.getItem("Currentuser"));
 
   const deleteEntry = (indexToDelete) => {
     if (confirm("Do you wanna Delete this entry?")) {
-      const updatedentries = entri.filter(
+      const updatedentries = userr.journalEntries.filter(
         (each, index) => index !== indexToDelete,
       );
 
       setEntries(updatedentries);
 
-      localStorage.setItem("entries", JSON.stringify(updatedentries));
+      localStorage.setItem("Currentuser", JSON.stringify(userr.updatedentries));
     } else {
       return;
     }
@@ -85,9 +83,9 @@ function JournalPage({
         </nav>
         <div className="sidebar-footer">
           <div className="sidebar-user">
-            <div className="sidebar-avatar">A</div>
+            <div className="sidebar-avatar">{userr.name.charAt(0)}</div>
             <div className="sidebar-user-info">
-              <p className="sidebar-user-name">Arjun Sharma</p>
+              <p className="sidebar-user-name">{userr.name}</p>
               <p className="sidebar-user-city">{fakeAQI.city}</p>
             </div>
           </div>
@@ -179,7 +177,7 @@ function JournalPage({
         <div className="journal-stats-row">
           <div className="journal-stat-card">
             <span className="journal-stat-value aqi-number">
-              {JSON.parse(localStorage.getItem("entries")).length}
+              {entries.length}
             </span>
             <span className="journal-stat-label">Total entries</span>
           </div>
