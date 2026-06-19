@@ -8,13 +8,12 @@ import Dashboard from "./pages/Dashboard";
 import WatchlistPage from "./pages/Watchlist";
 import JournalPage from "./pages/JournalPage";
 import SettingsPage from "./pages/SettingsPage";
+import axios from "axios";
 
 const fakeAQI = {
   city: "Trichy",
   lastUpdated: "10:45 AM",
-
   aqi: 11,
-
   pollutants: {
     pm25: 115,
     pm10: 100,
@@ -45,9 +44,9 @@ function App() {
 
   const [journaltext, setJournaltext] = useState("");
 
-  const [entries, setEntries] = useState(
-    JSON.parse(localStorage.getItem("entries")) || [],
-  );
+  const user = JSON.parse(localStorage.getItem("Currentuser"));
+
+  const [entries, setEntries] = useState(user?.journalEntries || []);
 
   const [entryindex, setEntryindex] = useState(null);
 
@@ -69,8 +68,7 @@ function App() {
         return;
       } else {
         const today = new Date().toDateString();
-        const entri = JSON.parse(localStorage.getItem("entries"));
-        const today_entries = entri.filter((each) => {
+        const today_entries = entries.filter((each) => {
           return new Date(each.createdAt).toDateString() === today;
         });
 
@@ -80,22 +78,30 @@ function App() {
         } else {
           if (entryindex !== null) {
             entries[entryindex].text = journaltext;
-            localStorage.setItem("entries", JSON.stringify(entries));
+            localStorage.setItem("Currentuser", JSON.stringify(user.journalEntries));
             setEntries(entries);
             setJournaltext("");
             setEntryindex(null);
           } else {
+
             const newentry = {
               text: journaltext,
               aqi: fakeAQI.aqi,
               createdAt: new Date().toISOString(),
             };
 
-            const updatedentry = [...entries, newentry];
+            const updatedUser = {...user,"journalEntries":[...user.journalEntries,newentry]}
 
-            setEntries(updatedentry);
+            console.log(updatedUser);
 
-            localStorage.setItem("entries", JSON.stringify(updatedentry));
+
+            const entryUpdate = async () => await axios.patch(`http://localhost:5000/users/${user.id}`,updatedUser);
+  
+            entryUpdate
+            
+            setEntries(updatedUser.journalEntries);
+
+            localStorage.setItem("Currentuser", JSON.stringify(updatedUser));
 
             alert("Entry Saved");
 
