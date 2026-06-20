@@ -24,8 +24,6 @@ function Dashboard({handlelogout,journaltext,setJournaltext,handledown,savingent
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("Currentuser"));
-  
-  console.log("Dash",user);
 
   function getAQIPercentage(aqi) {
     return `${(aqi / 500) * 100}%`;
@@ -101,7 +99,7 @@ function Dashboard({handlelogout,journaltext,setJournaltext,handledown,savingent
           <div className="topbar-right">
             <div className="topbar-threshold-badge">
               <span className="threshold-label">Threshold</span>
-              <span className="threshold-value">{user.Threshold}</span>
+              <span className="threshold-value">{user.Threshold||150}</span>
             </div>
 
             {/* Mobile only — avatar + logout */}
@@ -115,12 +113,12 @@ function Dashboard({handlelogout,journaltext,setJournaltext,handledown,savingent
         </header>
 
         {/* Warning Banner */}
-        {fakeAQI.aqi > user.Threshold && (
+        {(fakeAQI.aqi > Number(user.Threshold)) && (
           <div className="aqi-warning-banner">
             <span className="warning-icon">⚠️</span>
             <p>
               AQI has crossed your personal limit of{" "}
-              <strong>{threshold}</strong>. Avoid outdoor activity.
+              <strong>{user.Threshold}</strong>. Avoid outdoor activity.
             </p>
           </div>
         )}

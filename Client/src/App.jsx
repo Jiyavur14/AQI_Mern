@@ -26,6 +26,7 @@ const fakeAQI = {
 };
 
 function App() {
+  
   const [users, setUsers] = useState({
     name: "",
     email: "",
@@ -35,8 +36,6 @@ function App() {
     confirm_password: "",
   });
 
-  console.log(users);
-
   const [showpassword, setShowpassword] = useState(false);
 
   const [formdata, setFormdata] = useState([]);
@@ -44,11 +43,10 @@ function App() {
   console.log(formdata);
 
   const [journaltext, setJournaltext] = useState("");
-
-
+  
   const user = JSON.parse(localStorage.getItem("Currentuser"));
 
-  console.log('neww',user)
+  console.log('eww: ',user);
 
   const [entries, setEntries] = useState(user?.journalEntries || []);
 
@@ -84,8 +82,16 @@ function App() {
             const updatedEntries = [...entries];
             updatedEntries[entryindex].text = journaltext;
             setEntries(updatedEntries);
-            localStorage.setItem("Currentuser", JSON.stringify(updatedEntries));
+
+            const newUpdate = {...user,journalEntries:updatedEntries}
+
+            console.log("New state:",newUpdate);
+
+            localStorage.setItem("Currentuser", JSON.stringify(newUpdate));
+            const what = await axios.patch(`http://localhost:5000/users/${user.id}`,{journalEntries:updatedEntries})
+            console.log("v1: ",what.data);
             setJournaltext("");
+            alert("Journal has been Updated!")
             setEntryindex(null);
           } else {
             const newentry = {

@@ -129,7 +129,7 @@ function Watchlist({handlelogout,getAQIBadgeClass,getAQIStatus,getAQIColor,citie
           <div className="topbar-right">
             <div className="topbar-threshold-badge">
               <span className="threshold-label">Threshold</span>
-              <span className="threshold-value">{userrr.Threshold}</span>
+              <span className="threshold-value">{userrr.Threshold||150}</span>
             </div>
             <div className="mobile-user-cluster">
               <div className="mobile-avatar">A</div>

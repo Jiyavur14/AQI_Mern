@@ -24,19 +24,11 @@ function SettingsPage({
 
   const nowUser = JSON.parse(localStorage.getItem("Currentuser"))
 
-  console.log("celi",nowUser)
+  const [meter, setMeter] = useState(Number(nowUser.Threshold) || 150);
 
-  const [meter, setMeter] = useState(
-    Number(nowUser.Threshold) || 0,
-  );
-
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("Currentuser")) || [],
-  );
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("Currentuser")) || []);
 
   const [editStatus, setEditStatus] = useState(true);
-
-  console.log("okkala", user);
 
   const handleedit = (e) => {
     const { name, value } = e.target;
@@ -365,7 +357,8 @@ function SettingsPage({
                   setEditThreshold((prev) => !prev);
                   if (editThreshold) {
                     await axios.patch(`http://localhost:5000/users/${user.id}`,{...user,Threshold:meter})
-                    localStorage.setItem("newT", JSON.stringify(Number(meter)));
+                    localStorage.setItem("Currentuser", JSON.stringify({...user,Threshold:meter}));
+                    console.log("new t: ",JSON.parse(localStorage.getItem("Currentuser")));
                     alert("New Threshold Saved");
                   }
                 }}

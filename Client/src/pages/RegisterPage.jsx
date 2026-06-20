@@ -2,10 +2,6 @@ import "../App.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 
-
-
-
-
 const INDIAN_STATES = [
   "TamilNadu",
   "Kerala",
@@ -17,7 +13,6 @@ const INDIAN_STATES = [
   "Jarkant",
   "Jammu",
 ];
-
 
 /* List of major Indian cities for the home city dropdown */
 const INDIAN_CITIES = [
@@ -74,7 +69,6 @@ function RegisterPage({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     const check = await fetch("http://localhost:5000/users");
 
     const allusers = await check.json();
@@ -103,12 +97,12 @@ function RegisterPage({
 
       const savedUser = await res.json();
 
-      console.log("Stored",savedUser);
+      console.log("Stored", savedUser);
 
       setUsers({
         name: "",
         email: "",
-        state:"",
+        state: "",
         city: "",
         password: "",
         confirm_password: "",
@@ -124,7 +118,6 @@ function RegisterPage({
       setIsloading(false);
     }
   };
-
 
   return (
     <div className="auth-page">
@@ -220,7 +213,7 @@ function RegisterPage({
               />
             </div>
 
-             <div className="form-group">
+            <div className="form-group">
               <label className="form-label" htmlFor="state">
                 State
               </label>

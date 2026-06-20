@@ -126,7 +126,7 @@ function JournalPage({
           <div className="topbar-right">
             <div className="topbar-threshold-badge">
               <span className="threshold-label">Threshold</span>
-              <span className="threshold-value">{userr.Threshold}</span>
+              <span className="threshold-value">{userr.Threshold || 150}</span>
             </div>
             <div className="mobile-user-cluster">
               <div className="mobile-avatar">A</div>
