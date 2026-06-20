@@ -22,8 +22,12 @@ function SettingsPage({
 
   const [editThreshold, setEditThreshold] = useState(false);
 
+  const nowUser = JSON.parse(localStorage.getItem("Currentuser"))
+
+  console.log("celi",nowUser)
+
   const [meter, setMeter] = useState(
-    Number(JSON.parse(localStorage.getItem("newT"))) || 150,
+    Number(nowUser.Threshold) || 0,
   );
 
   const [user, setUser] = useState(
@@ -357,9 +361,10 @@ function SettingsPage({
 
             <div className="settings-card-footer">
               <button
-                onClick={() => {
+                onClick={async () => {
                   setEditThreshold((prev) => !prev);
                   if (editThreshold) {
+                    await axios.patch(`http://localhost:5000/users/${user.id}`,{...user,Threshold:meter})
                     localStorage.setItem("newT", JSON.stringify(Number(meter)));
                     alert("New Threshold Saved");
                   }
