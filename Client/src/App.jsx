@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate, data } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/FPPage";
@@ -45,7 +45,10 @@ function App() {
 
   const [journaltext, setJournaltext] = useState("");
 
+
   const user = JSON.parse(localStorage.getItem("Currentuser"));
+
+  console.log('neww',user)
 
   const [entries, setEntries] = useState(user?.journalEntries || []);
 
@@ -69,11 +72,11 @@ function App() {
         return;
       } else {
         const today = new Date().toDateString();
-        const today_entries = entries.filter((each) => {
+        const today_entries = entries?.filter((each) => {
           return new Date(each.createdAt).toDateString() === today;
         });
 
-        if (today_entries.length >= 5) {
+        if (today_entries?.length >= 5) {
           alert("Maximum only 5 entries are allowed for Today..");
           return;
         } else {
@@ -165,6 +168,13 @@ function App() {
   const now_user = JSON.parse(localStorage.getItem("Currentuser"));
 
   console.log("Now-User: ", now_user);
+
+   const deleteJournals = async () =>{
+        const datum = await axios.patch(`http://localhost:5000/users/${now_user.id}`,{...now_user,"journalEntries":[]})
+        localStorage.setItem("Currentuser",JSON.stringify(datum.data));
+        setEntries([]);     
+        console.log("naanga naalu pedu: ",datum.data);
+  }
 
   useEffect(() => {
     setEntries(user?.journalEntries || []);
@@ -260,6 +270,7 @@ function App() {
                 getAQIColor={getAQIColor}
                 getAQIStatus={getAQIStatus}
                 getAQIBadgeClass={getAQIBadgeClass}
+                deleteJournals={deleteJournals}
               />
             </ProtectedRoute>
           }

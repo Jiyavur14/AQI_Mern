@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import "../App.css";
+import axios from "axios";
+
 
 const fakeAQI = {
   city: "Trichy",
@@ -41,7 +43,8 @@ function JournalPage({
 }) {
   const userr = JSON.parse(localStorage.getItem("Currentuser"));
 
-  const deleteEntry = (indexToDelete) => {
+  const deleteEntry = async (indexToDelete) => {
+
     if (confirm("Do you wanna Delete this entry?")) {
       const updatedentries = userr.journalEntries.filter(
         (each, index) => index !== indexToDelete,
@@ -49,11 +52,19 @@ function JournalPage({
 
       setEntries(updatedentries);
 
-      localStorage.setItem("Currentuser", JSON.stringify(userr.updatedentries));
+      const updatedUserr = {...userr,journalEntries:updatedentries}
+
+      console.log("Ommal dei: ",updatedUserr);
+
+      localStorage.setItem("Currentuser",JSON.stringify(updatedUserr));
+
+      await axios.patch(`http://localhost:5000/users/${userr.id}`,updatedUserr); 
+      
     } else {
       return;
     }
   };
+
 
   return (
     <div className="dashboard-layout">
@@ -177,7 +188,7 @@ function JournalPage({
         <div className="journal-stats-row">
           <div className="journal-stat-card">
             <span className="journal-stat-value aqi-number">
-              {entries.length}
+              {entries?.length || 0}
             </span>
             <span className="journal-stat-label">Total entries</span>
           </div>
@@ -215,13 +226,10 @@ function JournalPage({
           </div>
 
           <div className="journal-entries-list">
-            {entries.map((each, index) => {
-              {
-                /* Entry 1 */
-              }
+            {entries?.map((each,index) => {
+        
               return (
-                <>
-                  <div className="journal-entry-card">
+                  <div className="journal-entry-card" key={index}>
                     <div className="journal-entry-left">
                       <div
                         className="journal-entry-aqi-bar"
@@ -280,7 +288,6 @@ function JournalPage({
                       </div>
                     </div>
                   </div>
-                </>
               );
             })}
           </div>

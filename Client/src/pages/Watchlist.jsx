@@ -191,7 +191,7 @@ function Watchlist({handlelogout,getAQIBadgeClass,getAQIStatus,getAQIColor,citie
                  
             return (<>
                   {/* Card 1 — Worst (Delhi) */}
-            <div className="city-card city-card--very-poor">
+            <div className="city-card city-card--very-poor" key={index}>
               <div className="city-card-rank">{index+1}</div>
               <div className="city-card-header">
                 <div className="city-card-info">

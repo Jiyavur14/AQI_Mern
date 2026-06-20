@@ -8,6 +8,7 @@ function SettingsPage({
   getAQIColor,
   getAQIStatus,
   getAQIBadgeClass,
+  deleteJournals
 }) {
   const [password, setpassword] = useState("");
 
@@ -22,7 +23,7 @@ function SettingsPage({
   const [editThreshold, setEditThreshold] = useState(false);
 
   const [meter, setMeter] = useState(
-    Number(localStorage.getItem("newT")) || 150,
+    Number(JSON.parse(localStorage.getItem("newT"))) || 150,
   );
 
   const [user, setUser] = useState(
@@ -213,7 +214,7 @@ function SettingsPage({
                 disabled={editStatus}
                 onChange={handleedit}
               >
-                <option value={user.city} selected>
+                <option value={user.city}>
                   {user.city}
                 </option>
                 <option value="Delhi">Delhi</option>
@@ -360,6 +361,7 @@ function SettingsPage({
                   setEditThreshold((prev) => !prev);
                   if (editThreshold) {
                     localStorage.setItem("newT", JSON.stringify(Number(meter)));
+                    alert("New Threshold Saved");
                   }
                 }}
                 className="btn-primary settings-save-btn"
@@ -455,7 +457,7 @@ function SettingsPage({
                   history. Cannot be undone.
                 </p>
               </div>
-              <button className="settings-danger-btn">Clear Journal</button>
+              <button className="settings-danger-btn" onClick={deleteJournals}>Clear Journal</button>
             </div>
 
             <div className="settings-divider"></div>
