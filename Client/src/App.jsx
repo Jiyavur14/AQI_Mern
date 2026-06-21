@@ -40,13 +40,9 @@ function App() {
 
   const [formdata, setFormdata] = useState([]);
 
-  console.log(formdata);
-
   const [journaltext, setJournaltext] = useState("");
   
   const user = JSON.parse(localStorage.getItem("Currentuser"));
-
-  console.log('eww: ',user);
 
   const [entries, setEntries] = useState(user?.journalEntries || []);
 
@@ -172,8 +168,6 @@ function App() {
   const navigate = useNavigate();
 
   const now_user = JSON.parse(localStorage.getItem("Currentuser"));
-
-  console.log("Now-User: ", now_user);
 
    const deleteJournals = async () =>{
         const datum = await axios.patch(`http://localhost:5000/users/${now_user.id}`,{...now_user,"journalEntries":[]})

@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../App.css";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const AQI_KEY = import.meta.env.VITE_AQI_API_KEY;
 
 const fakeAQI = {
   city: "Trichy",
@@ -18,18 +21,57 @@ const fakeAQI = {
   },
 };
 
-function Dashboard({handlelogout,journaltext,setJournaltext,handledown,savingentry,getAQIStatus,getAQIColor,getAQIBadgeClass}) {
- 
-
-  const navigate = useNavigate();
+function Dashboard({
+  handlelogout,
+  journaltext,
+  setJournaltext,
+  handledown,
+  savingentry,
+  getAQIStatus,
+  getAQIColor,
+  getAQIBadgeClass,
+}) {
+  console.log(import.meta.env);
 
   const user = JSON.parse(localStorage.getItem("Currentuser"));
+
+  const fetchAqi = async () => {
+    try {
+      const datum = await axios.get(
+        `https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69?api-key=${AQI_KEY}&format=json&filters[city]=${user.city}&limit=40`,
+      );
+      const rawData = datum.data.records;
+
+      const realData = rawData.map((each)=>{
+        const {avg_value,pollutant_id} = each;
+        return {avg_value,pollutant_id};
+      }) 
+
+      console.log("Real Data with NA values: ",realData);
+
+      const fullValues = realData.filter((each)=>{
+         if(each.avg_value !== "NA")
+          return each;
+      })
+
+      console.log("Real Data without NA values: ",fullValues);
+
+
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const navigate = useNavigate();
 
   function getAQIPercentage(aqi) {
     return `${(aqi / 500) * 100}%`;
   }
 
- 
+  useEffect(() => {
+    fetchAqi();
+  }, []);
+
   return (
     <div className="dashboard-layout">
       {/* ── Sidebar (desktop only) ── */}
@@ -99,7 +141,7 @@ function Dashboard({handlelogout,journaltext,setJournaltext,handledown,savingent
           <div className="topbar-right">
             <div className="topbar-threshold-badge">
               <span className="threshold-label">Threshold</span>
-              <span className="threshold-value">{user.Threshold||150}</span>
+              <span className="threshold-value">{user.Threshold || 150}</span>
             </div>
 
             {/* Mobile only — avatar + logout */}
@@ -113,7 +155,7 @@ function Dashboard({handlelogout,journaltext,setJournaltext,handledown,savingent
         </header>
 
         {/* Warning Banner */}
-        {(fakeAQI.aqi > Number(user.Threshold)) && (
+        {fakeAQI.aqi > Number(user.Threshold) && (
           <div className="aqi-warning-banner">
             <span className="warning-icon">⚠️</span>
             <p>
@@ -395,7 +437,7 @@ function Dashboard({handlelogout,journaltext,setJournaltext,handledown,savingent
             <textarea
               value={journaltext}
               onChange={(e) => setJournaltext(e.target.value)}
-               onKeyDown={handledown}
+              onKeyDown={handledown}
               className="quick-journal-input"
               placeholder="How are you feeling today? Note any symptoms, outdoor plans, or observations about the air..."
               rows={3}
