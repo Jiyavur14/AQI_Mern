@@ -178,8 +178,17 @@ function App() {
    const deleteJournals = async () =>{
         const datum = await axios.patch(`http://localhost:5000/users/${now_user.id}`,{...now_user,"journalEntries":[]})
         localStorage.setItem("Currentuser",JSON.stringify(datum.data));
-        setEntries([]);     
-        console.log("naanga naalu pedu: ",datum.data);
+        setEntries([]);
+        alert("Journal Has been Cleared!")     
+  }
+
+  const deleteAccount = async () => {
+    if(confirm("Do You want to delete your Account?")){
+    const datum = await axios.delete(`http://localhost:5000/users/${now_user.id}`)
+    localStorage.removeItem("Currentuser");
+    navigate("/login");}
+    else
+      return;
   }
 
   useEffect(() => {
@@ -272,6 +281,7 @@ function App() {
           element={
             <ProtectedRoute>
               <SettingsPage
+                deleteAccount={deleteAccount}
                 handlelogout={handlelogout}
                 getAQIColor={getAQIColor}
                 getAQIStatus={getAQIStatus}

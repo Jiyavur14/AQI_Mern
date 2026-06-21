@@ -8,7 +8,8 @@ function SettingsPage({
   getAQIColor,
   getAQIStatus,
   getAQIBadgeClass,
-  deleteJournals
+  deleteJournals,
+  deleteAccount
 }) {
   const [password, setpassword] = useState("");
 
@@ -468,7 +469,7 @@ function SettingsPage({
                   watchlist data. Cannot be undone.
                 </p>
               </div>
-              <button className="settings-danger-btn settings-danger-btn--hard">
+              <button className="settings-danger-btn settings-danger-btn--hard" onClick={deleteAccount}>
                 Delete Account
               </button>
             </div>

@@ -6,7 +6,7 @@ const fakeAQI = {
   city: "Trichy",
   lastUpdated: "10:45 AM",
 
-  aqi: 11,
+  aqi: 75,
 
   pollutants: {
     pm25: 115,
