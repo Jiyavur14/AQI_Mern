@@ -38,8 +38,18 @@ function JournalPage({
   savingentry,
   handledown,
   handlelogout,
-  getAQIStatus,
-  getAQIColor,
+  getAQIStatusPm10,
+  getAQIStatusPm25,
+  getAQIStatusNo2,
+  getAQIStatusO3,
+  getAQIStatusCo,
+  getAQIStatusSo2,
+  getAQIColorPm10,
+  getAQIColorPm25,
+  getAQIColorNo2,
+  getAQIColorO3,
+  getAQIColorCo,
+  getAQIColorSo2,
 }) {
   const userr = JSON.parse(localStorage.getItem("Currentuser"));
 

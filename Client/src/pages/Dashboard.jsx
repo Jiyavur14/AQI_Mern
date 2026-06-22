@@ -8,17 +8,7 @@ const AQI_KEY = import.meta.env.VITE_AQI_API_KEY;
 const fakeAQI = {
   city: "Trichy",
   lastUpdated: "10:45 AM",
-
-  aqi: 75,
-
-  pollutants: {
-    pm25: 115,
-    pm10: 100,
-    no2: 75,
-    so2: 50,
-    co: 0.8,
-    o3: 25,
-  },
+  aqi: 75
 };
 
 function Dashboard({
@@ -27,9 +17,24 @@ function Dashboard({
   setJournaltext,
   handledown,
   savingentry,
-  getAQIStatus,
-  getAQIColor,
-  getAQIBadgeClass,
+  getAQIStatusPm10,
+  getAQIStatusPm25,
+  getAQIStatusNo2,
+  getAQIStatusO3,
+  getAQIStatusCo,
+  getAQIStatusSo2,
+  getAQIColorPm10,
+  getAQIColorPm25,
+  getAQIColorNo2,
+  getAQIColorO3,
+  getAQIColorCo,
+  getAQIColorSo2,
+  getAQIBadgeClassPm10,
+  getAQIBadgeClassPm25,
+  getAQIBadgeClassNo2,
+  getAQIBadgeClassO3,
+  getAQIBadgeClassCo,
+  getAQIBadgeClassSo2,
 }) {
   console.log(import.meta.env);
 
@@ -113,6 +118,11 @@ function Dashboard({
   };
 
   const pollutant_data = JSON.parse(localStorage.getItem("aqiData"));
+
+  const {PM10} = pollutant_data;
+
+  const aqiVal = PM10;
+  console.log("aqi: ",aqiVal)
 
   console.log(pollutant_data)
   
@@ -227,14 +237,14 @@ function Dashboard({
               <p className="aqi-hero-label">Air Quality Index</p>
               <div
                 className="aqi-hero-number aqi-number"
-                style={{ color: getAQIColor(fakeAQI.aqi) }}
+                style={{ color: getAQIColorPm10(aqiVal) }}
               >
-                {fakeAQI.aqi}
+                {Math.floor(aqiVal)}
               </div>
               <div
-                className={`aqi-status-badge ${getAQIBadgeClass(fakeAQI.aqi)}`}
+                className={`aqi-status-badge ${getAQIBadgeClassPm10(aqiVal)}`}
               >
-                {getAQIStatus(fakeAQI.aqi)}
+                {getAQIStatusPm10(aqiVal)}
               </div>
               <p className="aqi-hero-city">
                 {user.city}, {user.state}
@@ -244,13 +254,13 @@ function Dashboard({
               <div
                 className="aqi-gauge-ring"
                 style={{
-                  "--aqi-color": getAQIColor(fakeAQI.aqi),
-                  "--aqi-pct": getAQIPercentage(fakeAQI.aqi),
+                  "--aqi-color": getAQIColorPm10(aqiVal),
+                  "--aqi-pct": getAQIPercentage(aqiVal),
                 }}
               >
                 <div className="aqi-gauge-inner">
                   <span className="aqi-gauge-value aqi-number">
-                    {fakeAQI.aqi}
+                    {Math.floor(aqiVal)}
                   </span>
                   <span className="aqi-gauge-label">AQI</span>
                 </div>
@@ -282,7 +292,7 @@ function Dashboard({
                 style={{ background: "var(--aqi-moderate)" }}
               ></span>
               <span>Moderate</span>
-              <span className="scale-range">101–200</span>
+              <span className="scale-range">101–250</span>
             </div>
             <div className="scale-legend-item">
               <span
@@ -290,7 +300,7 @@ function Dashboard({
                 style={{ background: "var(--aqi-poor)" }}
               ></span>
               <span>Poor</span>
-              <span className="scale-range">201–300</span>
+              <span className="scale-range">251–350</span>
             </div>
             <div className="scale-legend-item">
               <span
@@ -298,7 +308,7 @@ function Dashboard({
                 style={{ background: "var(--aqi-very-poor)" }}
               ></span>
               <span>Very Poor</span>
-              <span className="scale-range">301–400</span>
+              <span className="scale-range">351–430</span>
             </div>
             <div className="scale-legend-item">
               <span
@@ -306,7 +316,7 @@ function Dashboard({
                 style={{ background: "var(--aqi-severe)" }}
               ></span>
               <span>Severe</span>
-              <span className="scale-range">401+</span>
+              <span className="scale-range">431+</span>
             </div>
           </div>
         </section>
@@ -320,9 +330,9 @@ function Dashboard({
                 <span className="pollutant-name">PM2.5</span>
                 <span
                   className="pollutant-status"
-                  style={{ color: "var(--aqi-poor)" }}
+                  style={{ color: getAQIColorPm25(aqiVal) }}
                 >
-                  Poor
+                  {getAQIStatusPm25(aqiVal)}
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
@@ -332,7 +342,7 @@ function Dashboard({
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: "74%", background: "var(--aqi-poor)" }}
+                  style={{ width: `${(pollutant_data.PM25/250)*100}%`, background: getAQIColorPm25(aqiVal) }}
                 ></div>
               </div>
               <p className="pollutant-desc">Fine particulate matter</p>
@@ -347,9 +357,9 @@ function Dashboard({
                 <span className="pollutant-name">PM10</span>
                 <span
                   className="pollutant-status"
-                  style={{ color: "var(--aqi-moderate)" }}
+                  style={{ color: getAQIColorPm10(aqiVal) }}
                 >
-                  Moderate
+                  {getAQIStatusPm10(aqiVal)}
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
@@ -359,7 +369,7 @@ function Dashboard({
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: "55%", background: "var(--aqi-moderate)" }}
+                  style={{ width: `${(pollutant_data.PM10/430)*100}%`, background: getAQIColorPm10(aqiVal) }}
                 ></div>
               </div>
               <p className="pollutant-desc">Coarse particulate matter</p>
@@ -374,9 +384,9 @@ function Dashboard({
                 <span className="pollutant-name">NO₂</span>
                 <span
                   className="pollutant-status"
-                  style={{ color: "var(--aqi-good)" }}
+                  style={{ color: getAQIColorNo2(aqiVal) }}
                 >
-                  Good
+                  {getAQIStatusNo2(aqiVal)}
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
@@ -386,7 +396,7 @@ function Dashboard({
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: "18%", background: "var(--aqi-good)" }}
+                  style={{ width: `${(pollutant_data.NO2/400)*100}%`, background: getAQIColorNo2(aqiVal) }}
                 ></div>
               </div>
               <p className="pollutant-desc">Nitrogen dioxide</p>
@@ -401,9 +411,9 @@ function Dashboard({
                 <span className="pollutant-name">SO₂</span>
                 <span
                   className="pollutant-status"
-                  style={{ color: "var(--aqi-satisfactory)" }}
+                  style={{ color: getAQIColorSo2(aqiVal) }}
                 >
-                  Satisfactory
+                  {getAQIStatusSo2(aqiVal)}
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
@@ -414,8 +424,8 @@ function Dashboard({
                 <div
                   className="pollutant-bar-fill"
                   style={{
-                    width: "30%",
-                    background: "var(--aqi-satisfactory)",
+                    width: `${(pollutant_data.SO2/1600)*100}%`,
+                    background: getAQIColorSo2(aqiVal),
                   }}
                 ></div>
               </div>
@@ -431,9 +441,9 @@ function Dashboard({
                 <span className="pollutant-name">CO</span>
                 <span
                   className="pollutant-status"
-                  style={{ color: "var(--aqi-good)" }}
+                  style={{ color: getAQIColorCo(aqiVal) }}
                 >
-                  Good
+                  {getAQIStatusCo(aqiVal)}
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
@@ -443,7 +453,7 @@ function Dashboard({
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: "12%", background: "var(--aqi-good)" }}
+                  style={{ width: `${(pollutant_data.CO/34)*100}%`, background: getAQIColorCo(aqiVal) }}
                 ></div>
               </div>
               <p className="pollutant-desc">Carbon monoxide</p>
@@ -458,9 +468,9 @@ function Dashboard({
                 <span className="pollutant-name">O₃</span>
                 <span
                   className="pollutant-status"
-                  style={{ color: "var(--aqi-satisfactory)" }}
+                  style={{ color: getAQIColorO3(aqiVal) }}
                 >
-                  Satisfactory
+                  {getAQIStatusO3(aqiVal)}
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
@@ -471,8 +481,8 @@ function Dashboard({
                 <div
                   className="pollutant-bar-fill"
                   style={{
-                    width: "38%",
-                    background: "var(--aqi-satisfactory)",
+                    width: `${(pollutant_data.O3/748)*100}%`,
+                    background: getAQIColorO3(aqiVal)
                   }}
                 ></div>
               </div>

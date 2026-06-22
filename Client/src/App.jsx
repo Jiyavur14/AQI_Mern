@@ -135,35 +135,192 @@ function App() {
     }
   };
 
-  function getAQIStatus(aqi) {
+
+    function getAQIStatusPm10(aqi) {
     if (aqi <= 50) return "Good";
     if (aqi <= 100) return "Satisfactory";
-    if (aqi <= 200) return "Moderate";
-    if (aqi <= 300) return "Poor";
+    if (aqi <= 250) return "Moderate";
+    if (aqi <= 350) return "Poor";
+    if (aqi <= 430) return "Very Poor";
+
+    return "Severe";
+  }
+
+    function getAQIStatusPm25(aqi) {
+    if (aqi <= 30) return "Good";
+    if (aqi <= 60) return "Satisfactory";
+    if (aqi <= 90) return "Moderate";
+    if (aqi <= 120) return "Poor";
+    if (aqi <= 250) return "Very Poor";
+
+    return "Severe";
+  }
+
+  function getAQIStatusNo2(aqi) {
+    if (aqi <= 40) return "Good";
+    if (aqi <= 80) return "Satisfactory";
+    if (aqi <= 180) return "Moderate";
+    if (aqi <= 280) return "Poor";
     if (aqi <= 400) return "Very Poor";
 
     return "Severe";
   }
 
-  function getAQIColor(aqi) {
+    function getAQIStatusO3(aqi) {
+    if (aqi <= 50) return "Good";
+    if (aqi <= 100) return "Satisfactory";
+    if (aqi <= 168) return "Moderate";
+    if (aqi <= 208) return "Poor";
+    if (aqi <= 748) return "Very Poor";
+
+    return "Severe";
+  }
+
+    function getAQIStatusCo(aqi) {
+    if (aqi <= 1.0) return "Good";
+    if (aqi <= 2.0) return "Satisfactory";
+    if (aqi <= 10) return "Moderate";
+    if (aqi <= 17) return "Poor";
+    if (aqi <= 34) return "Very Poor";
+
+    return "Severe";
+  }
+
+    function getAQIStatusSo2(aqi) {
+    if (aqi <= 40) return "Good";
+    if (aqi <= 80) return "Satisfactory";
+    if (aqi <= 380) return "Moderate";
+    if (aqi <= 800) return "Poor";
+    if (aqi <= 1600) return "Very Poor";
+
+    return "Severe";
+  }
+
+  function getAQIColorPm10(aqi) {
     if (aqi <= 50) return "var(--aqi-good)";
     if (aqi <= 100) return "var(--aqi-satisfactory)";
-    if (aqi <= 200) return "var(--aqi-moderate)";
-    if (aqi <= 300) return "var(--aqi-poor)";
+    if (aqi <= 250) return "var(--aqi-moderate)";
+    if (aqi <= 350) return "var(--aqi-poor)";
+    if (aqi <= 430) return "var(--aqi-very-poor)";
+
+    return "var(--aqi-severe)";
+  }
+
+  
+  function getAQIColorPm25(aqi) {
+    if (aqi <= 30) return "var(--aqi-good)";
+    if (aqi <= 60) return "var(--aqi-satisfactory)";
+    if (aqi <= 90) return "var(--aqi-moderate)";
+    if (aqi <= 120) return "var(--aqi-poor)";
+    if (aqi <= 250) return "var(--aqi-very-poor)";
+
+    return "var(--aqi-severe)";
+  }
+
+  
+  function getAQIColorNo2(aqi) {
+    if (aqi <= 40) return "var(--aqi-good)";
+    if (aqi <= 80) return "var(--aqi-satisfactory)";
+    if (aqi <= 180) return "var(--aqi-moderate)";
+    if (aqi <= 280) return "var(--aqi-poor)";
     if (aqi <= 400) return "var(--aqi-very-poor)";
 
     return "var(--aqi-severe)";
   }
 
-  function getAQIBadgeClass(aqi) {
+  
+  function getAQIColorO3(aqi) {
+    if (aqi <= 50) return "var(--aqi-good)";
+    if (aqi <= 100) return "var(--aqi-satisfactory)";
+    if (aqi <= 168) return "var(--aqi-moderate)";
+    if (aqi <= 208) return "var(--aqi-poor)";
+    if (aqi <= 748) return "var(--aqi-very-poor)";
+
+    return "var(--aqi-severe)";
+  }
+
+  
+  function getAQIColorCo(aqi) {
+    if (aqi <= 1.0) return "var(--aqi-good)";
+    if (aqi <= 2.0) return "var(--aqi-satisfactory)";
+    if (aqi <= 10) return "var(--aqi-moderate)";
+    if (aqi <= 17) return "var(--aqi-poor)";
+    if (aqi <= 34) return "var(--aqi-very-poor)";
+
+    return "var(--aqi-severe)";
+  }
+
+  
+  function getAQIColorSo2(aqi) {
+    if (aqi <= 40) return "var(--aqi-good)";
+    if (aqi <= 80) return "var(--aqi-satisfactory)";
+    if (aqi <= 380) return "var(--aqi-moderate)";
+    if (aqi <= 800) return "var(--aqi-poor)";
+    if (aqi <= 1600) return "var(--aqi-very-poor)";
+
+    return "var(--aqi-severe)";
+  }
+
+  function getAQIBadgeClassPm10(aqi) {
     if (aqi <= 50) return "aqi-status-badge--good";
     if (aqi <= 100) return "aqi-status-badge--satisfactory";
-    if (aqi <= 200) return "aqi-status-badge--moderate";
-    if (aqi <= 300) return "aqi-status-badge--poor";
+    if (aqi <= 250) return "aqi-status-badge--moderate";
+    if (aqi <= 350) return "aqi-status-badge--poor";
+    if (aqi <= 430) return "aqi-status-badge--very-poor";
+
+    return "aqi-status-badge--severe";
+  }  
+
+  function getAQIBadgeClassPm25(aqi) {
+    if (aqi <= 30) return "aqi-status-badge--good";
+    if (aqi <= 60) return "aqi-status-badge--satisfactory";
+    if (aqi <= 90) return "aqi-status-badge--moderate";
+    if (aqi <= 120) return "aqi-status-badge--poor";
+    if (aqi <= 250) return "aqi-status-badge--very-poor";
+
+    return "aqi-status-badge--severe";
+  }
+
+  function getAQIBadgeClassNo2(aqi) {
+    if (aqi <= 40) return "aqi-status-badge--good";
+    if (aqi <= 80) return "aqi-status-badge--satisfactory";
+    if (aqi <= 180) return "aqi-status-badge--moderate";
+    if (aqi <= 280) return "aqi-status-badge--poor";
     if (aqi <= 400) return "aqi-status-badge--very-poor";
 
     return "aqi-status-badge--severe";
   }
+
+  function getAQIBadgeClassO3(aqi) {
+    if (aqi <= 50) return "aqi-status-badge--good";
+    if (aqi <= 100) return "aqi-status-badge--satisfactory";
+    if (aqi <= 168) return "aqi-status-badge--moderate";
+    if (aqi <= 208) return "aqi-status-badge--poor";
+    if (aqi <= 748) return "aqi-status-badge--very-poor";
+
+    return "aqi-status-badge--severe";
+  }
+
+  function getAQIBadgeClassCo(aqi) {
+    if (aqi <= 1.0) return "aqi-status-badge--good";
+    if (aqi <= 2.0) return "aqi-status-badge--satisfactory";
+    if (aqi <= 10) return "aqi-status-badge--moderate";
+    if (aqi <= 17) return "aqi-status-badge--poor";
+    if (aqi <= 34) return "aqi-status-badge--very-poor";
+
+    return "aqi-status-badge--severe";
+  }
+
+  function getAQIBadgeClassSo2(aqi) {
+    if (aqi <= 40) return "aqi-status-badge--good";
+    if (aqi <= 80) return "aqi-status-badge--satisfactory";
+    if (aqi <= 380) return "aqi-status-badge--moderate";
+    if (aqi <= 800) return "aqi-status-badge--poor";
+    if (aqi <= 1600) return "aqi-status-badge--very-poor";
+
+    return "aqi-status-badge--severe";
+  }
+
 
   const navigate = useNavigate();
 
@@ -221,9 +378,27 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard
-                getAQIBadgeClass={getAQIBadgeClass}
-                getAQIColor={getAQIColor}
-                getAQIStatus={getAQIStatus}
+                getAQIBadgeClassPm10={getAQIBadgeClassPm10}
+                getAQIBadgeClassPm25={getAQIBadgeClassPm25}
+                getAQIBadgeClassNo2={getAQIBadgeClassNo2}
+                getAQIBadgeClassO3={getAQIBadgeClassO3}
+                getAQIBadgeClassCo={getAQIBadgeClassCo}
+                getAQIBadgeClassSo2={getAQIBadgeClassSo2}
+
+                getAQIColorPm10={getAQIColorPm10}
+                getAQIColorPm25={getAQIColorPm25}
+                getAQIColorNo2={getAQIColorNo2}
+                getAQIColorO3={getAQIColorO3}
+                getAQIColorCo={getAQIColorCo}
+                getAQIColorSo2={getAQIColorSo2}
+
+                getAQIStatusPm10={getAQIStatusPm10}
+                getAQIStatusPm25={getAQIStatusPm25}
+                getAQIStatusNo2={getAQIStatusNo2}
+                getAQIStatusO3={getAQIStatusO3}
+                getAQIStatusCo={getAQIStatusCo}
+                getAQIStatusSo2={getAQIStatusSo2}
+
                 handledown={handledown}
                 savingentry={savingentry}
                 journaltext={journaltext}
@@ -238,9 +413,26 @@ function App() {
             <ProtectedRoute>
               <WatchlistPage
                 handlelogout={handlelogout}
-                getAQIBadgeClass={getAQIBadgeClass}
-                getAQIStatus={getAQIStatus}
-                getAQIColor={getAQIColor}
+                getAQIBadgeClassPm10={getAQIBadgeClassPm10}
+                getAQIBadgeClassPm25={getAQIBadgeClassPm25}
+                getAQIBadgeClassNo2={getAQIBadgeClassNo2}
+                getAQIBadgeClassO3={getAQIBadgeClassO3}
+                getAQIBadgeClassCo={getAQIBadgeClassCo}
+                getAQIBadgeClassSo2={getAQIBadgeClassSo2}
+
+                getAQIColorPm10={getAQIColorPm10}
+                getAQIColorPm25={getAQIColorPm25}
+                getAQIColorNo2={getAQIColorNo2}
+                getAQIColorO3={getAQIColorO3}
+                getAQIColorCo={getAQIColorCo}
+                getAQIColorSo2={getAQIColorSo2}
+
+                getAQIStatusPm10={getAQIStatusPm10}
+                getAQIStatusPm25={getAQIStatusPm25}
+                getAQIStatusNo2={getAQIStatusNo2}
+                getAQIStatusO3={getAQIStatusO3}
+                getAQIStatusCo={getAQIStatusCo}
+                getAQIStatusSo2={getAQIStatusSo2}
                 cities={cities}
                 setCities={setCities}
                 cityinput={cityinput}
@@ -259,8 +451,21 @@ function App() {
                 setEntryindex={setEntryindex}
                 entries={entries}
                 setEntries={setEntries}
-                getAQIColor={getAQIColor}
-                getAQIStatus={getAQIStatus}
+              
+                getAQIColorPm10={getAQIColorPm10}
+                getAQIColorPm25={getAQIColorPm25}
+                getAQIColorNo2={getAQIColorNo2}
+                getAQIColorO3={getAQIColorO3}
+                getAQIColorCo={getAQIColorCo}
+                getAQIColorSo2={getAQIColorSo2}
+
+                getAQIStatusPm10={getAQIStatusPm10}
+                getAQIStatusPm25={getAQIStatusPm25}
+                getAQIStatusNo2={getAQIStatusNo2}
+                getAQIStatusO3={getAQIStatusO3}
+                getAQIStatusCo={getAQIStatusCo}
+                getAQIStatusSo2={getAQIStatusSo2}
+
                 handledown={handledown}
                 savingentry={savingentry}
                 journaltext={journaltext}
@@ -277,9 +482,7 @@ function App() {
               <SettingsPage
                 deleteAccount={deleteAccount}
                 handlelogout={handlelogout}
-                getAQIColor={getAQIColor}
-                getAQIStatus={getAQIStatus}
-                getAQIBadgeClass={getAQIBadgeClass}
+        
                 deleteJournals={deleteJournals}
               />
             </ProtectedRoute>
