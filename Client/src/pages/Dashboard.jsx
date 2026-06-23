@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import "../App.css";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { setAQIData } from "../redux/aqiSlice";
 
 const AQI_KEY = import.meta.env.VITE_AQI_API_KEY;
 
@@ -39,6 +42,8 @@ function Dashboard({
   console.log(import.meta.env);
 
   const user = JSON.parse(localStorage.getItem("Currentuser"));
+
+  const dispatch = useDispatch();
 
   const fetchAqi = async () => {
     try {
@@ -110,21 +115,22 @@ function Dashboard({
         return acc;
       },{})  
  
-      localStorage.setItem("aqiData",JSON.stringify(finalValues))
+      dispatch(setAQIData(finalValues))    
 
     } catch (err) {
       console.log(err.message);
     }
   };
 
-  const pollutant_data = JSON.parse(localStorage.getItem("aqiData"));
+  const polludata = useSelector((state)=>state.aqi.polluData);
 
-  const {PM10} = pollutant_data;
+  const {PM10} = polludata;
 
   const aqiVal = PM10;
+  
   console.log("aqi: ",aqiVal)
 
-  console.log(pollutant_data)
+  console.log(polludata)
   
 
   const navigate = useNavigate();
@@ -336,13 +342,13 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {pollutant_data.PM25}{" "}
+                {polludata.PM25}{" "}
                 <span className="pollutant-unit">µg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: `${(pollutant_data.PM25/250)*100}%`, background: getAQIColorPm25(aqiVal) }}
+                  style={{ width: `${(polludata.PM25/250)*100}%`, background: getAQIColorPm25(aqiVal) }}
                 ></div>
               </div>
               <p className="pollutant-desc">Fine particulate matter</p>
@@ -363,13 +369,13 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {pollutant_data.PM10}{" "}
+                {polludata.PM10}{" "}
                 <span className="pollutant-unit">µg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: `${(pollutant_data.PM10/430)*100}%`, background: getAQIColorPm10(aqiVal) }}
+                  style={{ width: `${(polludata.PM10/430)*100}%`, background: getAQIColorPm10(aqiVal) }}
                 ></div>
               </div>
               <p className="pollutant-desc">Coarse particulate matter</p>
@@ -390,13 +396,13 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {pollutant_data.NO2}{" "}
+                {polludata.NO2}{" "}
                 <span className="pollutant-unit">µg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: `${(pollutant_data.NO2/400)*100}%`, background: getAQIColorNo2(aqiVal) }}
+                  style={{ width: `${(polludata.NO2/400)*100}%`, background: getAQIColorNo2(aqiVal) }}
                 ></div>
               </div>
               <p className="pollutant-desc">Nitrogen dioxide</p>
@@ -417,14 +423,14 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {pollutant_data.SO2}{" "}
+                {polludata.SO2}{" "}
                 <span className="pollutant-unit">µg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
                   style={{
-                    width: `${(pollutant_data.SO2/1600)*100}%`,
+                    width: `${(polludata.SO2/1600)*100}%`,
                     background: getAQIColorSo2(aqiVal),
                   }}
                 ></div>
@@ -447,13 +453,13 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {pollutant_data.CO}{" "}
+                {polludata.CO}{" "}
                 <span className="pollutant-unit">mg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: `${(pollutant_data.CO/34)*100}%`, background: getAQIColorCo(aqiVal) }}
+                  style={{ width: `${(polludata.CO/34)*100}%`, background: getAQIColorCo(aqiVal) }}
                 ></div>
               </div>
               <p className="pollutant-desc">Carbon monoxide</p>
@@ -474,14 +480,14 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {pollutant_data.O3}{" "}
+                {polludata.O3}{" "}
                 <span className="pollutant-unit">µg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
                   style={{
-                    width: `${(pollutant_data.O3/748)*100}%`,
+                    width: `${(polludata.O3/748)*100}%`,
                     background: getAQIColorO3(aqiVal)
                   }}
                 ></div>
