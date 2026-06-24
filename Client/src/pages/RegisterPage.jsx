@@ -1,46 +1,49 @@
 import "../App.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-
-const INDIAN_STATES = [
-  "TamilNadu",
-  "Kerala",
-  "Up",
-  "Delhi",
-  "Telugana",
-  "Gujarat",
-  "Karnataka",
-  "Jarkant",
-  "Jammu",
-];
-
+import axios from "axios";
+import states from '../assets/states.json';
 /* List of major Indian cities for the home city dropdown */
+
+let districts;
 const INDIAN_CITIES = [
-  "Ahmedabad",
-  "Bengaluru",
-  "Bhopal",
-  "Chennai",
-  "Coimbatore",
-  "Faridabad",
-  "Ghaziabad",
-  "Gurugram",
-  "Hyderabad",
-  "Indore",
-  "Jaipur",
-  "Kanpur",
-  "Kochi",
-  "Kolkata",
-  "Lucknow",
-  "Ludhiana",
-  "Mumbai",
-  "Nagpur",
-  "Patna",
-  "Pune",
-  "Rajkot",
-  "Surat",
-  "Thane",
-  "Varanasi",
-  "Visakhapatnam",
+    "Andaman and Nicobar Islands",
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chandigarh",
+    "Chhattisgarh",
+    "Dadra and Nagar Haveli",
+    "Daman and Diu",
+    "Delhi",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jammu and Kashmir",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Ladakh",
+    "Lakshadweep",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Puducherry",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
 ];
 
 function RegisterPage({
@@ -51,11 +54,12 @@ function RegisterPage({
   formdata,
   setFormdata,
 }) {
+  
   const [errormsg, setErrormsg] = useState("");
   const [loading, setIsloading] = useState(false);
   const navigate = useNavigate();
   const timeref = useRef(null);
-
+  let stateVal = "";
   const handlechange = (e) => {
     setErrormsg("");
     const { name, value } = e.target;
@@ -64,6 +68,9 @@ function RegisterPage({
       ...prev,
       [name]: value,
     }));
+
+    if(name === "state")
+      stateVal = value;
   };
 
   const handleSubmit = async (e) => {
@@ -118,6 +125,7 @@ function RegisterPage({
       setIsloading(false);
     }
   };
+
 
   return (
     <div className="auth-page">
@@ -228,9 +236,9 @@ function RegisterPage({
                 <option value="" disabled>
                   Select your state
                 </option>
-                {INDIAN_STATES.map((city) => (
-                  <option key={city} value={city}>
-                    {city}
+                {states.States.map((each) => (
+                  <option key={each.state} value={each.state}>
+                    {each.state}
                   </option>
                 ))}
               </select>
@@ -251,11 +259,12 @@ function RegisterPage({
                 <option value="" disabled>
                   Select your city
                 </option>
-                {INDIAN_CITIES.map((city) => (
-                  <option key={city} value={city}>
-                    {city}
+                {districts = states.States.find((state) =>state === stateVal);
+                console.log(districts);}
+                  <option key={districts} value={districts}>
+                    {districts}
                   </option>
-                ))}
+                
               </select>
             </div>
 

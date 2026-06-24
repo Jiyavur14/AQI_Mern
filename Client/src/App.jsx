@@ -38,8 +38,6 @@ function App() {
 
   const [showpassword, setShowpassword] = useState(false);
 
-  const [formdata, setFormdata] = useState([]);
-
   const [journaltext, setJournaltext] = useState("");
   
   const user = JSON.parse(localStorage.getItem("Currentuser"));
@@ -353,7 +351,6 @@ function App() {
           path="/login"
           element={
             <LoginPage
-              formdata={formdata}
               showpassword={showpassword}
               setShowpassword={setShowpassword}
             />
@@ -363,8 +360,6 @@ function App() {
           path="/register"
           element={
             <RegisterPage
-              formdata={formdata}
-              setFormdata={setFormdata}
               setUsers={setUsers}
               users={users}
               showpassword={showpassword}
