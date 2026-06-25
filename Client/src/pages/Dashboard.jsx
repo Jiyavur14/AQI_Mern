@@ -6,10 +6,10 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setAQIData } from "../redux/aqiSlice";
 
-const AQI_KEY = import.meta.env.VITE_AQI_API_KEY;
 
 
 function Dashboard({
+  fetchAqi,
   handlelogout,
   journaltext,
   setJournaltext,
@@ -37,94 +37,6 @@ function Dashboard({
   const user = JSON.parse(localStorage.getItem("Currentuser"));
 
   const dispatch = useDispatch();
-
-  const fetchAqi = async () => {
-    try {
-      const datum = await axios.get(
-        `https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69?api-key=${AQI_KEY}&format=json&filters[city]=${user.city}&limit=40`,
-      );
-      const rawData = datum.data.records;
-
-      const dateStr = datum.data.updated_date;
-
-      const [date, time] = dateStr.split("T");
-      const [year, month, day] = date.split("-");
-
-      const lastUpdated = `${day}/${month}/${year} - ${time.slice(0, 5)}`;
-
-      console.log(lastUpdated);
-
-      const realData = rawData.map((each) => {
-        const { avg_value, pollutant_id } = each;
-        return { avg_value, pollutant_id };
-      });
-
-      console.log("Real Data with NA values: ", realData);
-
-      const fullValues = realData.filter((each) => {
-        if (each.avg_value !== "NA") return each;
-      });
-
-      console.log("Real Data without NA values: ", fullValues);
-
-      const pollutants = {
-        PM25: [],
-        PM10: [],
-        NO2: [],
-        SO2: [],
-        CO: [],
-        O3: [],
-      };
-
-      fullValues.forEach((each) => {
-        let id = each.pollutant_id;
-
-        switch (id) {
-          case "PM2.5":
-            pollutants.PM25.push(each.avg_value);
-            break;
-          case "PM10":
-            pollutants.PM10.push(each.avg_value);
-            break;
-          case "NO2":
-            pollutants.NO2.push(each.avg_value);
-            break;
-          case "SO2":
-            pollutants.SO2.push(each.avg_value);
-            break;
-          case "CO":
-            pollutants.CO.push(each.avg_value);
-            break;
-          case "OZONE":
-            pollutants.O3.push(each.avg_value);
-            break;
-        }
-      });
-
-      const keys = Object.keys(pollutants);
-
-      const finalValues = keys.reduce((acc, key) => {
-        //step1: getting 1st array
-        const arrval = pollutants[key];
-        //step2: converting it into number
-        const numval = arrval.map(Number);
-        //step3: adding every value
-        const sum = numval.reduce((tot, num) => tot + num, 0);
-        //step4: average
-        const avg = Number(sum / numval.length).toFixed(2);
-        //adding the answer to our final acc object
-        acc[key] = avg;
-
-        return acc;
-      }, {});
-
-      const fulll = {...finalValues,lastUpdated}
-
-      dispatch(setAQIData(fulll));
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
 
   const polludata = useSelector((state) => state.aqi.polluData);
 

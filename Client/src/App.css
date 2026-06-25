@@ -2325,6 +2325,26 @@
   color: #fff;
 }
 
+.city-suggestions {
+  background: #0F1117;
+  border: 1px solid #ddd;
+  max-height: 150px;
+  width: 13%;
+  overflow-y: auto;
+  margin-top: 2px;
+  border-radius: 8px;
+  color: var(--accent-primary);
+}
+
+.city-suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.city-suggestion-item:hover {
+  background: #f3f3f3;
+}
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
 

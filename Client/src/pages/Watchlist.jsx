@@ -1,6 +1,38 @@
 import { useState } from "react";
 import "../App.css";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { setAQIData } from "../redux/aqiSlice";
+
+const INDIAN_CITIES = [
+  "Guwahati",
+  "Visakhapatnam",
+  "Gaya",
+  "Patna",
+  "Raipur",
+  "Cuddalore",
+  "Chennai",
+  "Hyderabad",
+  "Agra",
+  "Noida",
+  "Varanasi",
+  "Howrah",
+  "Kolkata",
+  "Meerut",
+  "Lucknow",
+  "Navi Mumbai",
+  "Asansol",
+  "Mumbai",
+  "Faridabad",
+  "Navi Mumbai",
+  "Delhi",
+  "Dehradun",
+  "Moradabad",
+  "Ghaziabad",
+  "Gummidipoondi",
+  "Bareilly",
+];
 
 function Watchlist({
   handlelogout,
@@ -80,6 +112,12 @@ function Watchlist({
     if (e.key === "Enter") addcity();
   };
 
+ const filteredCities = INDIAN_CITIES.filter(
+  city =>(
+    city.toLowerCase().startsWith(cityinput.toLowerCase()) &&
+    city.toLowerCase() !== cityinput.toLowerCase())
+);
+
   return (
     <div className="dashboard-layout">
       {/* ── Sidebar (desktop only) ── */}
@@ -154,7 +192,7 @@ function Watchlist({
         </header>
 
         {/* ── Add city bar ── */}
-        <div className="watchlist-add-bar">
+        <div className="watchlist-add-bar flex flex-col">
           <div className="watchlist-add-inner">
             <span className="watchlist-add-icon">◉</span>
             <input
@@ -163,12 +201,25 @@ function Watchlist({
               onChange={(e) => setCityinput(e.target.value)}
               onKeyDown={handledown}
               className="watchlist-add-input"
-              placeholder="Type a city name — e.g. Mumbai, Kolkata, Jaipur..."
+              placeholder="Type a city name — e.g. Chennai, Kolkata, Mumbai..."
             />
             <button className="watchlist-add-btn" onClick={addcity}>
               <span>+ Add City</span>
             </button>
           </div>
+            {cityinput && (
+              <div className="city-suggestions">
+                {filteredCities.map((city) => (
+                  <div
+                    key={city}
+                    className="city-suggestion-item"
+                    onClick={() => setCityinput(city)}
+                  >
+                    {city}
+                  </div>
+                ))}
+              </div>
+            )}
           <p className="watchlist-add-hint">
             {cities.length} of 5 cities added
           </p>
@@ -196,6 +247,7 @@ function Watchlist({
         <section className="watchlist-section">
           <h3 className="section-title">Your Cities</h3>
           <div className="watchlist-grid">
+
             {cities.map((each, index) => {
               const isThresholdCrossed = each.aqi >= 150;
 
@@ -207,7 +259,6 @@ function Watchlist({
                     <div className="city-card-header">
                       <div className="city-card-info">
                         <h3 className="city-card-name">{each.city}</h3>
-                        <p className="city-card-state">{each.state}</p>
                       </div>
                       <button
                         className="city-card-remove"
