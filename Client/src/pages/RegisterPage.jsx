@@ -6,43 +6,31 @@ import states from '../assets/states.json';
 /* List of major Indian cities for the home city dropdown */
 
 const INDIAN_CITIES = [
-    "Andaman and Nicobar Islands",
-    "Andhra Pradesh",
-    "Arunachal Pradesh",
-    "Assam",
-    "Bihar",
-    "Chandigarh",
-    "Chhattisgarh",
-    "Dadra and Nagar Haveli",
-    "Daman and Diu",
+    "Guwahati",
+    "Visakhapatnam",
+    "Gaya",
+    "Patna",
+    "Raipur",
+    "Cuddalore",
+    "Chennai",
+    "Hyderabad",
+    "Agra",
+    "Noida",
+    "Varanasi",
+    "Howrah",
+    "Kolkata",
+    "Meerut",
+    "Lucknow",
+    "Navi Mumbai",
+    "Asansol",
+    "Faridabad",
+    "Navi Mumbai",
     "Delhi",
-    "Goa",
-    "Gujarat",
-    "Haryana",
-    "Himachal Pradesh",
-    "Jammu and Kashmir",
-    "Jharkhand",
-    "Karnataka",
-    "Kerala",
-    "Ladakh",
-    "Lakshadweep",
-    "Madhya Pradesh",
-    "Maharashtra",
-    "Manipur",
-    "Meghalaya",
-    "Mizoram",
-    "Nagaland",
-    "Odisha",
-    "Puducherry",
-    "Punjab",
-    "Rajasthan",
-    "Sikkim",
-    "Tamil Nadu",
-    "Telangana",
-    "Tripura",
-    "Uttar Pradesh",
-    "Uttarakhand",
-    "West Bengal",
+    "Dehradun",
+    "Moradabad",
+    "Ghaziabad",
+    "Gummidipoondi",
+    "Bareilly",
 ];
 
 function RegisterPage({
@@ -223,29 +211,6 @@ function RegisterPage({
             </div>
 
             <div className="form-group">
-              <label className="form-label" htmlFor="state">
-                State
-              </label>
-              <select
-                name="state"
-                value={users.state}
-                onChange={handlechange}
-                required
-                id="city"
-                className="form-input form-select"
-              >
-                <option value="" disabled>
-                  Select your state
-                </option>
-                {states.States.map((each) => (
-                  <option key={each.state} value={each.state}>
-                    {each.state}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
               <label className="form-label" htmlFor="city">
                 Home city
               </label>
@@ -260,9 +225,9 @@ function RegisterPage({
                 <option value="" disabled>
                   Select your city
                 </option>
-                  {selectedState?.districts.map((districts) =>
-                  <option key={districts} value={districts}>
-                    {districts}
+                  {INDIAN_CITIES.map((each) =>
+                  <option key={each} value={each}>
+                    {each}
                   </option>)}
                 
               </select>

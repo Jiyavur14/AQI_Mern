@@ -30,7 +30,6 @@ function App() {
   const [users, setUsers] = useState({
     name: "",
     email: "",
-    state: "",
     city: "",
     password: "",
     confirm_password: "",

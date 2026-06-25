@@ -8,11 +8,6 @@ import { setAQIData } from "../redux/aqiSlice";
 
 const AQI_KEY = import.meta.env.VITE_AQI_API_KEY;
 
-const fakeAQI = {
-  city: "Trichy",
-  lastUpdated: "10:45 AM",
-  aqi: 75
-};
 
 function Dashboard({
   handlelogout,
@@ -39,8 +34,6 @@ function Dashboard({
   getAQIBadgeClassCo,
   getAQIBadgeClassSo2,
 }) {
-  console.log(import.meta.env);
-
   const user = JSON.parse(localStorage.getItem("Currentuser"));
 
   const dispatch = useDispatch();
@@ -52,86 +45,94 @@ function Dashboard({
       );
       const rawData = datum.data.records;
 
-      const realData = rawData.map((each)=>{
-        const {avg_value,pollutant_id} = each;
-        return {avg_value,pollutant_id};
-      }) 
+      const dateStr = datum.data.updated_date;
 
-      console.log("Real Data with NA values: ",realData);
-     
+      const [date, time] = dateStr.split("T");
+      const [year, month, day] = date.split("-");
 
-      const fullValues = realData.filter((each)=>{
-         if(each.avg_value !== "NA")
-          return each;
-      })
+      const lastUpdated = `${day}/${month}/${year} - ${time.slice(0, 5)}`;
 
-      console.log("Real Data without NA values: ",fullValues);
-    
-      const pollutants = {PM25:[],PM10:[],NO2:[],SO2:[],CO:[],O3:[]}
+      console.log(lastUpdated);
 
-      fullValues.forEach((each)=>{
+      const realData = rawData.map((each) => {
+        const { avg_value, pollutant_id } = each;
+        return { avg_value, pollutant_id };
+      });
+
+      console.log("Real Data with NA values: ", realData);
+
+      const fullValues = realData.filter((each) => {
+        if (each.avg_value !== "NA") return each;
+      });
+
+      console.log("Real Data without NA values: ", fullValues);
+
+      const pollutants = {
+        PM25: [],
+        PM10: [],
+        NO2: [],
+        SO2: [],
+        CO: [],
+        O3: [],
+      };
+
+      fullValues.forEach((each) => {
         let id = each.pollutant_id;
 
-        switch(id){
-          case 'PM2.5':
-           pollutants.PM25.push(each.avg_value)
-           break;
-          case 'PM10':
-           pollutants.PM10.push(each.avg_value)
-           break;
-          case 'NO2':
-           pollutants.NO2.push(each.avg_value)
-           break;
-          case 'SO2':
-           pollutants.SO2.push(each.avg_value)
-           break;
-          case 'CO':
-           pollutants.CO.push(each.avg_value)
-           break;
-          case 'OZONE':
-           pollutants.O3.push(each.avg_value)
-           break;
+        switch (id) {
+          case "PM2.5":
+            pollutants.PM25.push(each.avg_value);
+            break;
+          case "PM10":
+            pollutants.PM10.push(each.avg_value);
+            break;
+          case "NO2":
+            pollutants.NO2.push(each.avg_value);
+            break;
+          case "SO2":
+            pollutants.SO2.push(each.avg_value);
+            break;
+          case "CO":
+            pollutants.CO.push(each.avg_value);
+            break;
+          case "OZONE":
+            pollutants.O3.push(each.avg_value);
+            break;
         }
-      })
+      });
 
-      console.log("switch: ",pollutants);
+      const keys = Object.keys(pollutants);
 
-      const keys = Object.keys(pollutants)
-
-      console.log(keys);
-
-      const finalValues = keys.reduce((acc,key)=>{
+      const finalValues = keys.reduce((acc, key) => {
         //step1: getting 1st array
-        const arrval = pollutants[key]
+        const arrval = pollutants[key];
         //step2: converting it into number
-        const numval = arrval.map(Number)
+        const numval = arrval.map(Number);
         //step3: adding every value
-        const sum = numval.reduce((tot,num)=>tot+num,0)
+        const sum = numval.reduce((tot, num) => tot + num, 0);
         //step4: average
-        const avg = Number((sum/numval.length)).toFixed(2);
+        const avg = Number(sum / numval.length).toFixed(2);
         //adding the answer to our final acc object
-        acc[key] = avg
+        acc[key] = avg;
 
         return acc;
-      },{})  
- 
-      dispatch(setAQIData(finalValues))    
+      }, {});
 
+      const fulll = {...finalValues,lastUpdated}
+
+      dispatch(setAQIData(fulll));
     } catch (err) {
       console.log(err.message);
     }
   };
 
-  const polludata = useSelector((state)=>state.aqi.polluData);
+  const polludata = useSelector((state) => state.aqi.polluData);
 
-  const {PM10} = polludata;
+  const { PM10 } = polludata;
 
   const aqiVal = PM10;
-  
-  console.log("aqi: ",aqiVal)
 
-  console.log(polludata)
-  
+  const {lastUpdated} = polludata;
 
   const navigate = useNavigate();
 
@@ -203,7 +204,7 @@ function Dashboard({
               </div>
               <p className="topbar-subtitle">
                 <span className="topbar-subtitle-dot">◎</span>
-                {user.city} · Last updated {fakeAQI.lastUpdated}
+                {user.city} · Last updated {lastUpdated}
               </p>
             </div>
           </div>
@@ -226,7 +227,7 @@ function Dashboard({
         </header>
 
         {/* Warning Banner */}
-        {fakeAQI.aqi > Number(user.Threshold) && (
+        {aqiVal > Number(user.Threshold) && (
           <div className="aqi-warning-banner">
             <span className="warning-icon">⚠️</span>
             <p>
@@ -252,9 +253,7 @@ function Dashboard({
               >
                 {getAQIStatusPm10(aqiVal)}
               </div>
-              <p className="aqi-hero-city">
-                {user.city}, {user.state}
-              </p>
+              <p className="aqi-hero-city">{user.city}</p>
             </div>
             <div className="aqi-hero-right">
               <div
@@ -342,13 +341,15 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {polludata.PM25}{" "}
-                <span className="pollutant-unit">µg/m³</span>
+                {polludata.PM25} <span className="pollutant-unit">µg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: `${(polludata.PM25/250)*100}%`, background: getAQIColorPm25(aqiVal) }}
+                  style={{
+                    width: `${(polludata.PM25 / 250) * 100}%`,
+                    background: getAQIColorPm25(aqiVal),
+                  }}
                 ></div>
               </div>
               <p className="pollutant-desc">Fine particulate matter</p>
@@ -369,13 +370,15 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {polludata.PM10}{" "}
-                <span className="pollutant-unit">µg/m³</span>
+                {polludata.PM10} <span className="pollutant-unit">µg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: `${(polludata.PM10/430)*100}%`, background: getAQIColorPm10(aqiVal) }}
+                  style={{
+                    width: `${(polludata.PM10 / 430) * 100}%`,
+                    background: getAQIColorPm10(aqiVal),
+                  }}
                 ></div>
               </div>
               <p className="pollutant-desc">Coarse particulate matter</p>
@@ -396,13 +399,15 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {polludata.NO2}{" "}
-                <span className="pollutant-unit">µg/m³</span>
+                {polludata.NO2} <span className="pollutant-unit">µg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: `${(polludata.NO2/400)*100}%`, background: getAQIColorNo2(aqiVal) }}
+                  style={{
+                    width: `${(polludata.NO2 / 400) * 100}%`,
+                    background: getAQIColorNo2(aqiVal),
+                  }}
                 ></div>
               </div>
               <p className="pollutant-desc">Nitrogen dioxide</p>
@@ -423,14 +428,13 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {polludata.SO2}{" "}
-                <span className="pollutant-unit">µg/m³</span>
+                {polludata.SO2} <span className="pollutant-unit">µg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
                   style={{
-                    width: `${(polludata.SO2/1600)*100}%`,
+                    width: `${(polludata.SO2 / 1600) * 100}%`,
                     background: getAQIColorSo2(aqiVal),
                   }}
                 ></div>
@@ -453,13 +457,15 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {polludata.CO}{" "}
-                <span className="pollutant-unit">mg/m³</span>
+                {polludata.CO} <span className="pollutant-unit">mg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
-                  style={{ width: `${(polludata.CO/34)*100}%`, background: getAQIColorCo(aqiVal) }}
+                  style={{
+                    width: `${(polludata.CO / 34) * 100}%`,
+                    background: getAQIColorCo(aqiVal),
+                  }}
                 ></div>
               </div>
               <p className="pollutant-desc">Carbon monoxide</p>
@@ -480,15 +486,14 @@ function Dashboard({
                 </span>
               </div>
               <div className="pollutant-value aqi-number">
-                {polludata.O3}{" "}
-                <span className="pollutant-unit">µg/m³</span>
+                {polludata.O3} <span className="pollutant-unit">µg/m³</span>
               </div>
               <div className="pollutant-bar-track">
                 <div
                   className="pollutant-bar-fill"
                   style={{
-                    width: `${(polludata.O3/748)*100}%`,
-                    background: getAQIColorO3(aqiVal)
+                    width: `${(polludata.O3 / 748) * 100}%`,
+                    background: getAQIColorO3(aqiVal),
                   }}
                 ></div>
               </div>
@@ -515,7 +520,7 @@ function Dashboard({
             />
             <div className="quick-journal-footer">
               <span className="quick-journal-stamp">
-                AQI {fakeAQI.aqi} will be auto-attached
+                AQI {aqiVal} will be auto-attached
               </span>
               <button
                 className="btn-primary quick-journal-btn"
