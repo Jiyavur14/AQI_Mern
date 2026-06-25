@@ -5,7 +5,6 @@ import axios from "axios";
 import states from '../assets/states.json';
 /* List of major Indian cities for the home city dropdown */
 
-let districts;
 const INDIAN_CITIES = [
     "Andaman and Nicobar Islands",
     "Andhra Pradesh",
@@ -126,6 +125,8 @@ function RegisterPage({
     }
   };
 
+  const selectedState = states.States.find((stat) =>
+             stat.state === users.state)
 
   return (
     <div className="auth-page">
@@ -259,11 +260,10 @@ function RegisterPage({
                 <option value="" disabled>
                   Select your city
                 </option>
-                {districts = states.States.find((state) =>state === stateVal);
-                console.log(districts);}
+                  {selectedState?.districts.map((districts) =>
                   <option key={districts} value={districts}>
                     {districts}
-                  </option>
+                  </option>)}
                 
               </select>
             </div>
