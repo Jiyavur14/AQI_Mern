@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import "../App.css";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setAQIData } from "../redux/aqiSlice";
+import { setAQICity,removeCity } from "../redux/citySlice";
+import axios from "axios";
+
+const AQI_KEY = import.meta.env.VITE_AQI_API_KEY;
+
 
 const INDIAN_CITIES = [
   "Guwahati",
@@ -58,6 +63,7 @@ function Watchlist({
   setCities,
   cityinput,
   setCityinput,
+  fetchAqi
 }) {
   const [warning, setWarning] = useState(false);
 
@@ -117,6 +123,97 @@ function Watchlist({
     city.toLowerCase().startsWith(cityinput.toLowerCase()) &&
     city.toLowerCase() !== cityinput.toLowerCase())
 );
+
+const dispatch = useDispatch();
+
+const fetchCityAqi = async (cityinput) => {
+    try {
+      const datum = await axios.get(
+        `https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69?api-key=${AQI_KEY}&format=json&filters[city]=${cityinput}&limit=40`,
+      );
+      const rawData = datum.data.records;
+
+      const dateStr = datum.data.updated_date;
+
+      const [date, time] = dateStr.split("T");
+      const [year, month, day] = date.split("-");
+
+      const lastUpdated = `${day}/${month}/${year} - ${time.slice(0, 5)}`;
+
+      const realData = rawData.map((each) => {
+        const { avg_value, pollutant_id } = each;
+        return { avg_value, pollutant_id };
+      });
+
+      const fullValues = realData.filter((each) => {
+        if (each.avg_value !== "NA") return each;
+      });
+
+      const pollutants = {
+        PM25: [],
+        PM10: [],
+        NO2: [],
+        SO2: [],
+        CO: [],
+        O3: [],
+      };
+
+      fullValues.forEach((each) => {
+        let id = each.pollutant_id;
+
+        switch (id) {
+          case "PM2.5":
+            pollutants.PM25.push(each.avg_value);
+            break;
+          case "PM10":
+            pollutants.PM10.push(each.avg_value);
+            break;
+          case "NO2":
+            pollutants.NO2.push(each.avg_value);
+            break;
+          case "SO2":
+            pollutants.SO2.push(each.avg_value);
+            break;
+          case "CO":
+            pollutants.CO.push(each.avg_value);
+            break;
+          case "OZONE":
+            pollutants.O3.push(each.avg_value);
+            break;
+        }
+      });
+
+      const keys = Object.keys(pollutants);
+
+      const finalValues = keys.reduce((acc, key) => {
+        //step1: getting 1st array
+        const arrval = pollutants[key];
+        //step2: converting it into number
+        const numval = arrval.map(Number);
+        //step3: adding every value
+        const sum = numval.reduce((tot, num) => tot + num, 0);
+        //step4: average
+        const avg = Number(sum / numval.length).toFixed(2);
+        //adding the answer to our final acc object
+        acc[key] = avg;
+
+        return acc;
+      }, {});
+
+      const fulll = {...finalValues,lastUpdated}
+
+      console.log({cityinput,fulll})
+
+    dispatch(setAQICity({cityinput,fulll}));
+
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+const citi = [useSelector((state)=>state.cityAqi.citie)]
+console.log(citi);
+
 
   return (
     <div className="dashboard-layout">
@@ -203,7 +300,10 @@ function Watchlist({
               className="watchlist-add-input"
               placeholder="Type a city name — e.g. Chennai, Kolkata, Mumbai..."
             />
-            <button className="watchlist-add-btn" onClick={addcity}>
+            <button className="watchlist-add-btn" onClick={()=>{
+              fetchCityAqi(cityinput);
+              addcity();
+            }}>
               <span>+ Add City</span>
             </button>
           </div>
@@ -248,9 +348,9 @@ function Watchlist({
           <h3 className="section-title">Your Cities</h3>
           <div className="watchlist-grid">
 
-            {cities.map((each, index) => {
+            {citi.map((each, index) => {
               const isThresholdCrossed = each.aqi >= 150;
-
+              
               return (
                 <>
                   {/* Card 1 — Worst (Delhi) */}

@@ -17,6 +17,7 @@ import { setAQIData } from "./redux/aqiSlice";
 const AQI_KEY = import.meta.env.VITE_AQI_API_KEY;
 
 function App() {
+  
  const dispatch = useDispatch();
   
   const [users, setUsers] = useState({
@@ -484,12 +485,13 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/watchlist"
           element={
             <ProtectedRoute>
               <WatchlistPage
-              fetchAqi={fetchAqi}
+                fetchAqi={fetchAqi}
                 handlelogout={handlelogout}
                 getAQIBadgeClassPm10={getAQIBadgeClassPm10}
                 getAQIBadgeClassPm25={getAQIBadgeClassPm25}
