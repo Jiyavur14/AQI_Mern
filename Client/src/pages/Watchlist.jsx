@@ -72,7 +72,7 @@ function Watchlist({
   const addcity = () => {
     if (!cityinput.trim()) return;
     else {
-      if (cities.length >= 5) return alert("Maximum limit has reached");
+      if (cities.length > 5) return alert("Maximum limit has reached");
       else {
         setSamp(() => samp.slice(0, -1));
         const newentry = {
@@ -202,7 +202,6 @@ const fetchCityAqi = async (cityinput) => {
 
       const fulll = {...finalValues,lastUpdated}
 
-      console.log({cityinput,fulll})
 
     dispatch(setAQICity({cityinput,fulll}));
 
@@ -211,9 +210,15 @@ const fetchCityAqi = async (cityinput) => {
     }
   };
 
-const citi = [useSelector((state)=>state.cityAqi.citie)]
-console.log(citi);
+const citieObj = useSelector((state)=>state.cityAqi.citie);
 
+const citi = Object.entries(citieObj).map(([cityName,data])=>({
+  city: cityName,
+  ...data
+}))
+
+console.log(citi);
+console.log(citi.length);
 
   return (
     <div className="dashboard-layout">
@@ -301,8 +306,12 @@ console.log(citi);
               placeholder="Type a city name — e.g. Chennai, Kolkata, Mumbai..."
             />
             <button className="watchlist-add-btn" onClick={()=>{
-              fetchCityAqi(cityinput);
-              addcity();
+              if(citi.length>=5)
+                alert("Maximum limit has been reached!!!")
+              else{
+                fetchCityAqi(cityinput);
+                setCityinput("")
+                console.log("len:",citi.length)}
             }}>
               <span>+ Add City</span>
             </button>
@@ -321,7 +330,7 @@ console.log(citi);
               </div>
             )}
           <p className="watchlist-add-hint">
-            {cities.length} of 5 cities added
+            {citi.length} of 5 cities added
           </p>
         </div>
 
@@ -331,12 +340,12 @@ console.log(citi);
             <div
               key={index}
               className={`slot ${
-                index < cities.length ? "slot--filled" : "slot--empty"
+                index < citi.length ? "slot--filled" : "slot--empty"
               }`}
             >
               <span
                 className={`slot-dot ${
-                  index < cities.length ? "slot-dot--filled" : "slot-dot--empty"
+                  index < citi.length ? "slot-dot--filled" : "slot-dot--empty"
                 }`}
               ></span>
             </div>
@@ -349,7 +358,7 @@ console.log(citi);
           <div className="watchlist-grid">
 
             {citi.map((each, index) => {
-              const isThresholdCrossed = each.aqi >= 150;
+              const isThresholdCrossed = each.PM10 >= 150;
               
               return (
                 <>
@@ -371,18 +380,18 @@ console.log(citi);
                     <div className="city-card-aqi-row">
                       <span
                         className="city-card-aqi-number aqi-number"
-                        style={{ color: getAQIColorPm10(each.aqi) }}
+                        style={{ color: getAQIColorPm10(each.PM10) }}
                       >
-                        {each.aqi}
+                        {each.PM10}
                       </span>
                       <div className="city-card-status-col">
                         <span
-                          className={`aqi-status-badge ${getAQIBadgeClassPm10(each.aqi)}`}
+                          className={`aqi-status-badge ${getAQIBadgeClassPm10(each.PM10)}`}
                         >
-                          {getAQIStatusPm10(each.aqi)}
+                          {getAQIStatusPm10(each.PM10)}
                         </span>
                         <span className="city-card-updated">
-                          Updated {each.updatedAt}
+                          Updated {each.lastUpdated}
                         </span>
                       </div>
                     </div>
@@ -391,8 +400,8 @@ console.log(citi);
                       <div
                         className="city-card-bar-fill"
                         style={{
-                          width: `${(each.aqi / 500) * 100}%`,
-                          background: getAQIColorPm10(each.aqi),
+                          width: `${(each.PM10 / 500) * 100}%`,
+                          background: getAQIColorPm10(each.PM10),
                         }}
                       ></div>
                     </div>
@@ -402,36 +411,36 @@ console.log(citi);
                         <span className="cmp-label">PM2.5</span>
                         <span
                           className="cmp-value aqi-number"
-                          style={{ color: getAQIColorPm25(each.pm) }}
+                          style={{ color: getAQIColorPm25(each.PM25) }}
                         >
-                          {each.pm}
+                          {each.PM25}
                         </span>
                       </div>
                       <div className="city-mini-pollutant">
                         <span className="cmp-label">PM10</span>
                         <span
                           className="cmp-value aqi-number"
-                          style={{ color: getAQIColorPm10(each.pn) }}
+                          style={{ color: getAQIColorPm10(each.PM10) }}
                         >
-                          {each.pn}
+                          {each.PM10}
                         </span>
                       </div>
                       <div className="city-mini-pollutant">
                         <span className="cmp-label">NO₂</span>
                         <span
                           className="cmp-value aqi-number"
-                          style={{ color: getAQIColorNo2(each.no) }}
+                          style={{ color: getAQIColorNo2(each.NO2) }}
                         >
-                          {each.no}
+                          {each.NO2}
                         </span>
                       </div>
                       <div className="city-mini-pollutant">
                         <span className="cmp-label">SO₂</span>
                         <span
                           className="cmp-value aqi-number"
-                          style={{ color: getAQIColorSo2(each.so) }}
+                          style={{ color: getAQIColorSo2(each.SO2) }}
                         >
-                          {each.so}
+                          {each.SO2}
                         </span>
                       </div>
                     </div>
@@ -453,7 +462,7 @@ console.log(citi);
                       >
                         <span>✅</span>
                         <span>
-                          Air Quality is in {getAQIStatusPm10(each.aqi)} Level
+                          Air Quality is in {getAQIStatusPm10(each.PM10)} Level
                         </span>
                       </div>
                     )}
@@ -469,7 +478,7 @@ console.log(citi);
           <section className="watchlist-empty-slots">
             <h3 className="section-title">Available Slots</h3>
             <div className="empty-slots-grid">
-              {Array.from({ length: 5 - cities.length }).map((_, index) => (
+              {Array.from({ length: 5 - citi.length }).map((_, index) => (
                 <div className="empty-city-card" key={index}>
                   <div className="empty-card-inner">
                     <span className="empty-card-plus">+</span>
