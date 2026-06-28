@@ -67,6 +67,9 @@ function Watchlist({
 }) {
   const [warning, setWarning] = useState(false);
 
+  const [isLoading,setIsLoading] = useState(false);
+
+
   const [samp, setSamp] = useState([1, 1, 1, 1, 1]);
  
  const dispatch = useDispatch();
@@ -126,6 +129,7 @@ function Watchlist({
 
 const fetchCityAqi = async (cityinput) => {
     try {
+      setIsLoading(true)
       const datum = await axios.get(
         `https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69?api-key=${AQI_KEY}&format=json&filters[city]=${cityinput}&limit=40`,
       );
@@ -206,6 +210,9 @@ const fetchCityAqi = async (cityinput) => {
     } catch (err) {
       console.log(err.message);
     }
+    finally{
+      setIsLoading(false);
+    }
   };
 
 const citieObj = useSelector((state)=>state.cityAqi.citie);
@@ -221,7 +228,14 @@ console.log(citi);
 
   return (
     <div className="dashboard-layout">
+
+         {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-circle"></div>
+        </div>
+      )}
       {/* ── Sidebar (desktop only) ── */}
+      
       <aside className="sidebar">
         <div className="sidebar-logo">
           <span className="sidebar-logo-icon">⬡</span>

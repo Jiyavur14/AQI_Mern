@@ -36,6 +36,8 @@ function Dashboard({
 }) {
   const user = JSON.parse(localStorage.getItem("Currentuser"));
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useDispatch();
 
   const polludata = useSelector((state) => state.aqi.polluData);
@@ -57,7 +59,15 @@ function Dashboard({
   }, []);
 
   return (
+
     <div className="dashboard-layout">
+
+       {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-circle"></div>
+        </div>
+      )}
+
       {/* ── Sidebar (desktop only) ── */}
       <aside className="sidebar">
         <div className="sidebar-logo">

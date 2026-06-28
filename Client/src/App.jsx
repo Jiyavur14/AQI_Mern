@@ -17,6 +17,8 @@ import { setAQIData } from "./redux/aqiSlice";
 const AQI_KEY = import.meta.env.VITE_AQI_API_KEY;
 
 function App() {
+
+  const [isLoading,setIsLoading] = useState(false);
   
  const dispatch = useDispatch();
   
@@ -336,6 +338,7 @@ function App() {
   
   const fetchAqi = async () => {
     try {
+      setIsLoading(true)
       const datum = await axios.get(
         `https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69?api-key=${AQI_KEY}&format=json&filters[city]=${user.city}&limit=40`,
       );
@@ -419,6 +422,9 @@ function App() {
       dispatch(setAQIData(fulll));
     } catch (err) {
       console.log(err.message);
+    }
+    finally{
+      setIsLoading(false);
     }
   };
 
