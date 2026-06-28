@@ -36,7 +36,7 @@ const INDIAN_CITIES = [
   "Moradabad",
   "Ghaziabad",
   "Gummidipoondi",
-  "Bareilly",
+  "Bareilly"
 ];
 
 function Watchlist({
@@ -68,7 +68,9 @@ function Watchlist({
   const [warning, setWarning] = useState(false);
 
   const [samp, setSamp] = useState([1, 1, 1, 1, 1]);
-
+ 
+ const dispatch = useDispatch();
+ 
   const addcity = () => {
     if (!cityinput.trim()) return;
     else {
@@ -105,14 +107,11 @@ function Watchlist({
 
   const deletecity = (indexToDelete) => {
     setSamp(() => [...samp, 1]);
-    const newupdate = cities.filter((each, index) => {
-      return index !== indexToDelete;
-    });
+    const cityName = citi[indexToDelete].city;
+     dispatch(removeCity(cityName));
+     console.log("del",cityName);
+    };
 
-    setCities(newupdate);
-
-    localStorage.setItem("cities", JSON.stringify(newupdate));
-  };
 
   const handledown = (e) => {
     if (e.key === "Enter") addcity();
@@ -124,7 +123,6 @@ function Watchlist({
     city.toLowerCase() !== cityinput.toLowerCase())
 );
 
-const dispatch = useDispatch();
 
 const fetchCityAqi = async (cityinput) => {
     try {
@@ -217,8 +215,9 @@ const citi = Object.entries(citieObj).map(([cityName,data])=>({
   ...data
 }))
 
+
 console.log(citi);
-console.log(citi.length);
+
 
   return (
     <div className="dashboard-layout">
@@ -568,6 +567,7 @@ console.log(citi.length);
       </nav>
     </div>
   );
+
 }
 
 export default Watchlist;
