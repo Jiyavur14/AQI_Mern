@@ -3,6 +3,36 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 
+
+const INDIAN_CITIES = [
+    "Guwahati",
+    "Visakhapatnam",
+    "Gaya",
+    "Patna",
+    "Raipur",
+    "Cuddalore",
+    "Chennai",
+    "Hyderabad",
+    "Agra",
+    "Noida",
+    "Varanasi",
+    "Howrah",
+    "Kolkata",
+    "Meerut",
+    "Lucknow",
+    "Navi Mumbai",
+    "Asansol",
+    "Faridabad",
+    "Navi Mumbai",
+    "Delhi",
+    "Dehradun",
+    "Moradabad",
+    "Ghaziabad",
+    "Gummidipoondi",
+    "Bareilly",
+];
+
+
 function SettingsPage({
   handlelogout,
   getAQIColor,
@@ -229,18 +259,14 @@ function SettingsPage({
                 disabled={editStatus}
                 onChange={handleedit}
               >
-                <option value={user.city}>
-                  {user.city}
+               <option value="" disabled>
+                  Select your city
                 </option>
-                <option value="Delhi">Delhi</option>
-                <option value="Mumbai">Mumbai</option>
-                <option value="Bengaluru">Bengaluru</option>
-                <option value="Hyderabad">Hyderabad</option>
-                <option value="Kolkata">Kolkata</option>
-                <option value="Pune">Pune</option>
-                <option value="Ahmedabad">Ahmedabad</option>
-                <option value="Jaipur">Jaipur</option>
-                <option value="Lucknow">Lucknow</option>
+                  {INDIAN_CITIES.map((each) =>
+                  <option key={each} value={each}>
+                    {each}
+                  </option>)}
+                
               </select>
               <p className="settings-field-hint">
                 This city's AQI is shown on your dashboard and auto-stamped on
@@ -442,6 +468,7 @@ function SettingsPage({
                   setUpdatePassword((prev) => !prev);
                   if (updatePassword) {
                     handlePassword();
+                    alert("New password has been set!")
                     setCurrentPassword("");
                     setpassword("");
                     setConfirmPassword("");

@@ -570,7 +570,7 @@ function App() {
               <SettingsPage
                 deleteAccount={deleteAccount}
                 handlelogout={handlelogout}
-                                getAQIBadgeClassPm10={getAQIBadgeClassPm10}
+                getAQIBadgeClassPm10={getAQIBadgeClassPm10}
                 getAQIBadgeClassPm25={getAQIBadgeClassPm25}
                 getAQIBadgeClassNo2={getAQIBadgeClassNo2}
                 getAQIBadgeClassO3={getAQIBadgeClassO3}
