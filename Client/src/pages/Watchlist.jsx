@@ -206,7 +206,7 @@ const fetchCityAqi = async (cityinput) => {
 
     const fulll = {...finalValues,lastUpdated}
 
-    const citi = [...cityList,{cityName:cityinput,...fulll}];
+    const citi = [...cityList || [],{cityName:cityinput,...fulll}];
 
     const updateddd = {...userrr,cityList:citi}
 
@@ -357,12 +357,12 @@ const fetchCityAqi = async (cityinput) => {
             <div
               key={index}
               className={`slot ${
-                index < citi.length ? "slot--filled" : "slot--empty"
+                index < citi?.length ? "slot--filled" : "slot--empty"
               }`}
             >
               <span
                 className={`slot-dot ${
-                  index < citi.length ? "slot-dot--filled" : "slot-dot--empty"
+                  index < citi?.length ? "slot-dot--filled" : "slot-dot--empty"
                 }`}
               ></span>
             </div>
