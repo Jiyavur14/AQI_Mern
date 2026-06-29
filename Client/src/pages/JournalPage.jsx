@@ -3,6 +3,7 @@ import "../App.css";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { setAQIData } from "../redux/aqiSlice";
+import { useState } from "react";
 
 
 const date = new Date();
@@ -41,6 +42,8 @@ function JournalPage({
 }) {
   const userr = JSON.parse(localStorage.getItem("Currentuser"));
 
+  const [activeFilter,setActiveFilter] = useState("all");
+
   const pollu = useSelector((state)=>state.aqi.polluData)
 
   console.log("poll: ",pollu);
@@ -66,6 +69,33 @@ function JournalPage({
       return;
     }
   };
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  const tME = entries.filter((each)=>{
+        
+    const noww = new Date(each.createdAt)
+
+    return (currentMonth === noww.getMonth() && currentYear === noww.getFullYear())
+
+  }) || [];
+
+  console.log("this month: ",tME);
+
+  const avgAQIThisMonth = tME.length
+  ? (
+      tME.reduce((sum, each) => sum + Number(each.aqi), 0) /
+      tME.length
+    ).toFixed(2)
+  : 0;
+
+const worstDays = entries.filter((each)=>{
+   return each.aqi >= 150;
+})
+
+const displaying = activeFilter === "poor" ? worstDays : activeFilter === "month" ? tME : entries;
 
 
   return (
@@ -199,7 +229,7 @@ function JournalPage({
               className="journal-stat-value aqi-number"
               style={{ color: "var(--aqi-poor)" }}
             >
-              218
+              {avgAQIThisMonth}
             </span>
             <span className="journal-stat-label">Avg AQI this month</span>
           </div>
@@ -208,7 +238,7 @@ function JournalPage({
               className="journal-stat-value aqi-number"
               style={{ color: "var(--aqi-very-poor)" }}
             >
-              318
+              {worstDays.length}
             </span>
             <span className="journal-stat-label">Worst day recorded</span>
           </div>
@@ -219,16 +249,25 @@ function JournalPage({
           <div className="journal-entries-header">
             <h3 className="section-title">Past Entries</h3>
             <div className="journal-filter-row">
-              <button className="journal-filter-btn journal-filter-btn--active">
+              <button className={`journal-filter-btn ${activeFilter==='all' ? "journal-filter-btn--active":""}`}
+              onClick={()=>{
+                setActiveFilter('all')
+              }}>
                 All
               </button>
-              <button className="journal-filter-btn">Poor+</button>
-              <button className="journal-filter-btn">This month</button>
+              <button className={`journal-filter-btn ${activeFilter==='poor' ? "journal-filter-btn--active":""}`} 
+              onClick={()=>{
+                setActiveFilter('poor')
+              }}>Poor+</button>
+              <button className={`journal-filter-btn ${activeFilter==='month' ? "journal-filter-btn--active":""}`}
+              onClick={()=>{
+                setActiveFilter('month')
+              }}>This month</button>
             </div>
           </div>
 
           <div className="journal-entries-list">
-            {entries?.map((each,index) => {
+            {displaying?.map((each,index) => {
         
               return (
                   <div className="journal-entry-card" key={index}>

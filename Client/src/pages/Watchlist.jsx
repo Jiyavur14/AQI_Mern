@@ -226,7 +226,7 @@ const fetchCityAqi = async (cityinput) => {
 
   const {cityList} = userrr;
   
-  const citi = cityList;
+  const citi = cityList || [];
 
   console.log("kk: ",citi);
 
