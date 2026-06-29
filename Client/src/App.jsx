@@ -570,7 +570,26 @@ function App() {
               <SettingsPage
                 deleteAccount={deleteAccount}
                 handlelogout={handlelogout}
-        
+                                getAQIBadgeClassPm10={getAQIBadgeClassPm10}
+                getAQIBadgeClassPm25={getAQIBadgeClassPm25}
+                getAQIBadgeClassNo2={getAQIBadgeClassNo2}
+                getAQIBadgeClassO3={getAQIBadgeClassO3}
+                getAQIBadgeClassCo={getAQIBadgeClassCo}
+                getAQIBadgeClassSo2={getAQIBadgeClassSo2}
+
+                getAQIColorPm10={getAQIColorPm10}
+                getAQIColorPm25={getAQIColorPm25}
+                getAQIColorNo2={getAQIColorNo2}
+                getAQIColorO3={getAQIColorO3}
+                getAQIColorCo={getAQIColorCo}
+                getAQIColorSo2={getAQIColorSo2}
+
+                getAQIStatusPm10={getAQIStatusPm10}
+                getAQIStatusPm25={getAQIStatusPm25}
+                getAQIStatusNo2={getAQIStatusNo2}
+                getAQIStatusO3={getAQIStatusO3}
+                getAQIStatusCo={getAQIStatusCo}
+                getAQIStatusSo2={getAQIStatusSo2}
                 deleteJournals={deleteJournals}
               />
             </ProtectedRoute>

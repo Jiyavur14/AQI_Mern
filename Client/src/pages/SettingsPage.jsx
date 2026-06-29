@@ -9,7 +9,25 @@ function SettingsPage({
   getAQIStatus,
   getAQIBadgeClass,
   deleteJournals,
-  deleteAccount
+  deleteAccount,
+  getAQIStatusPm10,
+  getAQIStatusPm25,
+  getAQIStatusNo2,
+  getAQIStatusO3,
+  getAQIStatusCo,
+  getAQIStatusSo2,
+  getAQIColorPm10,
+  getAQIColorPm25,
+  getAQIColorNo2,
+  getAQIColorO3,
+  getAQIColorCo,
+  getAQIColorSo2,
+  getAQIBadgeClassPm10,
+  getAQIBadgeClassPm25,
+  getAQIBadgeClassNo2,
+  getAQIBadgeClassO3,
+  getAQIBadgeClassCo,
+  getAQIBadgeClassSo2,
 }) {
   const [password, setpassword] = useState("");
 
@@ -262,12 +280,12 @@ function SettingsPage({
                 </span>
                 <span
                   className="threshold-current-value aqi-number"
-                  style={{ color: getAQIColor(meter) }}
+                  style={{ color: getAQIColorPm10(meter) }}
                 >
                   {meter}
                 </span>
-                <span className={`aqi-status-badge ${getAQIBadgeClass(meter)}`}>
-                  {getAQIStatus(meter)} zone
+                <span className={`aqi-status-badge ${getAQIBadgeClassPm10(meter)}`}>
+                  {getAQIStatusPm10(meter)} zone
                 </span>
               </div>
               <div className="threshold-display-right">
@@ -296,27 +314,27 @@ function SettingsPage({
               <div className="threshold-scale-strip">
                 <span
                   className="threshold-scale-seg"
-                  style={{ background: getAQIColor(meter) }}
+                  style={{ background: getAQIColorPm10(meter) }}
                 ></span>
                 <span
                   className="threshold-scale-seg"
-                  style={{ background: getAQIColor(meter) }}
+                  style={{ background: getAQIColorPm10(meter) }}
                 ></span>
                 <span
                   className="threshold-scale-seg"
-                  style={{ background: getAQIColor(meter) }}
+                  style={{ background: getAQIColorPm10(meter) }}
                 ></span>
                 <span
                   className="threshold-scale-seg"
-                  style={{ background: getAQIColor(meter) }}
+                  style={{ background: getAQIColorPm10(meter) }}
                 ></span>
                 <span
                   className="threshold-scale-seg"
-                  style={{ background: getAQIColor(meter) }}
+                  style={{ background: getAQIColorPm10(meter) }}
                 ></span>
                 <span
                   className="threshold-scale-seg"
-                  style={{ background: getAQIColor(meter) }}
+                  style={{ background: getAQIColorPm10(meter) }}
                 ></span>
               </div>
             </div>
