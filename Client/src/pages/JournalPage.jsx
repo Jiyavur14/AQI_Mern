@@ -1,22 +1,10 @@
 import { Link } from "react-router-dom";
 import "../App.css";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { setAQIData } from "../redux/aqiSlice";
 
 
-const fakeAQI = {
-  city: "Trichy",
-  lastUpdated: "10:45 AM",
-  aqi: 11,
-
-  pollutants: {
-    pm25: 115,
-    pm10: 100,
-    no2: 75,
-    so2: 50,
-    co: 0.8,
-    o3: 25,
-  },
-};
 const date = new Date();
 
 const options = {
@@ -52,6 +40,10 @@ function JournalPage({
   getAQIColorSo2,
 }) {
   const userr = JSON.parse(localStorage.getItem("Currentuser"));
+
+  const pollu = useSelector((state)=>state.aqi.polluData)
+
+  console.log("poll: ",pollu);
 
   const deleteEntry = async (indexToDelete) => {
 
@@ -107,7 +99,7 @@ function JournalPage({
             <div className="sidebar-avatar">{userr.name.charAt(0)}</div>
             <div className="sidebar-user-info">
               <p className="sidebar-user-name">{userr.name}</p>
-              <p className="sidebar-user-city">{fakeAQI.city}</p>
+              <p className="sidebar-user-city">{userr.city}</p>
             </div>
           </div>
           <button className="sidebar-logout" onClick={handlelogout}>↩</button>
@@ -129,7 +121,7 @@ function JournalPage({
               </div>
               <p className="topbar-subtitle">
                 <span className="topbar-subtitle-dot">◎</span>
-                {fakeAQI.city} · AQI auto-stamped on every entry
+                {userr.city} · AQI auto-stamped on every entry
               </p>
             </div>
           </div>
@@ -154,14 +146,14 @@ function JournalPage({
                 <div className="journal-write-aqi-stamp">
                   <span
                     className="journal-stamp-dot"
-                    style={{ background: getAQIColor(fakeAQI.aqi) }}
+                    style={{ background: getAQIColorPm10(pollu.PM10) }}
                   ></span>
                   <span className="journal-stamp-text">
                     Today's AQI{" "}
-                    <strong style={{ color: getAQIColor(fakeAQI.aqi) }}>
-                      {fakeAQI.aqi}
+                    <strong style={{ color: getAQIColorPm10(pollu.PM10) }}>
+                      {pollu.PM10}
                     </strong>{" "}
-                    · {getAQIStatus(fakeAQI.aqi)}
+                    · {getAQIStatusPm10(pollu.PM10)}
                   </span>
                 </div>
               </div>
@@ -243,7 +235,7 @@ function JournalPage({
                     <div className="journal-entry-left">
                       <div
                         className="journal-entry-aqi-bar"
-                        style={{ background: getAQIColor(each.aqi) }}
+                        style={{ background: getAQIColorPm10(pollu.PM10) }}
                       ></div>
                     </div>
                     <div className="journal-entry-body">
@@ -263,12 +255,12 @@ function JournalPage({
                           <div className="journal-entry-badges">
                             <span
                               className="journal-aqi-chip"
-                              style={{ background: getAQIColor(fakeAQI.aqi) }}
+                              style={{ background: getAQIColorPm10(pollu.PM10) }}
                             >
-                              {each.aqi}
+                              {pollu.PM10}
                             </span>
                             <span className="journal-status-chip">
-                              {getAQIStatus(each.aqi)}
+                              {getAQIStatusPm10(pollu.PM10)}
                             </span>
                           </div>
                         </div>
@@ -293,7 +285,7 @@ function JournalPage({
                       <p className="journal-entry-text">{each.text}</p>
                       <div className="journal-entry-footer">
                         <span className="journal-entry-city">
-                          ◎ {fakeAQI.city}
+                          ◎ {userr.city}
                         </span>
                       </div>
                     </div>

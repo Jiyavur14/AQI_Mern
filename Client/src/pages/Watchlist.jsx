@@ -108,11 +108,14 @@ function Watchlist({
 
   const userrr = JSON.parse(localStorage.getItem("Currentuser"));
 
-  const deletecity = (indexToDelete) => {
+  const deletecity = async (indexToDelete) => {
     setSamp(() => [...samp, 1]);
-    const cityName = citi[indexToDelete].city;
-     dispatch(removeCity(cityName));
-     console.log("del",cityName);
+  const updatedCityList = citi.filter((_, index) => index !== indexToDelete);
+  const updatedUser = { ...userrr, cityList: updatedCityList };
+
+  localStorage.setItem("Currentuser", JSON.stringify(updatedUser));
+  await axios.patch(`http://localhost:5000/users/${userrr.id}`, updatedUser);
+
     };
 
 
@@ -125,7 +128,6 @@ function Watchlist({
     city.toLowerCase().startsWith(cityinput.toLowerCase()) &&
     city.toLowerCase() !== cityinput.toLowerCase())
 );
-
 
 const fetchCityAqi = async (cityinput) => {
     try {
@@ -202,8 +204,15 @@ const fetchCityAqi = async (cityinput) => {
         return acc;
       }, {});
 
-      const fulll = {...finalValues,lastUpdated}
+    const fulll = {...finalValues,lastUpdated}
 
+    const citi = [...cityList,{cityName:cityinput,...fulll}];
+
+    const updateddd = {...userrr,cityList:citi}
+
+    localStorage.setItem("Currentuser",JSON.stringify(updateddd));   
+
+    await axios.patch(`http://localhost:5000/users/${userrr.id}`,{...userrr,cityList:citi})
 
     dispatch(setAQICity({cityinput,fulll}));
 
@@ -215,15 +224,11 @@ const fetchCityAqi = async (cityinput) => {
     }
   };
 
-const citieObj = useSelector((state)=>state.cityAqi.citie);
+  const {cityList} = userrr;
+  
+  const citi = cityList;
 
-const citi = Object.entries(citieObj).map(([cityName,data])=>({
-  city: cityName,
-  ...data
-}))
-
-
-console.log(citi);
+  console.log("kk: ",citi);
 
 
   return (
@@ -319,12 +324,11 @@ console.log(citi);
               placeholder="Type a city name — e.g. Chennai, Kolkata, Mumbai..."
             />
             <button className="watchlist-add-btn" onClick={()=>{
-              if(citi.length>=5)
+              if(citi?.length>=5)
                 alert("Maximum limit has been reached!!!")
               else{
                 fetchCityAqi(cityinput);
-                setCityinput("")
-                console.log("len:",citi.length)}
+                setCityinput("")}
             }}>
               <span>+ Add City</span>
             </button>
@@ -380,7 +384,7 @@ console.log(citi);
                     <div className="city-card-rank">{index + 1}</div>
                     <div className="city-card-header">
                       <div className="city-card-info">
-                        <h3 className="city-card-name">{each.city}</h3>
+                        <h3 className="city-card-name">{each.cityName}</h3>
                       </div>
                       <button
                         className="city-card-remove"
@@ -491,7 +495,7 @@ console.log(citi);
           <section className="watchlist-empty-slots">
             <h3 className="section-title">Available Slots</h3>
             <div className="empty-slots-grid">
-              {Array.from({ length: 5 - citi.length }).map((_, index) => (
+              {Array.from({ length: 5 - citi?.length }).map((_, index) => (
                 <div className="empty-city-card" key={index}>
                   <div className="empty-card-inner">
                     <span className="empty-card-plus">+</span>

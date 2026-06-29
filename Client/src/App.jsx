@@ -46,6 +46,8 @@ function App() {
 
   const [cityinput, setCityinput] = useState("");
 
+  const pollu = useSelector((state) => state.aqi.polluData);
+
   async function savingentry() {
     if (!journaltext.trim()) {
       alert("Journal Can't be  empty");
@@ -73,8 +75,6 @@ function App() {
 
             const newUpdate = {...user,journalEntries:updatedEntries}
 
-            console.log("New state:",newUpdate);
-
             localStorage.setItem("Currentuser", JSON.stringify(newUpdate));
             const what = await axios.patch(`http://localhost:5000/users/${user.id}`,{journalEntries:updatedEntries})
             console.log("v1: ",what.data);
@@ -84,7 +84,7 @@ function App() {
           } else {
             const newentry = {
               text: journaltext,
-              aqi: fakeAQI.aqi,
+              aqi: pollu.PM10,
               createdAt: new Date().toISOString(),
             };
 
@@ -487,6 +487,8 @@ function App() {
                 journaltext={journaltext}
                 setJournaltext={setJournaltext}
                 fetchAqi={fetchAqi}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
               />
             </ProtectedRoute>
           }

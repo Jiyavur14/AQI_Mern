@@ -33,10 +33,10 @@ function Dashboard({
   getAQIBadgeClassO3,
   getAQIBadgeClassCo,
   getAQIBadgeClassSo2,
+  isLoading,
+  setIsLoading
 }) {
   const user = JSON.parse(localStorage.getItem("Currentuser"));
-
-  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
 
