@@ -1,53 +1,38 @@
 {
   "users": [
     {
-      "name": "hhihihi",
-      "email": "jiyavurrr@gmail.com",
-      "city": "Gurugram",
-      "password": "1212",
-      "confirm_password": "1212",
-      "id": "mXnt9gYfnzU"
-    },
-    {
-      "name": "jiraya",
+      "name": "jiya",
       "email": "jiyavur4@gmail.com",
-      "city": "Gurugram",
+      "state": "",
+      "city": "Meerut",
       "password": "1212",
       "confirm_password": "1212",
-      "id": "XTBtVe6aC0Y"
-    },
-    {
-      "name": "jiraya",
-      "email": "tamil8334@gmail.com",
-      "city": "Delhi",
-      "password": "1212",
-      "confirm_password": "1212",
-      "id": "APx4uhEB-GE"
-    },
-    {
-      "name": "lllllll",
-      "email": "jiyavurra0@gmail.com",
-      "city": "Gurugram",
-      "password": "1214",
-      "confirm_password": "1214",
-      "id": "SqWCHlAJRsk"
-    },
-    {
-      "name": "hello",
-      "email": "balaji@gmail.com",
-      "city": "Hyderabad",
-      "password": "1212",
-      "confirm_password": "1212",
-      "id": "tjGoGSb4_hA"
-    },
-    {
-      "name": "tamil",
-      "email": "tamil83345@gmail.com",
-      "state": "TamilNadu",
-      "city": "Coimbatore",
-      "password": "1212",
-      "confirm_password": "1212",
-      "id": "zSpDsdQIBxA"
+      "id": "VE23tJ1Wxv0",
+      "Threshold": "160",
+      "journalEntries": [
+        {
+          "text": "hii",
+          "aqi": "168.00",
+          "createdAt": "2026-06-30T01:59:17.785Z"
+        },
+        {
+          "text": "nice",
+          "aqi": "136.38",
+          "createdAt": "2026-06-30T05:34:58.453Z"
+        }
+      ],
+      "cityList": [
+        {
+          "cityName": "Chennai",
+          "PM25": "32.57",
+          "PM10": "51.29",
+          "NO2": "11.25",
+          "SO2": "4.75",
+          "CO": "42.00",
+          "O3": "108.33",
+          "lastUpdated": "30/06/2026 - 04:28"
+        }
+      ]
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
