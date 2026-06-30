@@ -53,7 +53,7 @@ function RegisterPage({
 
     setUsers((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
 
     if(name === "state")

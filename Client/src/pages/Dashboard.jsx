@@ -149,12 +149,12 @@ function Dashboard({
         </header>
 
         {/* Warning Banner */}
-        {aqiVal > Number(user.Threshold) && (
+        {aqiVal > Number(user.Threshold || 150)  && (
           <div className="aqi-warning-banner">
             <span className="warning-icon">⚠️</span>
             <p>
               AQI has crossed your personal limit of{" "}
-              <strong>{user.Threshold}</strong>. Avoid outdoor activity.
+              <strong>{user.Threshold || 150}</strong>. Avoid outdoor activity.
             </p>
           </div>
         )}
