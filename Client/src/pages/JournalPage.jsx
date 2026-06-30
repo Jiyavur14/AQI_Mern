@@ -3,7 +3,7 @@ import "../App.css";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { setAQIData } from "../redux/aqiSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 const date = new Date();
@@ -18,6 +18,7 @@ const options = {
 const formattedDate = date.toLocaleDateString("en-GB", options);
 
 function JournalPage({
+  fetchAqi,
   entryindex,
   setEntryindex,
   entries,
@@ -97,6 +98,9 @@ const worstDays = entries.filter((each)=>{
 
 const displaying = activeFilter === "poor" ? worstDays : activeFilter === "month" ? tME : entries;
 
+ useEffect(()=>{
+   fetchAqi();
+ },[])
 
   return (
     <div className="dashboard-layout">

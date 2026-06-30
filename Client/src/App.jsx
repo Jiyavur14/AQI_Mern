@@ -534,6 +534,7 @@ function App() {
           element={
             <ProtectedRoute>
               <JournalPage
+                fetchAqi={fetchAqi}
                 handlelogout={handlelogout}
                 entryindex={entryindex}
                 setEntryindex={setEntryindex}
