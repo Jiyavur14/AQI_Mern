@@ -47,25 +47,32 @@ function JournalPage({
 
   const pollu = useSelector((state)=>state.aqi.polluData)
 
-  console.log("poll: ",pollu);
+
 
   const deleteEntry = async (indexToDelete) => {
-
     if (confirm("Do you wanna Delete this entry?")) {
       const updatedentries = userr.journalEntries.filter(
         (each, index) => index !== indexToDelete,
       );
 
-      setEntries(updatedentries);
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.patch(
+          `http://localhost:5000/users/${userr.id}`,
+          { journalEntries: updatedentries },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
 
-      const updatedUserr = {...userr,journalEntries:updatedentries}
-
-      console.log("Ommal dei: ",updatedUserr);
-
-      localStorage.setItem("Currentuser",JSON.stringify(updatedUserr));
-
-      await axios.patch(`http://localhost:5000/users/${userr.id}`,updatedUserr); 
-      
+        localStorage.setItem("Currentuser", JSON.stringify(res.data));
+        localStorage.setItem("user", JSON.stringify(res.data));
+        setEntries(res.data.journalEntries);
+      } catch (err) {
+        console.error("Failed to delete entry:", err);
+      }
     } else {
       return;
     }
@@ -83,7 +90,6 @@ function JournalPage({
 
   }) || [];
 
-  console.log("this month: ",tME);
 
   const avgAQIThisMonth = tME.length
   ? (
@@ -166,7 +172,7 @@ const displaying = activeFilter === "poor" ? worstDays : activeFilter === "month
             </div>
             <div className="mobile-user-cluster">
               <div className="mobile-avatar">A</div>
-              <button className="mobile-logout-btn">↩</button>
+              <button className="mobile-logout-btn" onClick={handlelogout}>↩</button>
             </div>
           </div>
         </header>

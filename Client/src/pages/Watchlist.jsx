@@ -74,62 +74,50 @@ function Watchlist({
  
  const dispatch = useDispatch();
  
-  const addcity = () => {
-    if (!cityinput.trim()) return;
-    else {
-      if (cities.length > 5) return alert("Maximum limit has reached");
-      else {
-        setSamp(() => samp.slice(0, -1));
-        const newentry = {
-          city: cityinput,
-          aqi: Math.floor(Math.random() * 500),
-          pm: Math.floor(Math.random() * 500),
-          pn: Math.floor(Math.random() * 500),
-          no: Math.floor(Math.random() * 500),
-          so: Math.floor(Math.random() * 500),
-          state: "TamilNadu",
-          updatedAt: new Date().toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-          }),
-        };
+  const userrr = JSON.parse(localStorage.getItem("Currentuser"));
 
-        const updatedcities = [...cities, newentry];
+  const deletecity = async (indexToDelete) => {
+    const updatedCityList = citi.filter((_, index) => index !== indexToDelete);
 
-        setCities(updatedcities);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.patch(
+        `http://localhost:5000/users/${userrr.id}`,
+        { cityList: updatedCityList },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
 
-        localStorage.setItem("cities", JSON.stringify(updatedcities));
+      localStorage.setItem("Currentuser", JSON.stringify(res.data));
+      localStorage.setItem("user", JSON.stringify(res.data));
+      setSamp(() => [...samp, 1]);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
+
+  const handledown = (e) => {
+    if (e.key === "Enter") {
+      if (citi?.length >= 5) {
+        alert("Maximum limit has been reached!!!");
+      } else {
+        fetchCityAqi(cityinput);
         setCityinput("");
       }
     }
   };
 
-  const userrr = JSON.parse(localStorage.getItem("Currentuser"));
+  const filteredCities = INDIAN_CITIES.filter(
+    city => (
+      city.toLowerCase().startsWith(cityinput.toLowerCase()) &&
+      city.toLowerCase() !== cityinput.toLowerCase())
+  );
 
-  const deletecity = async (indexToDelete) => {
-    setSamp(() => [...samp, 1]);
-  const updatedCityList = citi.filter((_, index) => index !== indexToDelete);
-  const updatedUser = { ...userrr, cityList: updatedCityList };
-
-  localStorage.setItem("Currentuser", JSON.stringify(updatedUser));
-  await axios.patch(`http://localhost:5000/users/${userrr.id}`, updatedUser);
-
-    };
-
-
-  const handledown = (e) => {
-    if (e.key === "Enter") addcity();
-  };
-
- const filteredCities = INDIAN_CITIES.filter(
-  city =>(
-    city.toLowerCase().startsWith(cityinput.toLowerCase()) &&
-    city.toLowerCase() !== cityinput.toLowerCase())
-);
-
-const fetchCityAqi = async (cityinput) => {
+  const fetchCityAqi = async (cityinput) => {
     try {
       setIsLoading(true)
       const datum = await axios.get(
@@ -204,22 +192,30 @@ const fetchCityAqi = async (cityinput) => {
         return acc;
       }, {});
 
-    const fulll = {...finalValues,lastUpdated}
+      const fulll = { ...finalValues, lastUpdated }
 
-    const citi = [...cityList || [],{cityName:cityinput,...fulll}];
+      const citi = [...cityList || [], { cityName: cityinput, ...fulll }];
 
-    const updateddd = {...userrr,cityList:citi}
+      const token = localStorage.getItem("token");
+      const res = await axios.patch(
+        `http://localhost:5000/users/${userrr.id}`,
+        { cityList: citi },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
 
-    localStorage.setItem("Currentuser",JSON.stringify(updateddd));   
+      localStorage.setItem("Currentuser", JSON.stringify(res.data));
+      localStorage.setItem("user", JSON.stringify(res.data));
 
-    await axios.patch(`http://localhost:5000/users/${userrr.id}`,{...userrr,cityList:citi})
-
-    dispatch(setAQICity({cityinput,fulll}));
+      dispatch(setAQICity({ cityinput, fulll }));
 
     } catch (err) {
       console.log(err.message);
     }
-    finally{
+    finally {
       setIsLoading(false);
     }
   };
@@ -227,8 +223,6 @@ const fetchCityAqi = async (cityinput) => {
   const {cityList} = userrr;
   
   const citi = cityList || [];
-
-  console.log("kk: ",citi);
 
 
   return (
@@ -306,7 +300,7 @@ const fetchCityAqi = async (cityinput) => {
             </div>
             <div className="mobile-user-cluster">
               <div className="mobile-avatar">A</div>
-              <button className="mobile-logout-btn">↩</button>
+              <button className="mobile-logout-btn" onClick={handlelogout}>↩</button>
             </div>
           </div>
         </header>
@@ -491,7 +485,7 @@ const fetchCityAqi = async (cityinput) => {
         </section>
 
         {/* ── Empty slots section ── */}
-        {cities.length < 5 && (
+        {citi.length < 5 && (
           <section className="watchlist-empty-slots">
             <h3 className="section-title">Available Slots</h3>
             <div className="empty-slots-grid">

@@ -141,7 +141,9 @@ function Dashboard({
             {/* Mobile only — avatar + logout */}
             <div className="mobile-user-cluster">
               <div className="mobile-avatar">A</div>
-              <button className="mobile-logout-btn" onClick={handlelogout}>
+              <button className="mobile-logout-btn" onClick={()=>{
+                handlelogout();
+              }}>
                 ↩
               </button>
             </div>

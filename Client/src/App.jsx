@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate, data } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -11,17 +11,15 @@ import SettingsPage from "./pages/SettingsPage";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { setAQIData } from "./redux/aqiSlice"; 
-
+import { setAQIData } from "./redux/aqiSlice";
 
 const AQI_KEY = import.meta.env.VITE_AQI_API_KEY;
 
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [isLoading,setIsLoading] = useState(false);
-  
- const dispatch = useDispatch();
-  
+  const dispatch = useDispatch();
+
   const [users, setUsers] = useState({
     name: "",
     email: "",
@@ -33,7 +31,7 @@ function App() {
   const [showpassword, setShowpassword] = useState(false);
 
   const [journaltext, setJournaltext] = useState("");
-  
+
   const user = JSON.parse(localStorage.getItem("Currentuser"));
 
   const [entries, setEntries] = useState(user?.journalEntries || []);
@@ -71,16 +69,29 @@ function App() {
           if (entryindex !== null) {
             const updatedEntries = [...entries];
             updatedEntries[entryindex].text = journaltext;
-            setEntries(updatedEntries);
 
-            const newUpdate = {...user,journalEntries:updatedEntries}
+            try {
+              const token = localStorage.getItem("token");
+              const res = await axios.patch(
+                `http://localhost:5000/users/${user.id}`,
+                { journalEntries: updatedEntries },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              );
 
-            localStorage.setItem("Currentuser", JSON.stringify(newUpdate));
-            const what = await axios.patch(`http://localhost:5000/users/${user.id}`,{journalEntries:updatedEntries})
-            console.log("v1: ",what.data);
-            setJournaltext("");
-            alert("Journal has been Updated!")
-            setEntryindex(null);
+              localStorage.setItem("Currentuser", JSON.stringify(res.data));
+              localStorage.setItem("user", JSON.stringify(res.data));
+              setEntries(res.data.journalEntries);
+              setJournaltext("");
+              alert("Journal has been Updated!");
+              setEntryindex(null);
+            } catch (err) {
+              console.error(err);
+              alert("Failed to update journal entry");
+            }
           } else {
             const newentry = {
               text: journaltext,
@@ -88,27 +99,29 @@ function App() {
               createdAt: new Date().toISOString(),
             };
 
-            const updatedUser = {
-              ...user,
-              journalEntries: [...entries, newentry],
-            };
+            const updatedJournal = [...(entries || []), newentry];
 
-            console.log(updatedUser);
+            try {
+              const token = localStorage.getItem("token");
+              const res = await axios.patch(
+                `http://localhost:5000/users/${user.id}`,
+                { journalEntries: updatedJournal },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              );
 
-            await axios.patch(
-              `http://localhost:5000/users/${user.id}`,
-              updatedUser,
-            );
-
-            setEntries(updatedUser.journalEntries);
-
-            localStorage.setItem("Currentuser", JSON.stringify(updatedUser));
-
-            alert("Entry Saved");
-
-            setJournaltext("");
-
-            console.log("stored", entries);
+              localStorage.setItem("Currentuser", JSON.stringify(res.data));
+              localStorage.setItem("user", JSON.stringify(res.data));
+              setEntries(res.data.journalEntries);
+              setJournaltext("");
+              alert("Entry Saved");
+            } catch (err) {
+              console.error(err);
+              alert("Failed to save journal entry");
+            }
           }
         }
       }
@@ -127,8 +140,7 @@ function App() {
     }
   };
 
-
-    function getAQIStatusPm10(aqi) {
+  function getAQIStatusPm10(aqi) {
     if (aqi <= 50) return "Good";
     if (aqi <= 100) return "Satisfactory";
     if (aqi <= 250) return "Moderate";
@@ -138,7 +150,7 @@ function App() {
     return "Severe";
   }
 
-    function getAQIStatusPm25(aqi) {
+  function getAQIStatusPm25(aqi) {
     if (aqi <= 30) return "Good";
     if (aqi <= 60) return "Satisfactory";
     if (aqi <= 90) return "Moderate";
@@ -158,7 +170,7 @@ function App() {
     return "Severe";
   }
 
-    function getAQIStatusO3(aqi) {
+  function getAQIStatusO3(aqi) {
     if (aqi <= 50) return "Good";
     if (aqi <= 100) return "Satisfactory";
     if (aqi <= 168) return "Moderate";
@@ -168,7 +180,7 @@ function App() {
     return "Severe";
   }
 
-    function getAQIStatusCo(aqi) {
+  function getAQIStatusCo(aqi) {
     if (aqi <= 1.0) return "Good";
     if (aqi <= 2.0) return "Satisfactory";
     if (aqi <= 10) return "Moderate";
@@ -178,7 +190,7 @@ function App() {
     return "Severe";
   }
 
-    function getAQIStatusSo2(aqi) {
+  function getAQIStatusSo2(aqi) {
     if (aqi <= 40) return "Good";
     if (aqi <= 80) return "Satisfactory";
     if (aqi <= 380) return "Moderate";
@@ -198,7 +210,6 @@ function App() {
     return "var(--aqi-severe)";
   }
 
-  
   function getAQIColorPm25(aqi) {
     if (aqi <= 30) return "var(--aqi-good)";
     if (aqi <= 60) return "var(--aqi-satisfactory)";
@@ -209,7 +220,6 @@ function App() {
     return "var(--aqi-severe)";
   }
 
-  
   function getAQIColorNo2(aqi) {
     if (aqi <= 40) return "var(--aqi-good)";
     if (aqi <= 80) return "var(--aqi-satisfactory)";
@@ -220,7 +230,6 @@ function App() {
     return "var(--aqi-severe)";
   }
 
-  
   function getAQIColorO3(aqi) {
     if (aqi <= 50) return "var(--aqi-good)";
     if (aqi <= 100) return "var(--aqi-satisfactory)";
@@ -231,7 +240,6 @@ function App() {
     return "var(--aqi-severe)";
   }
 
-  
   function getAQIColorCo(aqi) {
     if (aqi <= 1.0) return "var(--aqi-good)";
     if (aqi <= 2.0) return "var(--aqi-satisfactory)";
@@ -242,7 +250,6 @@ function App() {
     return "var(--aqi-severe)";
   }
 
-  
   function getAQIColorSo2(aqi) {
     if (aqi <= 40) return "var(--aqi-good)";
     if (aqi <= 80) return "var(--aqi-satisfactory)";
@@ -261,7 +268,7 @@ function App() {
     if (aqi <= 430) return "aqi-status-badge--very-poor";
 
     return "aqi-status-badge--severe";
-  }  
+  }
 
   function getAQIBadgeClassPm25(aqi) {
     if (aqi <= 30) return "aqi-status-badge--good";
@@ -313,32 +320,33 @@ function App() {
     return "aqi-status-badge--severe";
   }
 
-
   const navigate = useNavigate();
 
   const now_user = JSON.parse(localStorage.getItem("Currentuser"));
 
-   const deleteJournals = async () =>{
-        const datum = await axios.patch(`http://localhost:5000/users/${now_user.id}`,{...now_user,"journalEntries":[]})
-        localStorage.setItem("Currentuser",JSON.stringify(datum.data));
-        setEntries([]);
-        alert("Journal Has been Cleared!")     
-  }
+  const deleteJournals = async () => {
+    const datum = await axios.patch(
+      `http://localhost:5000/users/${now_user.id}`,
+      { ...now_user, journalEntries: [] },
+    );
+    localStorage.setItem("Currentuser", JSON.stringify(datum.data));
+    setEntries([]);
+    alert("Journal Has been Cleared!");
+  };
 
   const deleteAccount = async () => {
-    if(confirm("Do You want to delete your Account?")){
-    const datum = await axios.delete(`http://localhost:5000/users/${now_user.id}`)
-    localStorage.removeItem("Currentuser");
-    navigate("/login");}
-    else
-      return;
-  }
+    if (confirm("Do You want to delete your Account?")) {
+      const datum = await axios.delete(
+        `http://localhost:5000/users/${now_user.id}`,
+      );
+      localStorage.removeItem("Currentuser");
+      navigate("/login");
+    } else return;
+  };
 
-
-  
   const fetchAqi = async () => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const datum = await axios.get(
         `https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69?api-key=${AQI_KEY}&format=json&filters[city]=${user.city}&limit=40`,
       );
@@ -351,20 +359,18 @@ function App() {
 
       const lastUpdated = `${day}/${month}/${year} - ${time.slice(0, 5)}`;
 
-      console.log(lastUpdated);
+  
 
       const realData = rawData.map((each) => {
         const { avg_value, pollutant_id } = each;
         return { avg_value, pollutant_id };
       });
 
-      console.log("Real Data with NA values: ", realData);
 
       const fullValues = realData.filter((each) => {
         if (each.avg_value !== "NA") return each;
       });
 
-      console.log("Real Data without NA values: ", fullValues);
 
       const pollutants = {
         PM25: [],
@@ -417,13 +423,12 @@ function App() {
         return acc;
       }, {});
 
-      const fulll = {...finalValues,lastUpdated}
+      const fulll = { ...finalValues, lastUpdated };
 
       dispatch(setAQIData(fulll));
     } catch (err) {
       console.log(err.message);
-    }
-    finally{
+    } finally {
       setIsLoading(false);
     }
   };
@@ -435,6 +440,17 @@ function App() {
   return (
     <>
       <Routes>
+        <Route
+          path="/"
+          element={
+            localStorage.getItem("token") ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
         <Route
           path="/login"
           element={
@@ -467,21 +483,18 @@ function App() {
                 getAQIBadgeClassO3={getAQIBadgeClassO3}
                 getAQIBadgeClassCo={getAQIBadgeClassCo}
                 getAQIBadgeClassSo2={getAQIBadgeClassSo2}
-
                 getAQIColorPm10={getAQIColorPm10}
                 getAQIColorPm25={getAQIColorPm25}
                 getAQIColorNo2={getAQIColorNo2}
                 getAQIColorO3={getAQIColorO3}
                 getAQIColorCo={getAQIColorCo}
                 getAQIColorSo2={getAQIColorSo2}
-
                 getAQIStatusPm10={getAQIStatusPm10}
                 getAQIStatusPm25={getAQIStatusPm25}
                 getAQIStatusNo2={getAQIStatusNo2}
                 getAQIStatusO3={getAQIStatusO3}
                 getAQIStatusCo={getAQIStatusCo}
                 getAQIStatusSo2={getAQIStatusSo2}
-
                 handledown={handledown}
                 savingentry={savingentry}
                 journaltext={journaltext}
@@ -489,11 +502,12 @@ function App() {
                 fetchAqi={fetchAqi}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
+                handlelogout={handlelogout}
               />
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/watchlist"
           element={
@@ -507,14 +521,12 @@ function App() {
                 getAQIBadgeClassO3={getAQIBadgeClassO3}
                 getAQIBadgeClassCo={getAQIBadgeClassCo}
                 getAQIBadgeClassSo2={getAQIBadgeClassSo2}
-
                 getAQIColorPm10={getAQIColorPm10}
                 getAQIColorPm25={getAQIColorPm25}
                 getAQIColorNo2={getAQIColorNo2}
                 getAQIColorO3={getAQIColorO3}
                 getAQIColorCo={getAQIColorCo}
                 getAQIColorSo2={getAQIColorSo2}
-
                 getAQIStatusPm10={getAQIStatusPm10}
                 getAQIStatusPm25={getAQIStatusPm25}
                 getAQIStatusNo2={getAQIStatusNo2}
@@ -540,21 +552,18 @@ function App() {
                 setEntryindex={setEntryindex}
                 entries={entries}
                 setEntries={setEntries}
-              
                 getAQIColorPm10={getAQIColorPm10}
                 getAQIColorPm25={getAQIColorPm25}
                 getAQIColorNo2={getAQIColorNo2}
                 getAQIColorO3={getAQIColorO3}
                 getAQIColorCo={getAQIColorCo}
                 getAQIColorSo2={getAQIColorSo2}
-
                 getAQIStatusPm10={getAQIStatusPm10}
                 getAQIStatusPm25={getAQIStatusPm25}
                 getAQIStatusNo2={getAQIStatusNo2}
                 getAQIStatusO3={getAQIStatusO3}
                 getAQIStatusCo={getAQIStatusCo}
                 getAQIStatusSo2={getAQIStatusSo2}
-
                 handledown={handledown}
                 savingentry={savingentry}
                 journaltext={journaltext}
@@ -577,14 +586,12 @@ function App() {
                 getAQIBadgeClassO3={getAQIBadgeClassO3}
                 getAQIBadgeClassCo={getAQIBadgeClassCo}
                 getAQIBadgeClassSo2={getAQIBadgeClassSo2}
-
                 getAQIColorPm10={getAQIColorPm10}
                 getAQIColorPm25={getAQIColorPm25}
                 getAQIColorNo2={getAQIColorNo2}
                 getAQIColorO3={getAQIColorO3}
                 getAQIColorCo={getAQIColorCo}
                 getAQIColorSo2={getAQIColorSo2}
-
                 getAQIStatusPm10={getAQIStatusPm10}
                 getAQIStatusPm25={getAQIStatusPm25}
                 getAQIStatusNo2={getAQIStatusNo2}

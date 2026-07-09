@@ -62,36 +62,48 @@ function RegisterPage({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const check = await fetch("http://localhost:5000/users");
-
-    const allusers = await check.json();
-
-    if (users.password !== users.confirm_password) {
-      setErrormsg("Password Doesn't Match");
-      return;
-    }
-
-    const email_existence = allusers.find((c) => c.email === users.email);
-
-    if (email_existence) {
-      setErrormsg("User Already Exist");
-      setIsloading(false);
-      return;
-    }
-
     setIsloading(true);
+    
 
     try {
-      const res = await fetch("http://localhost:5000/users", {
+      // Find the state corresponding to the selected city from states.json
+      const foundStateObj = states.States.find((stat) =>
+        stat.districts.includes(users.city)
+      );
+      const userState = foundStateObj ? foundStateObj.state : "";
+
+      // Construct payload with required keys
+      const payload = {
+        name: users.name,
+        email: users.email,
+        state: userState,
+        city: users.city,
+        password: users.password,
+        confirm_password: users.confirm_password,
+      };
+
+      const res = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(users),
+        body: JSON.stringify(payload),
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        setErrormsg(errorData.message || "Registration failed");
+        return;
+      }
 
       const savedUser = await res.json();
 
       console.log("Stored", savedUser);
+
+      // Extract JWT token and user details to store separately
+      const { token, ...userObj } = savedUser;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userObj));
+      // Save under Currentuser as well to maintain compatibility with existing protected routes
+      localStorage.setItem("Currentuser", JSON.stringify(userObj));
 
       setUsers({
         name: "",
@@ -103,7 +115,6 @@ function RegisterPage({
       });
 
       alert("You've successfully registered");
-      console.log(allusers);
       navigate("/login");
     } catch (error) {
       console.log(error);
@@ -247,6 +258,8 @@ function RegisterPage({
                 placeholder="••••••••"
                 autoComplete="new-password"
                 required
+                minLength={8}
+                
               />
             </div>
 
@@ -264,6 +277,7 @@ function RegisterPage({
                 placeholder="••••••••"
                 autoComplete="new-password"
                 required
+                minLength={8}
               />
               <span>
                 <i

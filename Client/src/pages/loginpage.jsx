@@ -12,40 +12,40 @@ function LoginPage({showpassword,setShowpassword}){
 
   const handleSubmit = async (e)=>{
     e.preventDefault();
+    setIsloading(true);
+    setErrormessage("");
 
-    setIsloading(true)
-   try{
-    const data = await fetch("http://localhost:5000/users");
-    const allUsers = await data.json();
-    console.log("Returned: ",allUsers);
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const email_existence = allUsers.find((c)=>{
-        return c.email === email
-    })
+      if (!res.ok) {
+        const errorData = await res.json();
+        setErrormessage(errorData.message || "Invalid Credentials");
+        return;
+      }
 
-    if(email_existence)
-    {
-              if(email_existence.password === password)
-              {
-                localStorage.setItem("Currentuser",JSON.stringify(email_existence));
-                navigate("/dashboard"); 
-              }else
-                {setErrormessage("Invalid Credentials");
-                 return;
-                }   
+      const savedUser = await res.json();
+
+      console.log("Logged In: ", savedUser);
+
+      // Extract JWT token and user details to store in localStorage
+      const { token, ...userObj } = savedUser;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userObj));
+      localStorage.setItem("Currentuser", JSON.stringify(userObj));
+
+      navigate("/dashboard");
+    } catch(e) {
+      console.log("Login Failed", e);
+      setErrormessage("An error occurred during login. Please try again.");
+    } finally {
+      setIsloading(false);
     }
-    else{
-      setErrormessage("you don't have account");
-      return;
-    }
-
-}catch(e){
-console.log("Login Failed");
-}finally{
-    setIsloading(false);
-}
-
-  }
+  };
 
    return (
     <div className="auth-page">
@@ -124,6 +124,7 @@ console.log("Login Failed");
                 }}
                 autoComplete="current-password"
                 required
+                minLength={8}
               />
               <span>
                 <i className="fa-regular fa-eye" onClick={()=>setShowpassword((cv)=>!cv)} ></i>

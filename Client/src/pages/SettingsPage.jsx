@@ -89,45 +89,115 @@ function SettingsPage({
   };
 
   const updateUserProfile = async () => {
-    const updateUser = await fetch(`http://localhost:5000/users/${user.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: user.name,
-        email: user.email,
-        city: user.city,
-      }),
-    });
+    try {
+      const token = localStorage.getItem("token");
+      const updateUser = await fetch(`http://localhost:5000/users/${user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: user.name,
+          email: user.email,
+          city: user.city,
+        }),
+      });
 
-    const res = await updateUser.json();
+      if (!updateUser.ok) {
+        const errorData = await updateUser.json();
+        throw new Error(errorData.message || "Failed to update profile");
+      }
 
-    localStorage.setItem("Currentuser", JSON.stringify(res));
+      const res = await updateUser.json();
+      localStorage.setItem("Currentuser", JSON.stringify(res));
+      localStorage.setItem("user", JSON.stringify(res));
+      setUser(res);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Failed to update profile");
+    }
   };
 
   const handlePassword = async () => {
-    const c_user = JSON.parse(localStorage.getItem("Currentuser"));
-    console.log("pass:", c_user.password);
-    console.log("passww:", currentpassword);
-    if (c_user.password !== currentpassword) {
-      alert("Current Password is Wrong");
+    if (password !== confirmpassword) {
+      alert("Password Mismatched");
       return;
-    } else {
-      if (password !== confirmpassword) {
-        alert("Password Mismatched");
-        return;
-      } else {
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const patchWork = await axios.patch(
+        `http://localhost:5000/users/${user.id}`,
+        {
+          currentPassword: currentpassword,
+          password: password,
+          confirm_password: confirmpassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      localStorage.setItem("Currentuser", JSON.stringify(patchWork.data));
+      localStorage.setItem("user", JSON.stringify(patchWork.data));
+      setUser(patchWork.data);
+      alert("New password has been set!");
+      setCurrentPassword("");
+      setpassword("");
+      setConfirmPassword("");
+      setUpdatePassword(false);
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Failed to update password");
+    }
+  };
+
+  const handleDeleteJournals = async () => {
+    if (confirm("Do you wanna clear all journal entries?")) {
+      try {
+        const token = localStorage.getItem("token");
         const patchWork = await axios.patch(
           `http://localhost:5000/users/${user.id}`,
-          { ...user, password: password, confirm_password: confirmpassword },
+          { ...user, journalEntries: [] },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
 
-        
         localStorage.setItem("Currentuser", JSON.stringify(patchWork.data));
-      
+        localStorage.setItem("user", JSON.stringify(patchWork.data));
         setUser(patchWork.data);
-      
+        alert("Journal Has been Cleared!");
+        window.location.reload(); // Force full reload to synchronize parent state in App.jsx
+      } catch (error) {
+        console.error(error);
+        alert(error.response?.data?.message || "Failed to clear journal");
+      }
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (confirm("Do You want to delete your Account?")) {
+      try {
+        const token = localStorage.getItem("token");
+        await axios.delete(`http://localhost:5000/users/${user.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        localStorage.removeItem("Currentuser");
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        handlelogout();
+      } catch (error) {
+        console.error(error);
+        alert(error.response?.data?.message || "Failed to delete account");
       }
     }
   };
@@ -198,7 +268,7 @@ function SettingsPage({
           <div className="topbar-right">
             <div className="mobile-user-cluster">
               <div className="mobile-avatar">A</div>
-              <button className="mobile-logout-btn">↩</button>
+              <button className="mobile-logout-btn" onClick={handlelogout}>↩</button>
             </div>
           </div>
         </header>
@@ -401,10 +471,25 @@ function SettingsPage({
                 onClick={async () => {
                   setEditThreshold((prev) => !prev);
                   if (editThreshold) {
-                    await axios.patch(`http://localhost:5000/users/${user.id}`,{...user,Threshold:meter})
-                    localStorage.setItem("Currentuser", JSON.stringify({...user,Threshold:meter}));
-                    console.log("new t: ",JSON.parse(localStorage.getItem("Currentuser")));
-                    alert("New Threshold Saved");
+                    try {
+                      const token = localStorage.getItem("token");
+                      const patchWork = await axios.patch(
+                        `http://localhost:5000/users/${user.id}`,
+                        { Threshold: meter },
+                        {
+                          headers: {
+                            Authorization: `Bearer ${token}`
+                          }
+                        }
+                      );
+                      localStorage.setItem("Currentuser", JSON.stringify(patchWork.data));
+                      localStorage.setItem("user", JSON.stringify(patchWork.data));
+                      setUser(patchWork.data);
+                      alert("New Threshold Saved");
+                    } catch (error) {
+                      console.error(error);
+                      alert(error.response?.data?.message || "Failed to save threshold");
+                    }
                   }
                 }}
                 className="btn-primary settings-save-btn"
@@ -465,13 +550,10 @@ function SettingsPage({
               <button
                 className="btn-primary settings-save-btn"
                 onClick={() => {
-                  setUpdatePassword((prev) => !prev);
                   if (updatePassword) {
                     handlePassword();
-                    alert("New password has been set!")
-                    setCurrentPassword("");
-                    setpassword("");
-                    setConfirmPassword("");
+                  } else {
+                    setUpdatePassword(true);
                   }
                 }}
               >
@@ -501,7 +583,7 @@ function SettingsPage({
                   history. Cannot be undone.
                 </p>
               </div>
-              <button className="settings-danger-btn" onClick={deleteJournals}>Clear Journal</button>
+              <button className="settings-danger-btn" onClick={handleDeleteJournals}>Clear Journal</button>
             </div>
 
             <div className="settings-divider"></div>
@@ -514,7 +596,7 @@ function SettingsPage({
                   watchlist data. Cannot be undone.
                 </p>
               </div>
-              <button className="settings-danger-btn settings-danger-btn--hard" onClick={deleteAccount}>
+              <button className="settings-danger-btn settings-danger-btn--hard" onClick={handleDeleteAccount}>
                 Delete Account
               </button>
             </div>
@@ -536,10 +618,7 @@ function SettingsPage({
           <span className="mobile-nav-icon">◎</span>
           <span className="mobile-nav-label">Journal</span>
         </Link>
-        <Link
-          to="/settings"
-          className="mobile-nav-item mobile-nav-item--active"
-        >
+        <Link to="/settings" className="mobile-nav-item mobile-nav-item--active">
           <span className="mobile-nav-icon">◌</span>
           <span className="mobile-nav-label">Settings</span>
         </Link>
