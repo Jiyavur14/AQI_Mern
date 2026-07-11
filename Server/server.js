@@ -27,6 +27,14 @@ app.get('/', (req, res) => {
   res.send('AQI Buddy API is running...');
 });
 
+//Health
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "AQI Buddy Backend Running"
+  });
+});
+
 // Custom Error Handler Middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
