@@ -41,6 +41,9 @@ const registerUser = async (req, res) => {
       password,
     });
 
+
+    console.log("Saved user:", user);
+
     if (user) {
       res.status(201).json({
         token: generateToken(user._id),
