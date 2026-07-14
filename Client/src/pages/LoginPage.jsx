@@ -82,7 +82,7 @@ function LoginPage({ showpassword, setShowpassword }) {
             </div>
             <p className="mobile-hero-headline">Know the air you breathe.</p>
             <p className="mobile-hero-sub">
-              Live AQI for your city, personal health journal,
+              Live Air Quality Index for your city, personal health journal,
               and alerts when pollution crosses your limit.
             </p>
             <div className="mobile-hero-pills">
