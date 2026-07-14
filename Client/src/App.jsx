@@ -73,7 +73,7 @@ function App() {
             try {
               const token = localStorage.getItem("token");
               const res = await axios.patch(
-                `http://localhost:5000/users/${user.id}`,
+                `https://aqi-mern.onrender.com/users/${user.id}`,
                 { journalEntries: updatedEntries },
                 {
                   headers: {
@@ -104,7 +104,7 @@ function App() {
             try {
               const token = localStorage.getItem("token");
               const res = await axios.patch(
-                `http://localhost:5000/users/${user.id}`,
+                `https://aqi-mern.onrender.com/users/${user.id}`,
                 { journalEntries: updatedJournal },
                 {
                   headers: {
@@ -326,7 +326,7 @@ function App() {
 
   const deleteJournals = async () => {
     const datum = await axios.patch(
-      `http://localhost:5000/users/${now_user.id}`,
+      `https://aqi-mern.onrender.com/users/${now_user.id}`,
       { ...now_user, journalEntries: [] },
     );
     localStorage.setItem("Currentuser", JSON.stringify(datum.data));
@@ -337,7 +337,7 @@ function App() {
   const deleteAccount = async () => {
     if (confirm("Do You want to delete your Account?")) {
       const datum = await axios.delete(
-        `http://localhost:5000/users/${now_user.id}`,
+        `https://aqi-mern.onrender.com/users/${now_user.id}`,
       );
       localStorage.removeItem("Currentuser");
       navigate("/login");

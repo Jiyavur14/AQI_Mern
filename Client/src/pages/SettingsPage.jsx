@@ -91,7 +91,7 @@ function SettingsPage({
   const updateUserProfile = async () => {
     try {
       const token = localStorage.getItem("token");
-      const updateUser = await fetch(`http://localhost:5000/users/${user.id}`, {
+      const updateUser = await fetch(`https://aqi-mern.onrender.com/users/${user.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +129,7 @@ function SettingsPage({
     try {
       const token = localStorage.getItem("token");
       const patchWork = await axios.patch(
-        `http://localhost:5000/users/${user.id}`,
+        `https://aqi-mern.onrender.com/users/${user.id}`,
         {
           currentPassword: currentpassword,
           password: password,
@@ -161,7 +161,7 @@ function SettingsPage({
       try {
         const token = localStorage.getItem("token");
         const patchWork = await axios.patch(
-          `http://localhost:5000/users/${user.id}`,
+          `https://aqi-mern.onrender.com/users/${user.id}`,
           { ...user, journalEntries: [] },
           {
             headers: {
@@ -186,7 +186,7 @@ function SettingsPage({
     if (confirm("Do You want to delete your Account?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`http://localhost:5000/users/${user.id}`, {
+        await axios.delete(`https://aqi-mern.onrender.com/users/${user.id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -474,7 +474,7 @@ function SettingsPage({
                     try {
                       const token = localStorage.getItem("token");
                       const patchWork = await axios.patch(
-                        `http://localhost:5000/users/${user.id}`,
+                        `https://aqi-mern.onrender.com/users/${user.id}`,
                         { Threshold: meter },
                         {
                           headers: {

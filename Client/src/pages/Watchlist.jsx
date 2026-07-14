@@ -82,7 +82,7 @@ function Watchlist({
     try {
       const token = localStorage.getItem("token");
       const res = await axios.patch(
-        `http://localhost:5000/users/${userrr.id}`,
+        `https://aqi-mern.onrender.com/users/${userrr.id}`,
         { cityList: updatedCityList },
         {
           headers: {
@@ -198,7 +198,7 @@ function Watchlist({
 
       const token = localStorage.getItem("token");
       const res = await axios.patch(
-        `http://localhost:5000/users/${userrr.id}`,
+        `https://aqi-mern.onrender.com/users/${userrr.id}`,
         { cityList: citi },
         {
           headers: {

@@ -58,7 +58,7 @@ function JournalPage({
       try {
         const token = localStorage.getItem("token");
         const res = await axios.patch(
-          `http://localhost:5000/users/${userr.id}`,
+          `https://aqi-mern.onrender.com/users/${userr.id}`,
           { journalEntries: updatedentries },
           {
             headers: {
