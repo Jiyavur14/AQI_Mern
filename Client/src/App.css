@@ -2376,6 +2376,127 @@
   background: #f3f3f3;
 }
 
+
+/* ============================================================
+   AQI Buddy — Login Page Mobile Hero
+   Paste into App.css — these classes are MOBILE ONLY
+   Desktop is completely unchanged
+   ============================================================ */
+
+/* ── Mobile hero — hidden on desktop ────────────────────────── */
+.mobile-auth-hero {
+  display: none;   /* hidden by default (desktop) */
+}
+
+/* ── Only show on mobile ─────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  .mobile-auth-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-3);
+    padding: var(--space-6) var(--space-4) var(--space-5);
+    background: linear-gradient(
+      160deg,
+      rgba(245, 166, 35, 0.08) 0%,
+      rgba(232, 118, 74, 0.05) 100%
+    );
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: var(--space-4);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* subtle glow behind the icon */
+  .mobile-auth-hero::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(245,166,35,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* logo row */
+  .mobile-hero-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .mobile-hero-icon {
+    font-size: 1.6rem;
+    color: var(--accent-primary);
+    line-height: 1;
+  }
+
+  .mobile-hero-name {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.04em;
+  }
+
+  /* big headline */
+  .mobile-hero-headline {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    /* subtle amber gradient on text */
+    background: linear-gradient(90deg, var(--text-primary) 40%, var(--accent-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* description */
+  .mobile-hero-sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 280px;
+  }
+
+  /* feature pills */
+  .mobile-hero-pills {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .mobile-pill {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    padding: 3px var(--space-3);
+  }
+
+  .pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+  }
+
+}
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
 
