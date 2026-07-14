@@ -11,7 +11,15 @@ connectDB();
 const app = express();
 
 // Standard middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5175",
+      "https://aqi-mern.onrender.com",
+    ],
+    credentials: true,
+  })
+);
 app.use(helmet({
   contentSecurityPolicy: false, // Turn off Content-Security-Policy restrictions for developmental ease
 }));
