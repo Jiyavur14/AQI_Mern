@@ -15,11 +15,14 @@ app.use(
   cors({
     origin: [
       "http://localhost:5175",
-      "https://aqi-mern.onrender.com",
+      "https://aqi-mern-two.vercel.app",
     ],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
   })
 );
+
+
 app.use(helmet({
   contentSecurityPolicy: false, // Turn off Content-Security-Policy restrictions for developmental ease
 }));
